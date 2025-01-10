@@ -36,6 +36,7 @@ const Owner = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [ownerData, setOwnerData] = useState([]);
    const payload = tokenPayload();
+   console.log(payload,"payload")
   // const company = JSON.parse(localStorage.getItem('companyData'));
 
   // Fetch owner data
