@@ -1,185 +1,193 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
+import React, { useEffect, useState } from 'react';
 import {
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
+  Button,
+  Dialog,
   FormLabel,
   Grid,
-  InputAdornment,
-  MenuItem,
-  OutlinedInput,
-  Radio,
-  RadioGroup,
-  Rating,
-  Select,
-  TextField
+  TextField,
+  Autocomplete,
+  Typography,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from '@mui/material';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Typography from '@mui/material/Typography';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-// import { useState,useEffect } from 'react';
-// import { apiget, apipost } from '../../service/api';
-import Palette from '../../ui-component/ThemePalette';
+import { getApi,postApi } from 'core/apis/api';
+import { urls } from 'core/Constant/urls';
+import { tokenPayload } from 'helper';
 
-const AddComplaints = (props) => {
-  const {t} = useTranslation();
-  const { open, handleClose } = props;
+const AddComplaints = ({ open, handleClose }) => {
+  const { t } = useTranslation();
+  const [propertyData, setPropertyData] = useState([]);
+  const [loading, setLoading] = useState(false); 
+  const payload = tokenPayload();
 
-  // -----------  validationSchema
-  const validationSchema = yup.object({
-    unitname: yup.string().required(t('Unit Name is required')), // Translated
-    tenants: yup.string().required(t('Tenant is required')), // Translated
-    buildingname: yup.string().required(t('Building Name is required')), // Translated
-    concern: yup.date().required(t('Concern is required')), // Translated
-    description: yup.string().required(t('Description is required')) // Translated
-  });
-
-  // -----------   initialValues
-  const initialValues = {
-    unitname: '',
-    tenants: '',
-    buildingname: '',
-    concern: '',
-    description: ''
+  const fetchPropertyData = async () => {
+    if (setLoading) setLoading(true); 
+    try {
+      const response = await getApi(urls.property.propertydata, { id: payload.companyId });
+      setPropertyData(response?.data || []);
+    } catch (err) {
+      console.error('Error fetching property data:', err);
+      toast.error(t('Failed to fetch property data!'));
+    } finally {
+      if (setLoading) setLoading(false);
+    }
   };
 
-  // formik
+  useEffect(() => {
+    if (open) fetchPropertyData();
+  }, [open]);
+
+  const validationSchema = yup.object({
+    propertyId: yup.string().required(t('Property is required')),
+    companyId: yup.string().required(t('Company is required')),
+    tenantId: yup.string().required(t('Tenant is required')),
+    AgentId: yup.string().required(t('Agent is required')),
+    concernTopic: yup
+      .string()
+      .max(30, t('Topic cannot exceed 30 characters'))
+      .required(t('Topic is required')),
+    description: yup
+      .string()
+      .max(200, t('Description cannot exceed 200 characters'))
+      .required(t('Description is required')),
+  });
+
   const formik = useFormik({
-    initialValues,
+    initialValues: {
+      propertyId: '',
+      companyId: '',
+      tenantId: '',
+      AgentId: '',
+      concernTopic: '',
+      description: '',
+    },
     validationSchema,
-    onSubmit: async (values) => {
-      console.log('leadValues', values);
-      handleClose();
-      toast.success(t('lead Add successfully')); 
-    }
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        values.tenantName = payload.name;
+        values.AgentId = payload.reporterId;
+        values.companyId = payload.companyId;
+        values.tenantId = payload._id;
+
+        const response = await postApi(urls.Complaints.create, values);
+
+        if (response.success) {
+          toast.success(t('Complaint successfully registered!'));
+          resetForm();
+          handleClose();
+        }
+      } catch (err) {
+        console.error('Error submitting complaint:', err);
+        toast.error(t('Something went wrong!'));
+      }
+    },
   });
 
   return (
-    <div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
-      >
-        <DialogTitle
-          id="scroll-dialog-title"
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between'
-          }}
-        >
-          <Typography variant="h6">{t('Add New')}</Typography> 
-          <Typography>
-            <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
-          </Typography>
-        </DialogTitle>
-        <DialogContent dividers>
-          <form>
-            <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-              <Typography style={{ marginBottom: '15px' }} variant="h6">
-                {t('Complaints Information')} 
-              </Typography>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>{t('Unit Name')}</FormLabel> 
-                  <TextField
-                    id="unitname"
-                    name="unitname"
-                    size="small"
-                    fullWidth
-                    value={formik.values.unitname}
-                    onChange={formik.handleChange}
-                    error={formik.touched.unitname && Boolean(formik.errors.unitname)}
-                    helperText={formik.touched.unitname && formik.errors.unitname}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>{t('Building Name')}</FormLabel> 
-                  <TextField
-                    id="buildingname"
-                    name="buildingname"
-                    size="small"
-                    fullWidth
-                    value={formik.values.buildingname}
-                    onChange={formik.handleChange}
-                    error={formik.touched.buildingname && Boolean(formik.errors.buildingname)}
-                    helperText={formik.touched.buildingname && formik.errors.buildingname}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>{t('Tenants Name')}</FormLabel>
-                  <TextField
-                    id="tenants"
-                    name="tenants"
-                    size="small"
-                    fullWidth
-                    value={formik.values.tenants}
-                    onChange={formik.handleChange}
-                    error={formik.touched.tenants && Boolean(formik.errors.tenants)}
-                    helperText={formik.touched.tenants && formik.errors.tenants}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6} md={6}>
-                  <FormLabel>{t('Concern Topic')}</FormLabel> 
-                  <TextField
-                    id="concern"
-                    name="concern"
-                    size="small"
-                    fullWidth
-                    value={formik.values.concern}
-                    onChange={formik.handleChange}
-                    error={formik.touched.concern && Boolean(formik.errors.concern)}
-                    helperText={formik.touched.concern && formik.errors.concern}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormLabel>{t('Description')}</FormLabel> 
-                  <TextField
-                    id="description"
-                    name="description"
-                    size="small"
-                    fullWidth
-                    multiline
-                    rows={3} // Number of lines
-                    value={formik.values.description}
-                    onChange={formik.handleChange}
-                    error={formik.touched.description && Boolean(formik.errors.description)}
-                    helperText={formik.touched.description && formik.errors.description}
-                  />
-                </Grid>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="scroll-dialog-title"
+      aria-describedby="scroll-dialog-description"
+    >
+      <DialogTitle id="scroll-dialog-title" sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography variant="h6">{t('Add New Complaint')}</Typography>
+        <ClearIcon onClick={handleClose} sx={{ cursor: 'pointer' }} />
+      </DialogTitle>
+      <DialogContent dividers>
+        <form onSubmit={formik.handleSubmit}>
+          <DialogContentText>
+            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+              {t('Complaint Information')}
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <FormLabel>{t('Property')}</FormLabel>
+                <Autocomplete
+                  disablePortal
+                  size="small"
+                  options={
+                    propertyData.map((property) => ({
+                      label: property.propertyname,
+                      value: property._id,
+                      rentAmount: property.rent,
+                    })) || []
+                  }
+                  getOptionLabel={(option) => option.label || ''}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      error={formik.touched.propertyId && Boolean(formik.errors.propertyId)}
+                      helperText={formik.touched.propertyId && formik.errors.propertyId}
+                    />
+                  )}
+                  onChange={(event, value) => {
+                    formik.setFieldValue('propertyId', value?.value || '');
+                  }}
+                />
               </Grid>
-            </DialogContentText>
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={formik.handleSubmit} variant="contained" color="primary" type="submit">
-            {t('Save')} 
-          </Button>
-          <Button
-            onClick={() => {
-              formik.resetForm();
-              handleClose();
-            }}
-            variant="outlined"
-            color="error"
-          >
-            {t('Cancel')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+              <Grid item xs={12}>
+                <FormLabel>{t('Topic')}</FormLabel>
+                <TextField
+                  id="concernTopic"
+                  name="concernTopic"
+                  size="small"
+                  fullWidth
+                  value={formik.values.concernTopic}
+                  onChange={formik.handleChange}
+                  error={formik.touched.concernTopic && Boolean(formik.errors.concernTopic)}
+                  helperText={formik.touched.concernTopic && formik.errors.concernTopic}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormLabel>{t('Description')}</FormLabel>
+                <TextField
+                  id="description"
+                  name="description"
+                  size="small"
+                  fullWidth
+                  multiline
+                  rows={4}
+                  value={formik.values.description}
+                  onChange={formik.handleChange}
+                  error={formik.touched.description && Boolean(formik.errors.description)}
+                  helperText={formik.touched.description && formik.errors.description}
+                />
+              </Grid>
+            </Grid>
+          </DialogContentText>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={formik.handleSubmit}
+          variant="contained"
+          color="primary"
+        >
+          {t('Save')}
+        </Button>
+        <Button
+          onClick={() => {
+            formik.resetForm();
+            handleClose();
+          }}
+          variant="outlined"
+          color="error"
+        >
+          {t('Cancel')}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

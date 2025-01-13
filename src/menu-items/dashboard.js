@@ -219,6 +219,22 @@ const tenantDashboard = {
       icon: icons.IconFileUpload,
       breadcrumbs: false,
     },
+    {
+      id: '5',
+      title: 'Bookings',
+      type: 'item',
+      url: '/dashboard/tenantBooking',
+      icon: icons.IconFileUpload,
+      breadcrumbs: false,
+    },
+    {
+      id: '6',
+      title: 'Compalints',
+      type: 'item',
+      url: '/dashboard/complaints',
+      icon: icons.IconFileUpload,
+      breadcrumbs: false,
+    },
   ],
 };
 

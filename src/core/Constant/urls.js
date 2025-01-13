@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
 
+import Complaints from "views/Complaints";
+
 const base = 'http://localhost:7200/api/v1';
 
 export const urls = Object.freeze({
@@ -48,7 +50,8 @@ export const urls = Object.freeze({
     tenantdata: base + '/tenant/getTenants',
     editdata: base + '/tenant/editTenant',
     getTenantById: base + '/tenant/getTenantById',
-    delete: base + '/tenant/delete'
+    delete: base + '/tenant/delete',
+    tenantBookingData : base+ '/tenant/mybooking'
   },
   booking:{
     create: base + '/booking/create',
@@ -58,7 +61,10 @@ export const urls = Object.freeze({
     deleteBooking: base + '/booking/deleteBooking'
   },
   visitor: {
-      create: base + '/createvisitor',
-      getallvisitor: base + '/getallvisitor'
+    create: base + '/createvisitor',
+    getallvisitor: base + '/getallvisitor'
+  },
+  Complaints:{
+    create: base + '/complain/register'
   }
 })

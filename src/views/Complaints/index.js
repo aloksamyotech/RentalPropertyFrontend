@@ -32,36 +32,20 @@ const Complaints = () => {
 
   const columns = [
     {
-      field: 'unitname',
-      headerName: t('Unit Name'), // Translated
+      field: 'concernTopic',
+      headerName: t('Topic'), 
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize',
     },
     {
-      field: 'buildingname',
-      headerName: t('Building Name'), // Translated
+      field: 'dicription',
+      headerName: t('Discription'),
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
-    },
-    {
-      field: 'tenants',
-      headerName: t('Tenant Name'), // Translated
-      flex: 1,
-      cellClassName: 'name-column--cell--capitalize',
-    },
-    {
-      field: 'concern',
-      headerName: t('Concern'), // Translated
-      flex: 1,
-    },
-    {
-      field: 'discription',
-      headerName: t('Description'), // Translated
-      flex: 1,
     },
     {
       field: 'action',
-      headerName: t('Action'), // Translated
+      headerName: t('Action'), 
       flex: 1,
     },
   ];
