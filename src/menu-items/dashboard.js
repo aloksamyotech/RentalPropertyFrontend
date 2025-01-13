@@ -149,10 +149,10 @@ const agentDashboard = {
     },
     {
       id: '3',
-      title: 'Agents',
+      title: 'Property Management',
       type: 'item',
-      url: '/dashboard/agents',
-      icon: Person2Icon,
+      url: '/dashboard/property',
+      icon: AddHomeWorkIcon,
       breadcrumbs: false,
     },
     {

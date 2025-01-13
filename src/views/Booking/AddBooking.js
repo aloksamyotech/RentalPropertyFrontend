@@ -54,14 +54,21 @@ const AddBooking = (props) => {
     setLoading(true);
     try {
       const response = await getApi(urls.tenant.tenantdata, { id: payload.companyId });
-      setTenantData(response?.data || []);
+      if (Array.isArray(response?.data)) {
+        setTenantData(response.data);
+      } else {
+        setTenantData([]); 
+        toast.error(t('Unexpected data format for tenant data!'));
+      }
     } catch (err) {
       console.error('Error fetching tenant data:', err);
       toast.error(t('Failed to fetch tenant data!'));
+      setTenantData([]); 
     } finally {
       setLoading(false);
     }
   };
+  
 
   // Fetch property data
   const fetchPropertyData = async () => {
@@ -106,6 +113,7 @@ const AddBooking = (props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
+      console.log(values)
       addBooking(values, resetForm);
     },
   });
@@ -130,25 +138,26 @@ const AddBooking = (props) => {
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Tenant Name')}</FormLabel>
               <Autocomplete
-                disablePortal
-                size="small"
-                options={tenantData.map((tenant) => ({
-                  label: tenant.tenantName,
-                  value: tenant._id,
-                }))}
-                getOptionLabel={(option) => option.label}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    error={formik.touched.tenantId && Boolean(formik.errors.tenantId)}
-                    helperText={formik.touched.tenantId && formik.errors.tenantId}
-                  />
-                )}
-                onChange={(event, value) => {
-                  formik.setFieldValue('tenantId', value?.value || '');
-                }}
-              />
+  disablePortal
+  size="small"
+  options={(tenantData || []).map((tenant) => ({
+    label: tenant.tenantName,
+    value: tenant._id,
+  }))}
+  getOptionLabel={(option) => option.label}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      fullWidth
+      error={formik.touched.tenantId && Boolean(formik.errors.tenantId)}
+      helperText={formik.touched.tenantId && formik.errors.tenantId}
+    />
+  )}
+  onChange={(event, value) => {
+    formik.setFieldValue('tenantId', value?.value || '');
+  }}
+/>
+
             </Grid>
 
             {/* Property */}

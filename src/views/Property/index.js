@@ -41,7 +41,7 @@ const Property = () => {
   // const company = JSON.parse(localStorage.getItem('companyData'));
 
    const fetchPropertyData = async () => {
-        const response = await getApi(urls.property.propertydata, { id: payload._id });
+        const response = await getApi(urls.property.propertydata, { id: payload.companyId });
         if (response?.data && Array.isArray(response.data)) {
           console.log(response, "Fetched Company Data");
           setPropertydata(response.data);
