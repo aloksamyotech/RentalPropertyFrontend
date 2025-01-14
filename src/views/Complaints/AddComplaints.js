@@ -19,7 +19,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import { getApi,postApi } from 'core/apis/api';
+import { getApi, postApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
 
@@ -30,7 +30,7 @@ const AddComplaints = ({ open, handleClose }) => {
   const payload = tokenPayload();
 
   const fetchPropertyData = async () => {
-    if (setLoading) setLoading(true); 
+    setLoading(true);
     try {
       const response = await getApi(urls.property.propertydata, { id: payload.companyId });
       setPropertyData(response?.data || []);
@@ -38,7 +38,7 @@ const AddComplaints = ({ open, handleClose }) => {
       console.error('Error fetching property data:', err);
       toast.error(t('Failed to fetch property data!'));
     } finally {
-      if (setLoading) setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -48,9 +48,6 @@ const AddComplaints = ({ open, handleClose }) => {
 
   const validationSchema = yup.object({
     propertyId: yup.string().required(t('Property is required')),
-    companyId: yup.string().required(t('Company is required')),
-    tenantId: yup.string().required(t('Tenant is required')),
-    AgentId: yup.string().required(t('Agent is required')),
     concernTopic: yup
       .string()
       .max(30, t('Topic cannot exceed 30 characters'))
@@ -64,29 +61,29 @@ const AddComplaints = ({ open, handleClose }) => {
   const formik = useFormik({
     initialValues: {
       propertyId: '',
-      companyId: '',
-      tenantId: '',
-      AgentId: '',
       concernTopic: '',
       description: '',
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
+      const complaintData = {
+        ...values,
+        AgentId: payload.reporterId,
+        companyId: payload.companyId,
+        tenantId: payload._id,
+      };
+
       try {
-        values.tenantName = payload.name;
-        values.AgentId = payload.reporterId;
-        values.companyId = payload.companyId;
-        values.tenantId = payload._id;
-
-        const response = await postApi(urls.Complaints.create, values);
-
+        const response = await postApi(urls.Complaints.create, complaintData);
         if (response.success) {
           toast.success(t('Complaint successfully registered!'));
           resetForm();
-          handleClose();
+          setTimeout(() => {
+            handleClose();
+          }, 200);
         }
       } catch (err) {
-        console.error('Error submitting complaint:', err);
+        console.error(err);
         toast.error(t('Something went wrong!'));
       }
     },
@@ -115,14 +112,11 @@ const AddComplaints = ({ open, handleClose }) => {
                 <Autocomplete
                   disablePortal
                   size="small"
-                  options={
-                    propertyData.map((property) => ({
-                      label: property.propertyname,
-                      value: property._id,
-                      rentAmount: property.rent,
-                    })) || []
-                  }
-                  getOptionLabel={(option) => option.label || ''}
+                  options={propertyData.map((property) => ({
+                    label: property.propertyname,
+                    value: property._id,
+                  }))}
+                  getOptionLabel={(option) => option?.label || ''}
                   renderInput={(params) => (
                     <TextField
                       {...params}
