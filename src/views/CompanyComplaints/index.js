@@ -19,19 +19,19 @@ import {
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
-import AddComplaints from './AddComplaints';
+// import AddComplaints from './AddComplaints';
 import { IconHome } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
-import { getApi } from 'core/apis/api';
+import { getApi, patchApi } from 'core/apis/api';
 import { tokenPayload } from 'helper';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditComplain from './EditComplain';
-import DeleteComplain from './DeleteCompalain';
+// import EditComplain from './EditComplain';
+// import DeleteComplain from './DeleteCompalain';
 
-const Complaints = () => {
+const CompanyComplaints = () => {
   const { t } = useTranslation();
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
@@ -44,7 +44,7 @@ const Complaints = () => {
 
   const fetchComplaintData = async () => {
     try {
-      const response = await getApi(urls.Complaints.getComplain, { id: payload._id });
+      const response = await getApi(urls.company.complaintData, { id: payload._id });
       if (response?.data && Array.isArray(response.data)) {
         setComplaintData(response.data);
       } else {
@@ -103,6 +103,18 @@ const Complaints = () => {
   // Define table columns
   const columns = [
     {
+      field: 'propertyname',
+      headerName: t('Property Name'),
+      flex: 1,
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+    },
+    {
+      field: 'tenantName',
+      headerName: t('Tenant Name'),
+      flex: 1,
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+    },
+    {
       field: 'concernTopic',
       headerName: t('Topic'),
       flex: 1,
@@ -111,6 +123,12 @@ const Complaints = () => {
     {
       field: 'description',
       headerName: t('Description'),
+      flex: 1,
+      cellClassName: 'name-column--cell--capitalize',
+    },
+    {
+      field: 'comments',
+      headerName: t('Comments'),
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
     },
@@ -165,9 +183,9 @@ const Complaints = () => {
   return (
     <>
  
-      <AddComplaints open={openAdd} handleClose={handleCloseAdd} />
+      {/* <AddComplaints open={openAdd} handleClose={handleCloseAdd} />
       <EditComplain open={openEdit} handleClose={handleCloseEditComplain} data={rowData} />
-      <DeleteComplain open={openDelete} handleClose={handleCloseDeleteComplain} id={rowData?._id}/>
+      <DeleteComplain open={openDelete} handleClose={handleCloseDeleteComplain} id={rowData?._id}/> */}
     
 
       <Container>
@@ -205,4 +223,4 @@ const Complaints = () => {
   );
 };
 
-export default Complaints;
+export default CompanyComplaints;

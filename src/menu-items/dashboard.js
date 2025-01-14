@@ -115,6 +115,14 @@ const companyAdminDashboard = {
       icon: Person2Icon,
       breadcrumbs: false
     },
+    {
+      id: '8',
+      title: 'Complaint Management',
+      type: 'item',
+      url: '/dashboard/companyComplaints',
+      icon: Person2Icon,
+      breadcrumbs: false
+    },
   ],
 };
 

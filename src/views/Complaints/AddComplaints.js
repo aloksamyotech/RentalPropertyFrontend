@@ -33,7 +33,7 @@ const AddComplaints = ({ open, handleClose }) => {
     setLoading(true);
     try {
       const response = await getApi(urls.property.propertydata, { id: payload.companyId });
-      setPropertyData(response?.data || []);
+      setPropertyData(response?.data );
     } catch (err) {
       console.error('Error fetching property data:', err);
       toast.error(t('Failed to fetch property data!'));
@@ -97,8 +97,8 @@ const AddComplaints = ({ open, handleClose }) => {
       aria-describedby="scroll-dialog-description"
     >
       <DialogTitle id="scroll-dialog-title" sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">{t('Add New Complaint')}</Typography>
-        <ClearIcon onClick={handleClose} sx={{ cursor: 'pointer' }} />
+      <Typography variant="h6">{t('Add New Complaint')}</Typography>
+      <ClearIcon onClick={handleClose} sx={{ cursor: 'pointer' }} />
       </DialogTitle>
       <DialogContent dividers>
         <form onSubmit={formik.handleSubmit}>

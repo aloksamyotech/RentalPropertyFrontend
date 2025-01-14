@@ -112,7 +112,7 @@ const EditBooking = ({ open, handleClose, data }) => {
         ? new Date(data.endingDate).toISOString().split('T')[0]
         : '',
       rentAmount: data?.rentAmount || '',
-      advanceAmount: data?.advanceAmount || '',
+      advanceAmount: data?.advanceAmount || '',   
     },
     enableReinitialize: true,
     validationSchema,
