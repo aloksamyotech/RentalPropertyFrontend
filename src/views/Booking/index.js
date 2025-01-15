@@ -163,8 +163,8 @@ const isAdmin = payload?.role === 'companyAdmin';
       flex: 1,
     },
     {
-      field: 'AgentName',
-      headerName: t('Rent Amount'),
+      field: 'name',
+      headerName: t('Created By'),
       flex: 1,
     },
     {

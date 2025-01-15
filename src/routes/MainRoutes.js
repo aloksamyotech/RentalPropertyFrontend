@@ -14,6 +14,8 @@ import Company from 'views/Company';
 import PropertyTypes from 'views/PropertyTypes';
 import { parseJWT } from 'helper';
 import Booking from 'views/Booking';
+import TenantBooking from 'views/TenantBooking';
+import CompanyComplaints from 'views/CompanyComplaints';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -36,7 +38,6 @@ let token = localStorage.getItem('$2b$10$ehdPSDmr6P');
 // token = token ? JSON.parse(token) : null;
 const payload = parseJWT(token);
 
-// Define route sets for different roles
 const superAdminRoutes = {
   path: '/',
   element: <MainLayout />,
@@ -82,6 +83,7 @@ const companyAdminRoutes = {
         { path: 'property', element: <Property /> },
         { path: 'tenents', element: <Tenents /> },
         { path: 'payment', element: <Payment /> },
+        { path: 'companyComplaints', element: <CompanyComplaints/> },
         { path: 'agents', element: <Agents /> },
         { path: 'booking', element: <Booking /> },
         { path: 'Announcement', element: <Announcement /> },
@@ -109,6 +111,7 @@ const tenantRoutes = {
       children: [
         { path: 'default', element: <DashboardDefault /> },
         { path: 'property', element: <Property /> },
+        { path: 'tenantBooking', element: <TenantBooking /> },
         { path: 'payment', element: <Payment /> },
         { path: 'agents', element: <Agents /> },
         { path: 'complaints', element: <Complaints /> },

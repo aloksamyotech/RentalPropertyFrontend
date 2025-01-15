@@ -115,6 +115,14 @@ const companyAdminDashboard = {
       icon: Person2Icon,
       breadcrumbs: false
     },
+    {
+      id: '8',
+      title: 'Complaint Management',
+      type: 'item',
+      url: '/dashboard/companyComplaints',
+      icon: Person2Icon,
+      breadcrumbs: false
+    },
   ],
 };
 
@@ -216,6 +224,22 @@ const tenantDashboard = {
       title: 'Documents',
       type: 'item',
       url: '/dashboard/document',
+      icon: icons.IconFileUpload,
+      breadcrumbs: false,
+    },
+    {
+      id: '5',
+      title: 'Bookings',
+      type: 'item',
+      url: '/dashboard/tenantBooking',
+      icon: icons.IconFileUpload,
+      breadcrumbs: false,
+    },
+    {
+      id: '6',
+      title: 'Compalints',
+      type: 'item',
+      url: '/dashboard/complaints',
       icon: icons.IconFileUpload,
       breadcrumbs: false,
     },
