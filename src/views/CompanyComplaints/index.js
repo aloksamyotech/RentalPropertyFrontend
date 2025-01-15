@@ -27,6 +27,8 @@ import { getApi, patchApi } from 'core/apis/api';
 import { tokenPayload } from 'helper';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useNavigate } from 'react-router';
 import DeleteIcon from '@mui/icons-material/Delete';
 // import EditComplain from './EditComplain';
 // import DeleteComplain from './DeleteCompalain';
@@ -36,17 +38,24 @@ const CompanyComplaints = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [rowData, setRowData] = useState(false);
+  const [rowData, setRowData] = useState([]);
   const [complaintData, setComplaintData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
+  const navigate = useNavigate()
   const payload = tokenPayload();
 
   const fetchComplaintData = async () => {
     try {
-      const response = await getApi(urls.company.complaintData, { id: payload._id });
+      const response = await getApi(urls.Complaints.allComplainForCompany, { id: payload._id });
       if (response?.data && Array.isArray(response.data)) {
-        setComplaintData(response.data);
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          tenantName: item.tenantId?.tenantName,
+          propertyname: item.propertyId?.propertyname,
+          phoneNo: item.tenantId?.phoneno
+        }));
+        setComplaintData(formattedData);
       } else {
         setComplaintData([]);
       }
@@ -55,6 +64,11 @@ const CompanyComplaints = () => {
     }
   };
   const handleCloseDeleteComplain = () => setOpenDelete(false);
+
+  
+  const handleOpenView = () => {
+    navigate(`/complain/view?id=${rowData._id}`);
+  };
 
   useEffect(() => {
     fetchComplaintData();
@@ -115,8 +129,20 @@ const CompanyComplaints = () => {
       cellClassName: 'name-column--cell name-column--cell--capitalize',
     },
     {
+      field: 'phoneNo',
+      headerName: t('Phone No'),
+      flex: 1,
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+    },
+    {
       field: 'concernTopic',
       headerName: t('Topic'),
+      flex: 1,
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+    },
+    {
+      field: 'reporterName',
+      headerName: t('Created By'),
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize',
     },
@@ -133,6 +159,12 @@ const CompanyComplaints = () => {
       cellClassName: 'name-column--cell--capitalize',
     },
     {
+      field: 'status',
+      headerName: t('Status'),
+      flex: 1,
+      cellClassName: 'name-column--cell--capitalize',
+    },
+    {
       field: 'action',
       headerName: t('Action'),
       flex: 1,
@@ -142,7 +174,7 @@ const CompanyComplaints = () => {
             aria-describedby={params.row._id}
             onClick={(event) => handleClick(event, params.row)}
           >
-            <MoreVertIcon />
+          <MoreVertIcon />
           </IconButton>
           <Popover
             id={params.row._id}
@@ -154,10 +186,10 @@ const CompanyComplaints = () => {
               horizontal: 'left',
             }}
           >
-            <MenuItem onClick={handleEditComplaint} disableRipple>
-              <EditIcon style={{ marginRight: '8px' }} />
-              {t('Edit')}
-            </MenuItem>
+            <MenuItem onClick={handleOpenView} disableRipple>
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('view')}  
+              </MenuItem>
             <MenuItem onClick={handleDeleteComplaint} sx={{ color: 'red' }} disableRipple>
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               {t('Delete')}
