@@ -1,6 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
-import { Box, Grid, Typography, TextField, Paper, Button, Divider, Switch } from '@mui/material';
+// import Iconify from '../../ui-component/iconify';
+
+import { Box,  Stack, Grid, Typography, TextField, Paper,Card, Button, Divider, Switch } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useLocation } from 'react-router';
 import { getApi, patchApi } from 'core/apis/api';
@@ -11,7 +13,7 @@ import * as Yup from 'yup'; // Optional: For validation
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-const ComplainDetailsPage = () => {
+const ComplainDetailsPageForTenant = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const label = { inputProps: { 'aria-label': 'Color switch demo' } };
@@ -118,6 +120,8 @@ const ComplainDetailsPage = () => {
             </Button>
           </Box>
         </Grid>
+  
+
 
         {/* Complain Title Section */}
         <Grid item xs={12}>
@@ -127,10 +131,10 @@ const ComplainDetailsPage = () => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'white',
-      // width: '200px', 
-      height: '50px',
-      borderRadius: '8px',
-      boxShadow: 3, 
+      // width: '200px',  
+      height: '50px', 
+      borderRadius: '8px', 
+      boxShadow: 3,
     }}
   >
     <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
@@ -138,6 +142,7 @@ const ComplainDetailsPage = () => {
     </Typography>
   </Box>
 </Grid>
+
 
         {/* Tenant Info Section */}
         <Grid item xs={12} md={6}>
@@ -227,9 +232,7 @@ const ComplainDetailsPage = () => {
           <br />
           <Typography variant="h5">{t('complain_date')}</Typography>
           <Typography>{new Date(complainData.createdAt).toLocaleDateString() || t('not_available')}</Typography>
-          <br/>
-          <Typography variant="h5">{t('Previous Comment Added by you ')}</Typography>
-          <Typography>{(complainData.comment) || t('not_available')}</Typography>
+         
         </Grid>
 
         {/* Right-aligned Section */}
@@ -243,7 +246,8 @@ const ComplainDetailsPage = () => {
             }}
           >
             <Typography variant="h5">{t('Add Comment')}</Typography>
-            <TextField
+            <Typography >{complainData.comment}</Typography>
+            {/* <TextField
               id="comment"
               name="comment"
               size="small"
@@ -255,16 +259,16 @@ const ComplainDetailsPage = () => {
               error={formik.touched.comment && Boolean(formik.errors.comment)}
               helperText={formik.touched.comment && formik.errors.comment}
               sx={{ width: '100%' }}
-            />
+            /> */}
 
-            <Button
+            {/* <Button
               variant="contained"
               endIcon={<SendIcon />}
               type="submit"
               sx={{ alignSelf: 'flex-end' }}
             >
               {t('add_comment')}
-            </Button>
+            </Button> */}
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
   <Typography
@@ -276,12 +280,12 @@ const ComplainDetailsPage = () => {
   >
     {status ? t('Resolved') : t('Pending')}
   </Typography>
-  <Switch
+  {/* <Switch
     {...label}
     checked={status}
     onChange={handleStatusChange}
     inputProps={{ 'aria-label': 'Resolved complaint' }}
-  />
+  /> */}
 </Box>
 </Box>
 
@@ -296,4 +300,4 @@ const ComplainDetailsPage = () => {
   );
 };
 
-export default ComplainDetailsPage;
+export default ComplainDetailsPageForTenant;

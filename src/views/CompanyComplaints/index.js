@@ -117,12 +117,7 @@ const CompanyComplaints = () => {
 
   // Define table columns
   const columns = [
-    {
-      field: 'propertyname',
-      headerName: t('Property Name'),
-      flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize',
-    },
+
     {
       field: 'tenantName',
       headerName: t('Tenant Name'),
@@ -148,13 +143,7 @@ const CompanyComplaints = () => {
       cellClassName: 'name-column--cell name-column--cell--capitalize',
     },
     {
-      field: 'description',
-      headerName: t('Description'),
-      flex: 1,
-      cellClassName: 'name-column--cell--capitalize',
-    },
-    {
-      field: 'comments',
+      field: 'comment',
       headerName: t('Comments'),
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
@@ -164,7 +153,18 @@ const CompanyComplaints = () => {
       headerName: t('Status'),
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
+      renderCell: (params) => (
+        <Typography 
+          style={{ 
+            color: params.row.status ? 'green' : 'red', 
+            fontWeight: 'bold' 
+          }}
+        >
+          {params.row.status ? t('Resolved') : t('Pending')}
+        </Typography>
+      ),
     },
+    
     {
       field: 'action',
       headerName: t('Action'),
@@ -175,7 +175,7 @@ const CompanyComplaints = () => {
             aria-describedby={params.row._id}
             onClick={(event) => handleClick(event, params.row)}
           >
-          <MoreVertIcon />
+            <MoreVertIcon />
           </IconButton>
           <Popover
             id={params.row._id}
@@ -187,7 +187,7 @@ const CompanyComplaints = () => {
               horizontal: 'left',
             }}
           >
-            <MenuItem onClick={handleOpenView} disableRipple>
+             <MenuItem onClick={handleOpenView} disableRipple>
               <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
               {t('view')}  
               </MenuItem>

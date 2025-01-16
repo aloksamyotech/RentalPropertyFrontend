@@ -19,11 +19,14 @@ import {
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { getApi } from 'core/apis/api';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import TableStyle from '../../ui-component/TableStyle';
 import { IconHome } from '@tabler/icons';
 import Iconify from '../../ui-component/iconify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
@@ -48,6 +51,7 @@ const Booking = () => {
   const [bookingData, setBookingData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
+  const navigate = useNavigate();
   const [value, setValue] = React.useState('1');
 
 const isAdmin = payload?.role === 'companyAdmin'; 
@@ -118,6 +122,11 @@ const isAdmin = payload?.role === 'companyAdmin';
   const handleClose = () => {
     setAnchorEl(null);
     setCurrentRow(null);
+  };
+
+  const handleOpenView = () => {
+    console.log(currentRow,"currentRow")
+    navigate(`/dashboard/booking/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
   };
 
   const handleCloseDelete = () => setOpenDelete(false);
@@ -200,6 +209,10 @@ const isAdmin = payload?.role === 'companyAdmin';
               <EditIcon style={{ marginRight: '8px' }} />
               {t('Edit')}
             </MenuItem>
+            <MenuItem onClick={handleOpenView} disableRipple>
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('view')}  
+              </MenuItem>
             <MenuItem
               sx={{ color: 'red' }}
               disableRipple

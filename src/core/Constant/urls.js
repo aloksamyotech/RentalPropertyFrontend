@@ -71,6 +71,9 @@ export const urls = Object.freeze({
     editComlplain: base + '/complain/editComplain',
     delete: base+ '/complain/delete',
     getComplainById: base + '/complain/getComplainById',
-    allComplainForCompany: base +'/complain/allComplainForCompany'
+    allComplainForCompany: base +'/complain/allComplainForCompany',
+    addCommentToComplain: base +'/complain/addCommentToComplain',
+    resolveComplain: base + '/complain/resolveComplain'
+
   }
 })

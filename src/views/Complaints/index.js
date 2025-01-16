@@ -16,6 +16,8 @@ import {
   Popover,
   MenuItem,
 } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
@@ -23,6 +25,7 @@ import AddComplaints from './AddComplaints';
 import { IconHome } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
+import { useNavigate } from 'react-router';
 import { getApi } from 'core/apis/api';
 import { tokenPayload } from 'helper';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -41,6 +44,7 @@ const Complaints = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
   const payload = tokenPayload();
+  const navigate = useNavigate();
 
   const fetchComplaintData = async () => {
     try {
@@ -69,6 +73,12 @@ const Complaints = () => {
   //   setOpenEdit(true);
   //   handleClose();
   // };
+
+    
+  const handleOpenView = () => {
+    console.log(currentRow,"currentRow")
+    navigate(`/dashboard/complain/tenant/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
+  };
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
@@ -109,10 +119,26 @@ const Complaints = () => {
       cellClassName: 'name-column--cell name-column--cell--capitalize',
     },
     {
-      field: 'description',
-      headerName: t('Description'),
+      field: 'comment',
+      headerName: t('Comment'),
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
+    },
+    {
+      field: 'status',
+      headerName: t('Status'),
+      flex: 1,
+      cellClassName: 'name-column--cell--capitalize',
+      renderCell: (params) => (
+        <Typography 
+          style={{ 
+            color: params.row.status ? 'green' : 'red', 
+            fontWeight: 'bold' 
+          }}
+        >
+          {params.row.status ? t('Resolved') : t('Pending')}
+        </Typography>
+      ),
     },
     {
       field: 'action',
@@ -136,10 +162,10 @@ const Complaints = () => {
               horizontal: 'left',
             }}
           >
-            <MenuItem onClick={handleEditComplaint} disableRipple>
-              <EditIcon style={{ marginRight: '8px' }} />
-              {t('Edit')}
-            </MenuItem>
+             <MenuItem onClick={handleOpenView} disableRipple>
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('view')}  
+              </MenuItem>
             <MenuItem onClick={handleDeleteComplaint} sx={{ color: 'red' }} disableRipple>
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               {t('Delete')}

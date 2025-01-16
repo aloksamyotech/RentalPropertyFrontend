@@ -275,7 +275,25 @@
     "Phone Number is required": "Phone Number is required",
     "Address cannot exceed 80 characters": "Address cannot exceed 80 characters",
     "Address is required": "Address is required",
-    "Failed to fetch owner data!": "Failed to fetch owner data!"
+    "Failed to fetch owner data!": "Failed to fetch owner data!",
+      "back": "Back",
+      "tenant_information": "Tenant Information",
+      "tenant_name": "Tenant Name",
+      "email": "Email",
+      "phone_number": "Phone Number",
+      "identity_card_type": "Identity Card Type",
+      "identity_card_number": "Identity Card Number",
+      "not_available": "Not Available",
+      "property_information": "Property Information",
+      "property_name": "Property Name",
+      "property_address": "Property Address",
+      "property_rent": "Property Rent",
+      "complain_information": "Complain Information",
+      "complain_description": "Complain Description",
+      "concern_topic": "Concern Topic",
+      "complain_date": "Complain Date"
+    
+    
   
   
 }

@@ -11,7 +11,7 @@ import * as Yup from 'yup'; // Optional: For validation
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-const ComplainDetailsPage = () => {
+const BookingDetailsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const label = { inputProps: { 'aria-label': 'Color switch demo' } };
@@ -296,4 +296,4 @@ const ComplainDetailsPage = () => {
   );
 };
 
-export default ComplainDetailsPage;
+export default BookingDetailsPage;
