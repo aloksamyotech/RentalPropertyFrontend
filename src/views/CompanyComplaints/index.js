@@ -67,7 +67,8 @@ const CompanyComplaints = () => {
 
   
   const handleOpenView = () => {
-    navigate(`/complain/view?id=${rowData._id}`);
+    console.log(currentRow,"currentRow")
+    navigate(`/dashboard/complain/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
   };
 
   useEffect(() => {

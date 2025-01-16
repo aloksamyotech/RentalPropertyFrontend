@@ -70,6 +70,7 @@ export const urls = Object.freeze({
     getComplain: base + '/complain/allComplain',
     editComlplain: base + '/complain/editComplain',
     delete: base+ '/complain/delete',
+    getComplainById: base + '/complain/getComplainById',
     allComplainForCompany: base +'/complain/allComplainForCompany'
   }
 })

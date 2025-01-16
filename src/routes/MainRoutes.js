@@ -17,6 +17,7 @@ import Booking from 'views/Booking';
 import TenantBooking from 'views/TenantBooking';
 import CompanyComplaints from 'views/CompanyComplaints';
 import ComplainViewDashboard from 'views/CompanyComplaints/component/ComplainView';
+import ComplainDetailsPage from 'views/CompanyComplaints/component/ComplainView';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -87,7 +88,7 @@ const companyAdminRoutes = {
         { path: 'companyComplaints', element: <CompanyComplaints/> },
         { path: 'agents', element: <Agents /> },
         { path: 'booking', element: <Booking /> },
-        { path: 'complain/view', element: <ComplainViewDashboard /> },
+        { path: 'complain/view', element: <ComplainDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
         { path: 'email', element: <Email /> },
         { path: 'meeting', element: <Metting /> },
