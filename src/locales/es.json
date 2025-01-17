@@ -291,5 +291,12 @@
   "complain_information": "Información de la Queja",
   "complain_description": "Descripción de la Queja",
   "concern_topic": "Tema de la Queja",
-  "complain_date": "Fecha de la Queja"
+  "complain_date": "Fecha de la Queja",
+  "booking_details": "Detalles de la reserva",
+  "booking_date": "Fecha de reserva",
+  "starting_date": "Fecha de inicio",
+  "ending_date": "Fecha de finalización",
+  "advance_amount": "Monto anticipado",
+  "status": "Estado",
+  "not_available": "No disponible"
 }

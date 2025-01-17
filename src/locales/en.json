@@ -291,7 +291,15 @@
       "complain_information": "Complain Information",
       "complain_description": "Complain Description",
       "concern_topic": "Concern Topic",
-      "complain_date": "Complain Date"
+      "complain_date": "Complain Date",
+      "booking_details": "Booking Details",
+      "booking_date": "Booking Date",
+      "starting_date": "Starting Date",
+      "ending_date": "Ending Date",
+      "advance_amount": "Advance Amount",
+      "status": "Status",
+      "not_available": "Not Available",
+      "booking_information":"Booking Information"
     
     
   

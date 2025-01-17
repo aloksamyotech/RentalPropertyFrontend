@@ -59,8 +59,9 @@ export const urls = Object.freeze({
     bookingdata: base + '/booking/getBooking',
     allbooking: base + '/booking/allBooking',
     updateBooking: base + '/booking/editBooking',
-    deleteBooking: base + '/booking/deleteBooking'
-  },
+    deleteBooking: base + '/booking/deleteBooking',
+    getBookingById: base + '/booking/getBookingById'
+  }, 
   visitor: {
     create: base + '/createvisitor',
     getallvisitor: base + '/getallvisitor'

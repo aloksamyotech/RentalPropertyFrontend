@@ -20,6 +20,7 @@ import ComplainViewDashboard from 'views/CompanyComplaints/component/ComplainVie
 import ComplainDetailsPage from 'views/CompanyComplaints/component/ComplainView';
 import ComplainDetailsPageForTenant from 'views/Complaints/component/TenantComaplainView';
 import BookingDetailsPage from 'views/Booking/component/BookingView';
+import BookingDetailsTenantPage from 'views/TenantBooking/component/BookingTenantDetails';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -85,6 +86,7 @@ const companyAdminRoutes = {
       children: [
         { path: 'default', element: <DashboardDefault /> },
         { path: 'property', element: <Property /> },
+        { path: 'propertyTypes', element: <PropertyTypes /> },
         { path: 'tenents', element: <Tenents /> },
         { path: 'payment', element: <Payment /> },
         { path: 'companyComplaints', element: <CompanyComplaints/> },
@@ -122,7 +124,7 @@ const tenantRoutes = {
         { path: 'agents', element: <Agents /> },
         { path: 'complain/tenant/view', element: <ComplainDetailsPageForTenant/> },
         { path: 'complaints', element: <Complaints /> },
-        { path: 'Announcement', element: <Announcement /> },
+        { path: 'booking/tenant/view', element: <BookingDetailsTenantPage /> },
         { path: 'email', element: <Email /> },
         { path: 'meeting', element: <Metting /> },
         { path: 'calender', element: <Calender /> },
@@ -150,6 +152,7 @@ const agentDashboardRoutes = {
         { path: 'booking', element: <Booking /> },
         { path: 'agents', element: <Agents /> },
         { path: 'complaints', element: <Complaints /> },
+        { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
         { path: 'email', element: <Email /> },
         { path: 'meeting', element: <Metting /> },

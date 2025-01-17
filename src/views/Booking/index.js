@@ -110,7 +110,7 @@ const isAdmin = payload?.role === 'companyAdmin';
     };
   
     fetchData();
-  }, [value, openAdd]);
+  }, [value, openAdd, openEdit, openDelete]);
   
 
   const handleClick = (event, row) => {
@@ -126,7 +126,7 @@ const isAdmin = payload?.role === 'companyAdmin';
 
   const handleOpenView = () => {
     console.log(currentRow,"currentRow")
-    navigate(`/dashboard/booking/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
+    navigate(`/dashboard/booking/view?id=${currentRow._id}&reporterName=${currentRow.name}`);
   };
 
   const handleCloseDelete = () => setOpenDelete(false);

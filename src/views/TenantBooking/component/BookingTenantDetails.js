@@ -11,7 +11,8 @@ import * as Yup from 'yup'; // Optional: For validation
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
-const BookingDetailsPage = () => {
+
+const BookingDetailsTenantPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const label = { inputProps: { 'aria-label': 'Color switch demo' } };
@@ -43,62 +44,62 @@ const BookingDetailsPage = () => {
     fetchBookingData();
   }, [bookingId]);
 
-  const validationSchema = Yup.object({
-    comment: Yup.string().required(t('comment_required')),
-  });
+  // const validationSchema = Yup.object({
+  //   comment: Yup.string().required(t('comment_required')),
+  // });
 
-  const initialValues = {
-    comment: '',
-  };
+  // const initialValues = {
+  //   comment: '',
+  // };
 
-  const addComment = async (values, resetForm) => {
-    try {
-      const response = await patchApi(
-        urls.booking.addCommentToBooking,
-        { comment: values.comment },
-        { id: bookingId }
-      );
+  // const addComment = async (values, resetForm) => {
+  //   try {
+  //     const response = await patchApi(
+  //       urls.booking.addCommentToBooking,
+  //       { comment: values.comment },
+  //       { id: bookingId }
+  //     );
 
-      if (response.success) {
-        toast.success(t('comment_added_successfully'));
-        resetForm();
-      } else {
-        toast.error(t('something_went_wrong'));
-      }
-    } catch (error) {
-      console.error('Error adding comment:', error);
-      toast.error(t('something_went_wrong'));
-    }
-  };
+  //     if (response.success) {
+  //       toast.success(t('comment_added_successfully'));
+  //       resetForm();
+  //     } else {
+  //       toast.error(t('something_went_wrong'));
+  //     }
+  //   } catch (error) {
+  //     console.error('Error adding comment:', error);
+  //     toast.error(t('something_went_wrong'));
+  //   }
+  // };
 
-  const handleStatusChange = async (event) => {
-    setStatus(event.target.checked); 
+  // const handleStatusChange = async (event) => {
+  //   setStatus(event.target.checked); 
 
-    try {
-      const response = await patchApi(
-        urls.booking.updateBookingStatus,
-        { status: event.target.checked }, 
-        { id: bookingId }
-      );
+  //   try {
+  //     const response = await patchApi(
+  //       urls.booking.updateBookingStatus,
+  //       { status: event.target.checked }, 
+  //       { id: bookingId }
+  //     );
 
-      if (response.success) {
-        toast.success(t('booking_status_updated'));
-      } else {
-        toast.error(t('something_went_wrong'));
-      }
-    } catch (error) {
-      console.error('Error updating status:', error);
-      toast.error(t('something_went_wrong'));
-    }
-  };
+  //     if (response.success) {
+  //       toast.success(t('booking_status_updated'));
+  //     } else {
+  //       toast.error(t('something_went_wrong'));
+  //     }
+  //   } catch (error) {
+  //     console.error('Error updating status:', error);
+  //     toast.error(t('something_went_wrong'));
+  //   }
+  // };
 
-  const formik = useFormik({
-    initialValues,
-    validationSchema,
-    onSubmit: async (values, { resetForm }) => {
-      await addComment(values, resetForm);
-    },
-  });
+  // const formik = useFormik({
+  //   initialValues,
+  //   validationSchema,
+  //   onSubmit: async (values, { resetForm }) => {
+  //     await addComment(values, resetForm);
+  //   },
+  // });
 
   return (
     <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
@@ -313,4 +314,4 @@ const BookingDetailsPage = () => {
   );
 };
 
-export default BookingDetailsPage;
+export default BookingDetailsTenantPage;

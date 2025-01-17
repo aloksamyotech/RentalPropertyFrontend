@@ -77,14 +77,22 @@ const companyAdminDashboard = {
     },
     {
       id: '1',
+      title: 'Property Types',
+      type: 'item',
+      url: '/dashboard/propertyTypes',
+      icon: icons.IconHome,
+      breadcrumbs: false
+    },
+    {
+      id: '2',
       title: 'Landlord Management',
       type: 'item',
       url: '/dashboard/owner',
       icon: PersonIcon,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
-      id: '2',
+      id: '3',
       title: 'Property Management',
       type: 'item',
       url: '/dashboard/property',
@@ -92,7 +100,7 @@ const companyAdminDashboard = {
       breadcrumbs: false,
     },
     {
-      id: '5',
+      id: '4',
       title: 'Agents',
       type: 'item',
       url: '/dashboard/agents',
@@ -100,7 +108,7 @@ const companyAdminDashboard = {
       breadcrumbs: false,
     },
     {
-      id: '6',
+      id: '5',
       title: 'Tenant Management',
       type: 'item',
       url: '/dashboard/tenents',
@@ -108,7 +116,7 @@ const companyAdminDashboard = {
       breadcrumbs: false
     },
     {
-      id: '7',
+      id: '6',
       title: 'Booking Management',
       type: 'item',
       url: '/dashboard/booking',
@@ -116,7 +124,7 @@ const companyAdminDashboard = {
       breadcrumbs: false
     },
     {
-      id: '8',
+      id: '7',
       title: 'Complaint Management',
       type: 'item',
       url: '/dashboard/companyComplaints',
@@ -237,7 +245,7 @@ const tenantDashboard = {
     },
     {
       id: '6',
-      title: 'Compalints',
+      title: 'Complaints',
       type: 'item',
       url: '/dashboard/complaints',
       icon: icons.IconFileUpload,
