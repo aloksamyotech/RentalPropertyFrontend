@@ -101,7 +101,7 @@ const AddProperty = (props) => {
       rent: yup
       .number()
       .typeError('Rent must be a number')
-      .min(100000, 'Rent must be at least 6 digits')
+      .min(100, 'Rent must be at least 3 digits')
       .max(999999, 'Rent cannot exceed 6 digits')
       .required('Rent is required'),
     address: yup

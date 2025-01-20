@@ -7,7 +7,7 @@ import Loadable from 'ui-component/Loadable';
 import Property from 'views/Property';
 import Units from 'views/Units';
 import Tenents from 'views/Tenants';
-import VacantNotice from 'views/VacantNotice';
+import VacantNotice from 'views/Vacant';
 import Complaints from 'views/Complaints';
 import Announcement from 'views/Announcement';
 import Company from 'views/Company';
@@ -21,6 +21,7 @@ import ComplainDetailsPage from 'views/CompanyComplaints/component/ComplainView'
 import ComplainDetailsPageForTenant from 'views/Complaints/component/TenantComaplainView';
 import BookingDetailsPage from 'views/Booking/component/BookingView';
 import BookingDetailsTenantPage from 'views/TenantBooking/component/BookingTenantDetails';
+import Vacant from 'views/Vacant';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -95,7 +96,7 @@ const companyAdminRoutes = {
         { path: 'complain/view', element: <ComplainDetailsPage/> },
         { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
-        { path: 'email', element: <Email /> },
+        { path: 'vacantproperties', element: <Vacant/> },
         { path: 'meeting', element: <Metting /> },
         { path: 'calender', element: <Calender /> },
         { path: 'document', element: <Document /> },

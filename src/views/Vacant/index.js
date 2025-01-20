@@ -13,19 +13,11 @@ import { useTranslation } from 'react-i18next';
 
 // ----------------------------------------------------------------------
 
-const policyData = [
-  {
-    id: 1,
-    tenantname: 'Task Testing',
-    buildingname: 'In progress',
-    unitname: '08/01/2024',
-    vacantnoticedate: '09/01/2024',
-    lastdate: 'medium',
-    action: 'sharma ji'
-  }
-];
+const policyData ={
 
-const VacantNotice = () => {
+}
+
+const Vacant = () => {
   const { t } = useTranslation();
   const [openAdd, setOpenAdd] = useState(false);
 
@@ -115,4 +107,4 @@ const VacantNotice = () => {
   );
 };
 
-export default VacantNotice;
+export default Vacant;

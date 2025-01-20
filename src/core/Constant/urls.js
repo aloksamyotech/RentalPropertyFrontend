@@ -52,14 +52,15 @@ export const urls = Object.freeze({
     editdata: base + '/tenant/editTenant',
     getTenantById: base + '/tenant/getTenantById',
     delete: base + '/tenant/delete',
-    tenantBookingData : base+ '/tenant/mybooking'
+    tenantBookingData : base+ '/tenant/mybooking',
+    getMyTenants: base + '/tenant/getMyTenants'
   },
   booking:{
     create: base + '/booking/create',
     bookingdata: base + '/booking/getBooking',
     allbooking: base + '/booking/allBooking',
     updateBooking: base + '/booking/editBooking',
-    deleteBooking: base + '/booking/deleteBooking',
+    breakTheBooking: base + '/booking/breakTheBooking',
     getBookingById: base + '/booking/getBookingById'
   }, 
   visitor: {

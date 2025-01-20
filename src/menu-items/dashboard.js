@@ -131,6 +131,14 @@ const companyAdminDashboard = {
       icon: Person2Icon,
       breadcrumbs: false
     },
+    {
+      id: '8',
+      title: 'Vacant Properties',
+      type: 'item',
+      url: '/dashboard/vacantproperties',
+      icon: Person2Icon,
+      breadcrumbs: false
+    },
   ],
 };
 

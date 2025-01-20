@@ -30,42 +30,65 @@ import React from 'react';
 import EditTenant from './EditTenant';
 import DeleteTenant from './DeleteTenant';
 import { tokenPayload } from 'helper';
+import TabPanel from '@mui/lab/TabPanel';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
 
-// ----------------------------------------------------------------------
-
-const Tenents = () => {
+const Tenants = () => {
   const { t } = useTranslation();
   const [openAdd, setOpenAdd] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentRow, setCurrentRow] = useState([]); 
-  const [tenantData, setTenantdata] = useState([]);
+  const [currentRow, setCurrentRow] = useState(null); 
+  const [tenantData, setTenantData] = useState([]);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [rowData, setRowData] = useState();
-  
+  const [rowData, setRowData] = useState(null);
+  const [value, setValue] = useState('1');
+
   const payload = tokenPayload();
 
   const fetchTenantData = async () => {
     try {
       const response = await getApi(urls.tenant.tenantdata, { id: payload.companyId });
-      console.log(payload, "Payload");
       console.log(response.data, "Fetched Tenant Data");
-  
-      if (response?.data && Array.isArray(response.data)) {
-        setTenantdata(response.data);
+
+      if (Array.isArray(response.data)) {
+        setTenantData(response.data);
       } else {
         console.error("Invalid data format received from API:", response.data);
-        setTenantdata([]);
+        setTenantData([]);
       }
     } catch (error) {
       console.error("Error fetching tenant data:", error);
-      setTenantdata([]);
+      setTenantData([]);
     }
   };
-  
+
+  const fetchMyTenantData = async () => {
+    try {
+      const response = await getApi(urls.tenant.getMyTenants, { id: payload._id });
+      console.log(response.data, "Fetched Tenant Data");
+
+      if (Array.isArray(response.data)) {
+        setTenantData(response.data);
+      } else {
+        console.error("Invalid data format received from API:", response.data);
+        setTenantData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching tenant data:", error);
+      setTenantData([]);
+    }
+  };
+
   useEffect(() => {
-    fetchTenantData();
-  }, [openAdd, openEdit, openDelete]);
+    if (value === '1') {
+      fetchMyTenantData();
+    } else if (value === '2') {
+      fetchTenantData();
+    }
+  }, [value, openAdd, openEdit, openDelete]);
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
@@ -77,9 +100,12 @@ const Tenents = () => {
     setCurrentRow(null);
   };
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   const handleOpenEditTenant = () => {
     setRowData(currentRow); 
-    console.log("currentRow",currentRow);
     setOpenEdit(true);
     handleClose(); 
   };
@@ -89,7 +115,6 @@ const Tenents = () => {
   };
 
   const handleOpenDeleteTenantDialog = () => {
-    console.log(rowData,"rowData   1 1  1 1 1 ");
     setRowData(currentRow); 
     setOpenDelete(true);
     handleClose();
@@ -102,7 +127,7 @@ const Tenents = () => {
   const columns = [
     {
       field: 'tenantName',
-      headerName: t('Tenants Name'),
+      headerName: t('Tenant Name'),
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize',
     },
@@ -123,55 +148,57 @@ const Tenents = () => {
       flex: 1,
     },
     {
-      field: 'emergencyNo',
-      headerName: t('Emergency No.'),
+      field: 'isOccupied',
+      headerName: t('Status'),
       flex: 1,
-    },
+      renderCell: (params) => (
+        <Typography
+          style={{
+            color: params.row.isOccupied ? 'green' : 'blue', 
+            fontWeight: 'bold',
+          }}
+        >
+          {params.row.isOccupied ? t('Occupied') : t('Not Occupied')}
+        </Typography>
+      ),
+    },    
     {
       field: 'action',
       headerName: t('Action'),
       flex: 1,
       renderCell: (params) => (
         <>
-          <div key={`action-div-${params.row._id}`}>
-            <IconButton
-              key={`icon-button-${params.row._id}`}
-              aria-describedby={params?.row._id}
-              variant="contained"
-              onClick={(event) => handleClick(event, params?.row)}
+          <IconButton
+            aria-describedby={params?.row._id}
+            onClick={(event) => handleClick(event, params?.row)}
+          >
+            <MoreVertIcon />
+          </IconButton>
+          <Popover
+            open={Boolean(anchorEl) && currentRow?._id === params?.row._id}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+          >
+            <MenuItem onClick={handleOpenEditTenant} disableRipple>
+              <EditIcon style={{ marginRight: '8px' }} />
+              {t('Edit')}
+            </MenuItem>
+            <MenuItem
+              onClick={handleOpenDeleteTenantDialog}
+              sx={{ color: 'red' }}
+              disableRipple
             >
-              <MoreVertIcon />
-            </IconButton>
-            <Popover
-              key={`popover-${params.row._id}`}
-              id={params?.row._id}
-              open={Boolean(anchorEl) && currentRow?._id === params?.row._id}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-            >
-              <MenuItem key={`edit-${params.row._id}`} onClick={handleOpenEditTenant} disableRipple>
-                <EditIcon style={{ marginRight: '8px' }} />
-                {t('Edit')}
-              </MenuItem>
-              <MenuItem
-                key={`delete-${params.row._id}`}
-                onClick={handleOpenDeleteTenantDialog}
-                sx={{ color: 'red' }}
-                disableRipple
-              >
-                <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
-                {t('Delete')}
-              </MenuItem>
-            </Popover>
-          </div>
+              <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
+              {t('Delete')}
+            </MenuItem>
+          </Popover>
         </>
       ),
     }
-    
   ];
 
   const breadcrumbs = [
@@ -185,14 +212,14 @@ const Tenents = () => {
       {t('Items')}
     </Typography>,
   ];
-  
+
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
   return (
     <>
       <Addtenents open={openAdd} handleClose={handleCloseAdd} />
-      <EditTenant open={openEdit} handleClose={handleCloseEditTenant} data={rowData} /> 
+      <EditTenant open={openEdit} handleClose={handleCloseEditTenant} data={rowData} />
       <DeleteTenant open={openDelete} handleClose={handleCloseDeleteTenantDialog} id={rowData?._id} />
       <Container>
         <Card sx={{ p: 2, mb: 2 }}>
@@ -211,14 +238,34 @@ const Tenents = () => {
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
-            <DataGrid
-            rows={tenantData}
-            columns={columns}
-            checkboxSelection
-             getRowId={(row) => row._id} 
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{ toolbar: { showQuickFilter: true } }}
-          />
+              <TabContext value={value}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <TabList onChange={handleChange} aria-label="Tenant tabs">
+                    <Tab label={t('My Tenants')} value="1" />
+                    <Tab label={t('All Tenants')} value="2" />
+                  </TabList>
+                </Box>
+                <TabPanel value="1">
+                  <DataGrid
+                    rows={tenantData}
+                    columns={columns}
+                    checkboxSelection
+                    getRowId={(row) => row._id || row.id}
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{ toolbar: { showQuickFilter: true } }}
+                  />
+                </TabPanel>
+                <TabPanel value="2">
+                  <DataGrid
+                    rows={tenantData}
+                    columns={columns} 
+                    checkboxSelection
+                    getRowId={(row) => row._id || row.id}
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{ toolbar: { showQuickFilter: true } }}
+                  />
+                </TabPanel>
+              </TabContext>
             </Card>
           </Box>
         </TableStyle>
@@ -227,4 +274,4 @@ const Tenents = () => {
   );
 };
 
-export default Tenents;
+export default Tenants;
