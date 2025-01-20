@@ -12,6 +12,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  CircularProgress,
 } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { updateApi, getApi } from 'core/apis/api';
@@ -25,33 +26,52 @@ import { tokenPayload } from 'helper';
 
 const EditComplain = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
-  const [complainData, setComplainData] = useState([]);
+  const [complainData, setComplainData] = useState([]); 
+  const [propertyData, setPropertyData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const payload = tokenPayload();
 
   useEffect(() => {
     if (open) {
       fetchComplainData();
+      fetchPropertyData();
     }
   }, [open]);
 
-  const fetchComplainData = async () => {
+  // Fetch Property Data
+  const fetchPropertyData = async () => {
+    setLoading(true);
     try {
       const response = await getApi(urls.property.propertydata, { id: payload.companyId });
-      if (Array.isArray(response?.data)) {
+      setPropertyData(response?.data || []);
+    } catch (error) {
+      toast.error(t('failedToFetchPropertyData'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchComplainData = async () => {
+    setLoading(true);
+    try {
+      const response = await getApi(urls.property.propertydata);
+      if (Array.isArray(response.data)) {
         setComplainData(response.data);
       } else {
         setComplainData([]);
-        toast.error(t('noPropertyDataAvailable'));
       }
     } catch (err) {
       console.error('Error fetching property data:', err);
       toast.error(t('failedToFetchPropertyData'));
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Edit Complaint
   const editComplain = async (values, resetForm) => {
-    try {
-      const response = await updateApi(urls.Complaints.edit, values, { id: data._id });
+    // try {
+      const response = await updateApi(urls.Complaints.editComlplain, values, { id: data._id });
 
       if (response.success) {
         toast.success(t('complaintUpdatedSuccessfully'));
@@ -60,13 +80,14 @@ const EditComplain = ({ open, handleClose, data }) => {
       } else {
         toast.error(t('failedToUpdateComplaint'));
       }
-    } catch (err) {
-      console.error('Error updating complaint:', err);
-      toast.error(t('somethingWentWrong'));
-    }
+    // } catch (err) {
+    //   console.error('Error updating complaint:', err);
+    //   toast.error(t('somethingWentWrong'));
+    // }
   };
 
-  const validationSchema = yup.object({
+  // Validation Schema
+  const validationSchema = yup.object({ 
     propertyId: yup.string().required(t('Property is required')),
     concernTopic: yup
       .string()
@@ -78,16 +99,16 @@ const EditComplain = ({ open, handleClose, data }) => {
       .required(t('Description is required')),
   });
 
+  // Formik setup
   const formik = useFormik({
     initialValues: {
-      propertyId: data?.propertyId?._id || '',
+      propertyId: data?.propertyId || '',
       concernTopic: data?.concernTopic || '',
       description: data?.description || '',
     },
     enableReinitialize: true,
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log(values,"vlaues")
       editComplain(values, resetForm);
     },
   });
@@ -95,7 +116,7 @@ const EditComplain = ({ open, handleClose, data }) => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
       <DialogTitle>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="h6">{t('editComplaint')}</Typography>
           <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
         </div>
@@ -112,22 +133,31 @@ const EditComplain = ({ open, handleClose, data }) => {
               <Autocomplete
                 disablePortal
                 size="small"
-                options={complainData.map((property) => ({
-                  label: property.propertyName,
+                options={propertyData.map((property) => ({
+                  label: property.propertyname,
                   value: property._id,
+                  rentAmount: property.rent,
                 }))}
-                getOptionLabel={(option) => option?.label || ''}
+                value={
+                  propertyData
+                    .map((property) => ({
+                      label: property.propertyname,
+                      value: property._id,
+                    }))
+                    .find((option) => option.value === formik.values.propertyId) || null
+                }
+                onChange={(event, value) => {
+                  formik.setFieldValue('propertyId', value?.value || '');
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     fullWidth
                     error={formik.touched.propertyId && Boolean(formik.errors.propertyId)}
                     helperText={formik.touched.propertyId && formik.errors.propertyId}
+                    disabled={loading}
                   />
                 )}
-                onChange={(event, value) => {
-                  formik.setFieldValue('propertyId', value?.value || '');
-                }}
               />
             </Grid>
 
@@ -143,6 +173,7 @@ const EditComplain = ({ open, handleClose, data }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.concernTopic && Boolean(formik.errors.concernTopic)}
                 helperText={formik.touched.concernTopic && formik.errors.concernTopic}
+                disabled={loading}
               />
             </Grid>
 
@@ -160,14 +191,20 @@ const EditComplain = ({ open, handleClose, data }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.description && Boolean(formik.errors.description)}
                 helperText={formik.touched.description && formik.errors.description}
+                disabled={loading}
               />
             </Grid>
           </Grid>
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={formik.handleSubmit} variant="contained" color="primary">
-          {t('save')}
+        <Button
+          onClick={formik.handleSubmit}
+          variant="contained"
+          color="primary"
+          disabled={loading}
+        >
+          {loading ? <CircularProgress size={24} /> : t('save')}
         </Button>
         <Button
           onClick={() => {
@@ -188,9 +225,7 @@ EditComplain.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   data: PropTypes.shape({
-    propertyId: PropTypes.shape({
-      _id: PropTypes.string,
-    }),
+    propertyId: PropTypes.string,
     concernTopic: PropTypes.string,
     description: PropTypes.string,
   }),

@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
 
+import Complaints from "views/Complaints";
+
 const base = 'http://localhost:7200/api/v1';
 
 export const urls = Object.freeze({
@@ -14,7 +16,8 @@ export const urls = Object.freeze({
       login: base + '/company/login',
       companydata: base + '/company/getAllCompanies',
       edit : base + '/company/edit',
-      delete: base + '/company/delete'
+      delete: base + '/company/delete',
+      complaintData : base + '/company/getComplaints'
   },
   propertyTypes:{
      create : base + '/types/createType',
@@ -48,16 +51,30 @@ export const urls = Object.freeze({
     tenantdata: base + '/tenant/getTenants',
     editdata: base + '/tenant/editTenant',
     getTenantById: base + '/tenant/getTenantById',
-    delete: base + '/tenant/delete'
+    delete: base + '/tenant/delete',
+    tenantBookingData : base+ '/tenant/mybooking'
   },
   booking:{
     create: base + '/booking/create',
     bookingdata: base + '/booking/getBooking',
+    allbooking: base + '/booking/allBooking',
     updateBooking: base + '/booking/editBooking',
-    deleteBooking: base + '/booking/deleteBooking'
-  },
+    deleteBooking: base + '/booking/deleteBooking',
+    getBookingById: base + '/booking/getBookingById'
+  }, 
   visitor: {
-      create: base + '/createvisitor',
-      getallvisitor: base + '/getallvisitor'
+    create: base + '/createvisitor',
+    getallvisitor: base + '/getallvisitor'
+  },
+  Complaints:{
+    create: base + '/complain/register',
+    getComplain: base + '/complain/allComplain',
+    editComlplain: base + '/complain/editComplain',
+    delete: base+ '/complain/delete',
+    getComplainById: base + '/complain/getComplainById',
+    allComplainForCompany: base +'/complain/allComplainForCompany',
+    addCommentToComplain: base +'/complain/addCommentToComplain',
+    resolveComplain: base + '/complain/resolveComplain'
+
   }
 })

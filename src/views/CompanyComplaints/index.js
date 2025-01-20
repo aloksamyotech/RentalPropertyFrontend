@@ -16,41 +16,46 @@ import {
   Popover,
   MenuItem,
 } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
-import AddComplaints from './AddComplaints';
+// import AddComplaints from './AddComplaints';
 import { IconHome } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
-import { useNavigate } from 'react-router';
-import { getApi } from 'core/apis/api';
+import { getApi, patchApi } from 'core/apis/api';
 import { tokenPayload } from 'helper';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useNavigate } from 'react-router';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditComplain from './EditComplain';
-import DeleteComplain from './DeleteCompalain';
+// import EditComplain from './EditComplain';
+// import DeleteComplain from './DeleteCompalain';
 
-const Complaints = () => {
+const CompanyComplaints = () => {
   const { t } = useTranslation();
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [rowData, setRowData] = useState(false);
+  const [rowData, setRowData] = useState([]);
   const [complaintData, setComplaintData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
+  const navigate = useNavigate()
   const payload = tokenPayload();
-  const navigate = useNavigate();
 
   const fetchComplaintData = async () => {
     try {
-      const response = await getApi(urls.Complaints.getComplain, { id: payload._id });
+      const response = await getApi(urls.Complaints.allComplainForCompany, { id: payload._id });
       if (response?.data && Array.isArray(response.data)) {
-        setComplaintData(response.data);
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          tenantName: item.tenantId?.tenantName,
+          propertyname: item.propertyId?.propertyname,
+          phoneNo: item.tenantId?.phoneno
+        }));
+        setComplaintData(formattedData);
       } else {
         setComplaintData([]);
       }
@@ -59,6 +64,12 @@ const Complaints = () => {
     }
   };
   const handleCloseDeleteComplain = () => setOpenDelete(false);
+
+  
+  const handleOpenView = () => {
+    console.log(currentRow,"currentRow")
+    navigate(`/dashboard/complain/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
+  };
 
   useEffect(() => {
     fetchComplaintData();
@@ -73,12 +84,6 @@ const Complaints = () => {
   //   setOpenEdit(true);
   //   handleClose();
   // };
-
-    
-  const handleOpenView = () => {
-    console.log(currentRow,"currentRow")
-    navigate(`/dashboard/complain/tenant/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
-  };
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
@@ -112,6 +117,19 @@ const Complaints = () => {
 
   // Define table columns
   const columns = [
+
+    {
+      field: 'tenantName',
+      headerName: t('Tenant Name'),
+      flex: 1,
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+    },
+    {
+      field: 'phoneNo',
+      headerName: t('Phone No'),
+      flex: 1,
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+    },
     {
       field: 'concernTopic',
       headerName: t('Topic'),
@@ -119,8 +137,14 @@ const Complaints = () => {
       cellClassName: 'name-column--cell name-column--cell--capitalize',
     },
     {
+      field: 'reporterName',
+      headerName: t('Created By'),
+      flex: 1,
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+    },
+    {
       field: 'comment',
-      headerName: t('Comment'),
+      headerName: t('Comments'),
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
     },
@@ -140,6 +164,7 @@ const Complaints = () => {
         </Typography>
       ),
     },
+    
     {
       field: 'action',
       headerName: t('Action'),
@@ -191,9 +216,9 @@ const Complaints = () => {
   return (
     <>
  
-      <AddComplaints open={openAdd} handleClose={handleCloseAdd} />
+      {/* <AddComplaints open={openAdd} handleClose={handleCloseAdd} />
       <EditComplain open={openEdit} handleClose={handleCloseEditComplain} data={rowData} />
-      <DeleteComplain open={openDelete} handleClose={handleCloseDeleteComplain} id={rowData?._id}/>
+      <DeleteComplain open={openDelete} handleClose={handleCloseDeleteComplain} id={rowData?._id}/> */}
     
 
       <Container>
@@ -231,4 +256,4 @@ const Complaints = () => {
   );
 };
 
-export default Complaints;
+export default CompanyComplaints;

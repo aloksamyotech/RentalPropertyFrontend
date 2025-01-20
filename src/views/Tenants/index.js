@@ -37,14 +37,12 @@ const Tenents = () => {
   const { t } = useTranslation();
   const [openAdd, setOpenAdd] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentRow, setCurrentRow] = useState([]); // For storing the selected row data
+  const [currentRow, setCurrentRow] = useState([]); 
   const [tenantData, setTenantdata] = useState([]);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [rowData, setRowData] = useState();
-
-
-  // const company = JSON.parse(localStorage.getItem('companyData'));
+  
   const payload = tokenPayload();
 
   const fetchTenantData = async () => {
@@ -53,15 +51,15 @@ const Tenents = () => {
       console.log(payload, "Payload");
       console.log(response.data, "Fetched Tenant Data");
   
-      if (response?.data?.data && Array.isArray(response.data.data)) {
-        setTenantdata(response.data.data); // Ensure tenantData is an array
+      if (response?.data && Array.isArray(response.data)) {
+        setTenantdata(response.data);
       } else {
         console.error("Invalid data format received from API:", response.data);
-        setTenantdata([]); // Default to an empty array if data is invalid
+        setTenantdata([]);
       }
     } catch (error) {
       console.error("Error fetching tenant data:", error);
-      setTenantdata([]); // Default to an empty array on error
+      setTenantdata([]);
     }
   };
   
