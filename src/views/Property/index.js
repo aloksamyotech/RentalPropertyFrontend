@@ -45,7 +45,6 @@ const Property = () => {
 
   const payload = tokenPayload();
 
-  // Fetch Property Data
   const fetchPropertyData = async () => {
     try {
       const response = await getApi(urls.property.propertydata, { id: payload.companyId });
@@ -65,7 +64,7 @@ const Property = () => {
     fetchPropertyData();
   }, [openAdd, openEdit, openDelete]);
 
-  // Handle Popover Menu Actions
+
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
     setCurrentRow(row);

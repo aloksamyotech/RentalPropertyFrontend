@@ -27,18 +27,15 @@ import { tokenPayload } from 'helper';
 const AddPropertyTypes = ({ open, handleClose }) => {
   const { t } = useTranslation();
 
-  // const company = JSON.parse(localStorage.getItem('companyData'));
   const payload = tokenPayload();
 
   const AddPropertyTypes = async (values, resetForm) => {
     try {
       values.companyId = payload._id;
-  
-      // Make API call
+
       const response = await postApi(urls.propertyTypes.create, values);
       console.log(response, "Response received");
-  
-      // Handle success
+
       if (response.success) {
         toast.success(t('Successfully registered property type!'));
         resetForm();
@@ -49,8 +46,7 @@ const AddPropertyTypes = ({ open, handleClose }) => {
       }
     } catch (error) {
       console.error('Error in AddPropertyTypes:', error);
-  
-      // Handle conflict (409)
+
       if (error.status === 409) {
         toast.error(t('Property type already exists!'));
       } else {
@@ -69,7 +65,7 @@ const AddPropertyTypes = ({ open, handleClose }) => {
       .required(t('Property Name is required')),
       description: yup
       .string()
-      .max(50, t('Property Name must be at most 50 characters'))
+      .max(200, t('Property Name must be at most 200 characters'))
       .required(t('Description is required')),
   });
 

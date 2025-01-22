@@ -43,7 +43,9 @@ export const urls = Object.freeze({
     create: base + '/property/register',
     editdata: base +'/property/editproperty',
     propertydata: base + '/property/getproperty',
-    delete: base + '/property/delete'
+    delete: base + '/property/delete',
+    getVacantProperty : base + '/property/vacantproperty',
+     uploadPics : base + '/property/upload'
   },
   tenant:{
     create: base + '/tenant/register',
@@ -61,7 +63,8 @@ export const urls = Object.freeze({
     allbooking: base + '/booking/allBooking',
     updateBooking: base + '/booking/editBooking',
     breakTheBooking: base + '/booking/breakTheBooking',
-    getBookingById: base + '/booking/getBookingById'
+    getBookingById: base + '/booking/getBookingById',
+    propertyOnNotice: base + '/booking/propertyOnNotice'
   }, 
   visitor: {
     create: base + '/createvisitor',

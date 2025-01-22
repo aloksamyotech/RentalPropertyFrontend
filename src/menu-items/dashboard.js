@@ -131,14 +131,6 @@ const companyAdminDashboard = {
       icon: Person2Icon,
       breadcrumbs: false
     },
-    {
-      id: '8',
-      title: 'Vacant Properties',
-      type: 'item',
-      url: '/dashboard/vacantproperties',
-      icon: Person2Icon,
-      breadcrumbs: false
-    },
   ],
 };
 
@@ -153,14 +145,6 @@ const agentDashboard = {
       type: 'item',
       url: '/dashboard/default',
       icon: icons.IconHome,
-      breadcrumbs: false,
-    },
-    {
-      id: '1',
-      title: 'Vacant Notice',
-      type: 'item',
-      url: '/dashboard/vacantnotice',
-      icon: CircleNotificationsIcon,
       breadcrumbs: false,
     },
     {
@@ -185,7 +169,7 @@ const agentDashboard = {
       type: 'item',
       url: '/dashboard/complaints',
       icon: TaskIcon,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
       id: '5',
@@ -194,6 +178,14 @@ const agentDashboard = {
       url: '/dashboard/booking',
       icon: Person2Icon,
       breadcrumbs: false
+    },
+    {
+      id: '6',
+      title: 'Vacant Properties',
+      type: 'item',
+      url: '/dashboard/vacantproperty',
+      icon: icons.IconFileUpload,
+      breadcrumbs: false,
     },
   ],
 };
@@ -227,19 +219,19 @@ const tenantDashboard = {
       icon: icons.IconMail,
       breadcrumbs: false,
     },
-    {
-      id: '3',
-      title: 'Calendar',
-      type: 'item',
-      url: '/dashboard/calendar',
-      icon: icons.IconCalendarEvent,
-      breadcrumbs: false,
-    },
+    // {
+    //   id: '3',
+    //   title: 'Calendar',
+    //   type: 'item',
+    //   url: '/dashboard/calendar',
+    //   icon: icons.IconCalendarEvent,
+    //   breadcrumbs: false,
+    // },
     {
       id: '4',
-      title: 'Documents',
+      title: 'Vacant Properties',
       type: 'item',
-      url: '/dashboard/document',
+      url: '/dashboard/vacantproperty',
       icon: icons.IconFileUpload,
       breadcrumbs: false,
     },

@@ -60,6 +60,26 @@ const isAdmin = payload?.role === 'companyAdmin';
     setValue(newValue);
   };
 
+  const fetchBookingDataOnNotice = async () => {
+    const response = await getApi(urls.booking.propertyOnNotice, { id: payload.companyId });
+    // if (response?.data && Array.isArray(response.data)) {
+      const formattedData = response.data.map((item) => ({
+        ...item,
+        tenantName: item.tenantId?.tenantName,
+        propertyName: item.propertyId?.propertyname,
+        startingDate: item.startingDate
+          ? new Date(item.startingDate).toLocaleDateString()
+          : 'N/A',
+        endingDate: item.endingDate
+          ? new Date(item.endingDate).toLocaleDateString()
+          : 'N/A',
+      }));
+      setBookingData(formattedData);
+    // } else {
+    //   setBookingData([]);
+    // }
+  };
+
   const fetchBookingData = async () => {
     const response = await getApi(urls.booking.bookingdata, { id: payload._id });
     // if (response?.data && Array.isArray(response.data)) {
@@ -106,6 +126,8 @@ const isAdmin = payload?.role === 'companyAdmin';
         await fetchBookingData();
       } else if (value === '2') {
         await fetchAllBookingData();
+      } else if( value === '3'){
+        await fetchBookingDataOnNotice();
       }
     };
   
@@ -264,7 +286,7 @@ const isAdmin = payload?.role === 'companyAdmin';
                 <TabList onChange={handleChange} aria-label="Booking tabs">
                   <Tab label={t('My Booking')} value="1" />
                   <Tab label={t('All Booking')} value="2" />
-
+                  <Tab label={t('Booking On Notice')} value="3" />
                 </TabList>
               </Box>
               <TabPanel value="1">
@@ -278,6 +300,16 @@ const isAdmin = payload?.role === 'companyAdmin';
                 />
               </TabPanel>
               <TabPanel value="2">
+                <DataGrid
+                  rows={bookingData}
+                  columns={columns}
+                  checkboxSelection
+                  getRowId={(row) => row._id || row.id}
+                  slots={{ toolbar: GridToolbar }}
+                  slotProps={{ toolbar: { showQuickFilter: true } }}
+                />
+              </TabPanel>
+              <TabPanel value="3">
                 <DataGrid
                   rows={bookingData}
                   columns={columns}
