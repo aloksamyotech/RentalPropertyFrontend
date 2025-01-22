@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 // @mui
 import { Stack, Button, Container, Typography, Box, Link, Breadcrumbs, Card , Popover,
   MenuItem,
@@ -15,6 +16,7 @@ import { IconHome } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { useEffect } from 'react';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getApi } from 'core/apis/api';
 // import EditProperty from './EditProperty';
 
@@ -38,6 +40,7 @@ const TenantBooking = () => {
   const [currentRow, setCurrentRow] = useState(null);
 
   const payload = tokenPayload();
+  const navigate = useNavigate();
   // const company = JSON.parse(localStorage.getItem('companyData'));
 
     const fetchBookingData = async () => {
@@ -59,6 +62,14 @@ const TenantBooking = () => {
         setBookingdata([]);
       }
     };
+
+    
+    const handleOpenView = () => {
+      console.log(currentRow, "currentRow");
+      navigate(`/dashboard/booking/tenant/view?id=${currentRow._id}&reporterName=${currentRow.name}`);
+    };
+    
+
 
   //  const fetchPropertyData = async () => {
   //       const response = await getApi(urls.tenant.tenantBookingData, { id: payload._id });
@@ -173,6 +184,11 @@ const TenantBooking = () => {
                 <EditIcon style={{ marginRight: '8px' }} />
                 {t('Edit')}
               </MenuItem>
+              <MenuItem onClick={handleOpenView} disableRipple>
+  <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+  {t('view')}  
+</MenuItem>
+
               <MenuItem
                 sx={{ color: 'red' }}
                 disableRipple

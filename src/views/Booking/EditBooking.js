@@ -64,8 +64,8 @@ const EditBooking = ({ open, handleClose, data }) => {
       ...values,
       companyId: payload.companyId,
       createdBy: payload._id,
-      startingDate: new Date(values.startingDate).toLocaleDateString('en-US'),
-      endingDate: new Date(values.endingDate).toLocaleDateString('en-US'),
+      startingDate: new Date(values.startingDate).toISOString().split('T')[0],
+      endingDate: new Date(values.endingDate).toISOString().split('T')[0],
     };
   
     try {

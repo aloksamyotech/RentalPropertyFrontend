@@ -52,15 +52,17 @@ export const urls = Object.freeze({
     editdata: base + '/tenant/editTenant',
     getTenantById: base + '/tenant/getTenantById',
     delete: base + '/tenant/delete',
-    tenantBookingData : base+ '/tenant/mybooking'
+    tenantBookingData : base+ '/tenant/mybooking',
+    getMyTenants: base + '/tenant/getMyTenants'
   },
   booking:{
     create: base + '/booking/create',
     bookingdata: base + '/booking/getBooking',
     allbooking: base + '/booking/allBooking',
     updateBooking: base + '/booking/editBooking',
-    deleteBooking: base + '/booking/deleteBooking'
-  },
+    breakTheBooking: base + '/booking/breakTheBooking',
+    getBookingById: base + '/booking/getBookingById'
+  }, 
   visitor: {
     create: base + '/createvisitor',
     getallvisitor: base + '/getallvisitor'
@@ -71,6 +73,9 @@ export const urls = Object.freeze({
     editComlplain: base + '/complain/editComplain',
     delete: base+ '/complain/delete',
     getComplainById: base + '/complain/getComplainById',
-    allComplainForCompany: base +'/complain/allComplainForCompany'
+    allComplainForCompany: base +'/complain/allComplainForCompany',
+    addCommentToComplain: base +'/complain/addCommentToComplain',
+    resolveComplain: base + '/complain/resolveComplain'
+
   }
 })

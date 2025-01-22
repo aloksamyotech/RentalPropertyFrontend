@@ -7,7 +7,7 @@ import Loadable from 'ui-component/Loadable';
 import Property from 'views/Property';
 import Units from 'views/Units';
 import Tenents from 'views/Tenants';
-import VacantNotice from 'views/VacantNotice';
+import VacantNotice from 'views/Vacant';
 import Complaints from 'views/Complaints';
 import Announcement from 'views/Announcement';
 import Company from 'views/Company';
@@ -18,6 +18,10 @@ import TenantBooking from 'views/TenantBooking';
 import CompanyComplaints from 'views/CompanyComplaints';
 import ComplainViewDashboard from 'views/CompanyComplaints/component/ComplainView';
 import ComplainDetailsPage from 'views/CompanyComplaints/component/ComplainView';
+import ComplainDetailsPageForTenant from 'views/Complaints/component/TenantComaplainView';
+import BookingDetailsPage from 'views/Booking/component/BookingView';
+import BookingDetailsTenantPage from 'views/TenantBooking/component/BookingTenantDetails';
+import Vacant from 'views/Vacant';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -83,14 +87,16 @@ const companyAdminRoutes = {
       children: [
         { path: 'default', element: <DashboardDefault /> },
         { path: 'property', element: <Property /> },
+        { path: 'propertyTypes', element: <PropertyTypes /> },
         { path: 'tenents', element: <Tenents /> },
         { path: 'payment', element: <Payment /> },
         { path: 'companyComplaints', element: <CompanyComplaints/> },
         { path: 'agents', element: <Agents /> },
         { path: 'booking', element: <Booking /> },
         { path: 'complain/view', element: <ComplainDetailsPage/> },
+        { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
-        { path: 'email', element: <Email /> },
+        { path: 'vacantproperties', element: <Vacant/> },
         { path: 'meeting', element: <Metting /> },
         { path: 'calender', element: <Calender /> },
         { path: 'document', element: <Document /> },
@@ -117,8 +123,9 @@ const tenantRoutes = {
         { path: 'tenantBooking', element: <TenantBooking /> },
         { path: 'payment', element: <Payment /> },
         { path: 'agents', element: <Agents /> },
+        { path: 'complain/tenant/view', element: <ComplainDetailsPageForTenant/> },
         { path: 'complaints', element: <Complaints /> },
-        { path: 'Announcement', element: <Announcement /> },
+        { path: 'booking/tenant/view', element: <BookingDetailsTenantPage /> },
         { path: 'email', element: <Email /> },
         { path: 'meeting', element: <Metting /> },
         { path: 'calender', element: <Calender /> },
@@ -146,6 +153,7 @@ const agentDashboardRoutes = {
         { path: 'booking', element: <Booking /> },
         { path: 'agents', element: <Agents /> },
         { path: 'complaints', element: <Complaints /> },
+        { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
         { path: 'email', element: <Email /> },
         { path: 'meeting', element: <Metting /> },

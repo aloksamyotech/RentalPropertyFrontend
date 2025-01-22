@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
-import { Box, Grid, Typography, TextField, Paper, Button, Divider, Switch } from '@mui/material';
+import { Box, Grid, Typography, TextField, Paper, Button, Divider, Switch, Stack } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useLocation } from 'react-router';
 import { getApi, patchApi } from 'core/apis/api';
@@ -10,35 +10,38 @@ import SendIcon from '@mui/icons-material/Send';
 import * as Yup from 'yup'; // Optional: For validation
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-
-const ComplainDetailsPage = () => {
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+const BookingDetailsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const label = { inputProps: { 'aria-label': 'Color switch demo' } };
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const complainId = queryParams.get('id');
+  const bookingId = queryParams.get('id');
+  const reporterName = queryParams.get('reporterName')
 
-  const [complainData, setComplainData] = useState({});
+  const [bookingData, setBookingData] = useState({});
   const [tenantData, setTenantData] = useState({});
   const [propertyData, setPropertyData] = useState({});
-  const [status, setStatus] = useState(false);  // To track status of complaint
+  const [status, setStatus] = useState(false);
+  console.log(bookingData,"bookingDatabookingDatabookingData")
 
-  const fetchComplainData = async () => {
+  const fetchBookingData = async () => {
     try {
-      const response = await getApi(urls.Complaints.getComplainById, { id: complainId });
-      setComplainData(response.data[0]);
-      setTenantData(response.data[0].tenantId);
-      setPropertyData(response.data[0].propertyId);
-      setStatus(response.data[0].status); // Set the initial status
+      const response = await getApi(urls.booking.getBookingById, { id: bookingId });
+      console.log(response.data,"response,,..././..")
+      setBookingData(response.data);
+      setTenantData(response.data.tenantId);
+      setPropertyData(response.data.propertyId);
+      setStatus(response.data.status); 
     } catch (error) {
-      console.error('Error fetching complain data:', error);
+      console.error('Error fetching booking data:', error);
     }
   };
 
   useEffect(() => {
-    fetchComplainData();
-  }, [complainId]);
+    fetchBookingData();
+  }, [bookingId]);
 
   const validationSchema = Yup.object({
     comment: Yup.string().required(t('comment_required')),
@@ -51,9 +54,9 @@ const ComplainDetailsPage = () => {
   const addComment = async (values, resetForm) => {
     try {
       const response = await patchApi(
-        urls.Complaints.addCommentToComplain,
+        urls.booking.addCommentToBooking,
         { comment: values.comment },
-        { id: complainId }
+        { id: bookingId }
       );
 
       if (response.success) {
@@ -69,17 +72,17 @@ const ComplainDetailsPage = () => {
   };
 
   const handleStatusChange = async (event) => {
-    setStatus(event.target.checked); // Update status when switch is toggled
+    setStatus(event.target.checked); 
 
     try {
       const response = await patchApi(
-        urls.Complaints.resolveComplain,
-        { status: event.target.checked }, // Send the updated status
-        { id: complainId }
+        urls.booking.updateBookingStatus,
+        { status: event.target.checked }, 
+        { id: bookingId }
       );
 
       if (response.success) {
-        toast.success(t('complain_status_updated'));
+        toast.success(t('booking_status_updated'));
       } else {
         toast.error(t('something_went_wrong'));
       }
@@ -99,7 +102,7 @@ const ComplainDetailsPage = () => {
 
   return (
     <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         <Grid item xs={12} sx={{ mb: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button
@@ -119,25 +122,24 @@ const ComplainDetailsPage = () => {
           </Box>
         </Grid>
 
-        {/* Complain Title Section */}
+        {/* Booking Title Section */}
         <Grid item xs={12}>
-  <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'white',
-      // width: '200px', 
-      height: '50px',
-      borderRadius: '8px',
-      boxShadow: 3, 
-    }}
-  >
-    <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-      {t('complain_information')}
-    </Typography>
-  </Box>
-</Grid>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'white',
+              height: '50px',
+              borderRadius: '8px',
+              boxShadow: 3,
+            }}
+          >
+            <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
+              {t('booking_information')}
+            </Typography>
+          </Box>
+        </Grid>
 
         {/* Tenant Info Section */}
         <Grid item xs={12} md={6}>
@@ -167,6 +169,18 @@ const ComplainDetailsPage = () => {
                 <Typography variant="h5">{t('phone_number')}</Typography>
                 <Typography>{tenantData.phoneno || t('not_available')}</Typography>
               </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h5">{t('Address')}</Typography>
+                <Typography>{tenantData.address || t('not_available')}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h5">{t('EmergencyNo')}</Typography>
+                <Typography>{tenantData.emergencyNo || t('not_available')}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h5">{t('Reported By')}</Typography>
+                <Typography>{reporterName || t('not_available')}</Typography>
+              </Grid>
             </Grid>
           </Paper>
         </Grid>
@@ -182,9 +196,29 @@ const ComplainDetailsPage = () => {
               boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
             }}
           >
-            <Typography variant="h4" gutterBottom>
-              {t('property_information')}
-            </Typography>
+           <Typography variant="h4" gutterBottom>
+  {t('property_information')}
+
+  {propertyData.maplink ? (
+    <a 
+      href={propertyData.maplink} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      style={{
+        color: '#3f51b5', 
+        textDecoration: 'none', 
+        display: 'inline-flex', 
+        alignItems: 'left', 
+        marginLeft: '150px',
+      }}
+    >
+      {t('Location On Map')} <MyLocationIcon sx={{ ml: 1 }} />
+    </a>
+  ) : (
+    t('not_available')
+  )}
+</Typography>
+
             <Divider sx={{ marginBottom: 2 }} />
             <Grid container spacing={2}>
               <Grid item xs={6}>
@@ -199,12 +233,24 @@ const ComplainDetailsPage = () => {
                 <Typography variant="h5">{t('property_rent')}</Typography>
                 <Typography>{propertyData.rent || t('not_available')}</Typography>
               </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h5">{t('Discription')}</Typography>
+                <Typography>{propertyData.description || t('not_available')}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h5">{t('zipcode')}</Typography>
+                <Typography>{propertyData.zipcode || t('not_available')}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h5">{t('Address')}</Typography>
+                <Typography>{propertyData.address || t('not_available')}</Typography>
+              </Grid>
             </Grid>
           </Paper>
         </Grid>
 
-        {/* Complain Info Section */}
-        <Grid item xs={12}>
+    {/* Booking Details and Comment Section */}
+<Grid item xs={12}>
   <Paper
     sx={{
       padding: 3,
@@ -214,80 +260,51 @@ const ComplainDetailsPage = () => {
       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     }}
   >
-    <form onSubmit={formik.handleSubmit}>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Typography variant="h5">{t('concern_topic')}</Typography>
-          <Typography>{complainData.concernTopic || t('not_available')}</Typography>
-
-          <br />
-          <Typography variant="h5">{t('complain_description')}</Typography>
-          <Typography>{complainData.description || t('not_available')}</Typography>
-
-          <br />
-          <Typography variant="h5">{t('complain_date')}</Typography>
-          <Typography>{new Date(complainData.createdAt).toLocaleDateString() || t('not_available')}</Typography>
-          <br/>
-          <Typography variant="h5">{t('Previous Comment Added by you ')}</Typography>
-          <Typography>{(complainData.comment) || t('not_available')}</Typography>
-        </Grid>
-
-        {/* Right-aligned Section */}
-        <Grid item xs={6}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              // alignItems: 'flex-en',
-              gap: 2,
-            }}
-          >
-            <Typography variant="h5">{t('Add Comment')}</Typography>
-            <TextField
-              id="comment"
-              name="comment"
-              size="small"
-              fullWidth
-              multiline
-              rows={2}
-              value={formik.values.comment}
-              onChange={formik.handleChange}
-              error={formik.touched.comment && Boolean(formik.errors.comment)}
-              helperText={formik.touched.comment && formik.errors.comment}
-              sx={{ width: '100%' }}
-            />
-
-            <Button
-              variant="contained"
-              endIcon={<SendIcon />}
-              type="submit"
-              sx={{ alignSelf: 'flex-end' }}
-            >
-              {t('add_comment')}
-            </Button>
-
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-  <Typography
-    variant="h5"
-    sx={{ 
-      color: status ? 'green' : 'red', 
-      fontWeight: 'bold' 
-    }}
-  >
-    {status ? t('Resolved') : t('Pending')}
-  </Typography>
-  <Switch
-    {...label}
-    checked={status}
-    onChange={handleStatusChange}
-    inputProps={{ 'aria-label': 'Resolved complaint' }}
-  />
-</Box>
-</Box>
-
-        </Grid>
+    <Typography variant="h4" gutterBottom>
+      {t('booking_details')}
+    </Typography>
+    <Divider sx={{ marginBottom: 2 }} />
+    <Grid container spacing={2}>
+      {/* Booking Date */}
+      <Grid item xs={12} sm={6}>
+        <Typography variant="h5" gutterBottom>
+          {t('booking_date')}
+        </Typography>
+        <Typography variant="body1">
+          {new Date(bookingData.bookingDate).toLocaleDateString() || t('not_available')}
+        </Typography>
       </Grid>
-    </form>
+
+      {/* Advance Amount */}
+      <Grid item xs={12} sm={6}>
+        <Typography variant="h5" gutterBottom>
+          {t('advance_amount')}
+        </Typography>
+        <Typography variant="body1">
+          {bookingData.advanceAmount || t('not_available')}
+        </Typography>
+      </Grid>
+
+      {/* Starting Date */}
+      <Grid item xs={12} sm={6}>
+        <Typography variant="h5" gutterBottom>
+          {t('starting_date')}
+        </Typography>
+        <Typography variant="body1">
+          {new Date(bookingData.startingDate).toLocaleDateString() || t('not_available')}
+        </Typography>
+      </Grid>
+
+      {/* Ending Date */}
+      <Grid item xs={12} sm={6}>
+        <Typography variant="h5" gutterBottom>
+          {t('ending_date')}
+        </Typography>
+        <Typography variant="body1">
+          {new Date(bookingData.endingDate).toLocaleDateString() || t('not_available')}
+        </Typography>
+      </Grid>
+    </Grid>
   </Paper>
 </Grid>
 
@@ -296,4 +313,4 @@ const ComplainDetailsPage = () => {
   );
 };
 
-export default ComplainDetailsPage;
+export default BookingDetailsPage;

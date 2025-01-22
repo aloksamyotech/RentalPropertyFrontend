@@ -16,11 +16,11 @@ const DeleteBooking = ({ open, handleClose, id }) => {
   const { t } = useTranslation(); 
   const navigate = useNavigate(); 
   const [loading, setLoading] = useState(false); 
-
+ console.log(id,"idididididid")
   const handleDelete = async () => {
     setLoading(true); 
     try {
-      const result = await patchApi(urls.booking.deleteBooking, { isDeleted: true }, { id });
+      const result = await patchApi(urls.booking.breakTheBooking,{}, { id });
 
       if (result?.status === 200 || result?.success) {
         toast.success(t('companyDeletedSuccessfully')); 
@@ -38,9 +38,9 @@ const DeleteBooking = ({ open, handleClose, id }) => {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{t('deleteCompany')}</DialogTitle>
+      <DialogTitle>{t('Delete Booking')}</DialogTitle>
       <DialogContent>
-        <p>{t('areYouSureDeleteCompany')}</p>
+        <p>{t('areYouSureDeleteBooking')}</p>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary" disabled={loading}>
