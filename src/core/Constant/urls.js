@@ -45,7 +45,8 @@ export const urls = Object.freeze({
     propertydata: base + '/property/getproperty',
     delete: base + '/property/delete',
     getVacantProperty : base + '/property/vacantproperty',
-     uploadPics : base + '/property/upload'
+     uploadPics : base + '/property/upload',
+     getPropertyById : base + '/property/getPropertyById'
   },
   tenant:{
     create: base + '/tenant/register',

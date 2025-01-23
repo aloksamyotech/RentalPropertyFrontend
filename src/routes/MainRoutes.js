@@ -22,6 +22,8 @@ import ComplainDetailsPageForTenant from 'views/Complaints/component/TenantComap
 import BookingDetailsPage from 'views/Booking/component/BookingView';
 import BookingDetailsTenantPage from 'views/TenantBooking/component/BookingTenantDetails';
 import VacantProperties from 'views/VacantProperties';
+import { element } from 'prop-types';
+import Propertyview from 'views/Property/component/propertyView';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -96,6 +98,7 @@ const companyAdminRoutes = {
         { path: 'complain/view', element: <ComplainDetailsPage/> },
         { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
+        { path: '/dashboard/property/view', element:<Propertyview/> },
         { path: 'meeting', element: <Metting /> },
         // { path: 'calender', element: <Calender /> },
         { path: 'document', element: <Document /> },

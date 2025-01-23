@@ -24,15 +24,15 @@ const DeleteProperty = ({ open, handleClose, id }) => {
       const result = await patchApi(urls.property.delete, { isDeleted: true }, { id });
 
       if (result?.status === 200 || result?.success) {
-        toast.success(t('customerDeletedSuccessfully'));
+        toast.success(t('Property Deleted Successfully'));
         // navigate('/dashboard/property');
         handleClose();
       } else {
-        toast.error(t('cannotDeleteTenant'));
+        toast.error(t('cannotDeleteProperty'));
       }
     } catch (error) {
-      console.error('Error deleting tenant:', error);
-      toast.error(t('cannotDeleteTenant'));
+      console.error('Error deleting property:', error);
+      toast.error(t('cannotDeleteProperty'));
     } finally {
       setLoading(false);
     }

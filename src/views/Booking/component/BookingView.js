@@ -11,6 +11,8 @@ import * as Yup from 'yup'; // Optional: For validation
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
+
+
 const BookingDetailsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();

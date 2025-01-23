@@ -299,7 +299,13 @@
       "advance_amount": "Advance Amount",
       "status": "Status",
       "not_available": "Not Available",
-      "booking_information":"Booking Information"
+      "booking_information":"Booking Information",
+      "deleteCustomer": "Are you sure you want to delete this property?",
+      "areYouSureDeleteCustomer": "Once deleted, this action cannot be undone.",
+      "cannotDeleteProperty": "Unable to delete property. Please try again.",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "delete": "Delete"
     
     
   

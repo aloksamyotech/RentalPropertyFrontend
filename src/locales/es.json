@@ -298,5 +298,11 @@
   "ending_date": "Fecha de finalización",
   "advance_amount": "Monto anticipado",
   "status": "Estado",
-  "not_available": "No disponible"
+  "not_available": "No disponible",
+  "deleteCustomer": "¿Estás seguro de que deseas eliminar esta propiedad?",
+  "areYouSureDeleteCustomer": "Una vez eliminada, esta acción no se puede deshacer.",
+  "cannotDeleteProperty": "No se puede eliminar la propiedad. Por favor, intenta de nuevo.",
+  "cancel": "Cancelar",
+  "deleting": "Eliminando...",
+  "delete": "Eliminar"
 }
