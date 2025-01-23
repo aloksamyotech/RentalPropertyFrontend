@@ -7,7 +7,7 @@ import Loadable from 'ui-component/Loadable';
 import Property from 'views/Property';
 import Units from 'views/Units';
 import Tenents from 'views/Tenants';
-import VacantNotice from 'views/Vacant';
+
 import Complaints from 'views/Complaints';
 import Announcement from 'views/Announcement';
 import Company from 'views/Company';
@@ -21,7 +21,7 @@ import ComplainDetailsPage from 'views/CompanyComplaints/component/ComplainView'
 import ComplainDetailsPageForTenant from 'views/Complaints/component/TenantComaplainView';
 import BookingDetailsPage from 'views/Booking/component/BookingView';
 import BookingDetailsTenantPage from 'views/TenantBooking/component/BookingTenantDetails';
-import Vacant from 'views/Vacant';
+import VacantProperties from 'views/VacantProperties';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -33,7 +33,7 @@ const Payment = Loadable(lazy(() => import('views/Payments')));
 const Email = Loadable(lazy(() => import('views/Email')));
 const Task = Loadable(lazy(() => import('views/Task')));
 const EmailTemplates = Loadable(lazy(() => import('views/EmailTemplates')));
-const Document = Loadable(lazy(() => import('views/Documents')));
+const Document = Loadable(lazy(() => import('views/VacantProperties')));
 const Calender = Loadable(lazy(() => import('views/Calender')));
 const AddTemplates = Loadable(lazy(() => import('views/EmailTemplates/AddTemplates')));
 const Agents = Loadable(lazy(() => import('views/Agents')));
@@ -65,7 +65,7 @@ const superAdminRoutes = {
         { path: 'Announcement', element: <Announcement /> },
         { path: 'email', element: <Email /> },
         { path: 'meeting', element: <Metting /> },
-        { path: 'calender', element: <Calender /> },
+        // { path: 'calender', element: <Calender /> },
         { path: 'document', element: <Document /> },
         { path: 'owner', element: <Owner /> },
         { path: 'emailtemplate/addTemplates', element: <AddTemplates /> }
@@ -96,9 +96,8 @@ const companyAdminRoutes = {
         { path: 'complain/view', element: <ComplainDetailsPage/> },
         { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
-        { path: 'vacantproperties', element: <Vacant/> },
         { path: 'meeting', element: <Metting /> },
-        { path: 'calender', element: <Calender /> },
+        // { path: 'calender', element: <Calender /> },
         { path: 'document', element: <Document /> },
         { path: 'owner', element: <Owner /> },
         { path: 'emailtemplate/addTemplates', element: <AddTemplates /> }
@@ -123,12 +122,13 @@ const tenantRoutes = {
         { path: 'tenantBooking', element: <TenantBooking /> },
         { path: 'payment', element: <Payment /> },
         { path: 'agents', element: <Agents /> },
+        { path: 'vacantproperty', element:<VacantProperties /> },
         { path: 'complain/tenant/view', element: <ComplainDetailsPageForTenant/> },
         { path: 'complaints', element: <Complaints /> },
         { path: 'booking/tenant/view', element: <BookingDetailsTenantPage /> },
         { path: 'email', element: <Email /> },
         { path: 'meeting', element: <Metting /> },
-        { path: 'calender', element: <Calender /> },
+        // { path: 'calender', element: <Calender /> },
         { path: 'document', element: <Document /> }
       ]
     }
@@ -151,13 +151,14 @@ const agentDashboardRoutes = {
         { path: 'tenents', element: <Tenents /> },
         { path: 'payment', element: <Payment /> },
         { path: 'booking', element: <Booking /> },
+        { path: 'vacantproperty', element:<VacantProperties /> },
         { path: 'agents', element: <Agents /> },
         { path: 'complaints', element: <Complaints /> },
         { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
         { path: 'email', element: <Email /> },
         { path: 'meeting', element: <Metting /> },
-        { path: 'calender', element: <Calender /> },
+        // { path: 'calender', element: <Calender /> },
         { path: 'document', element: <Document /> },
         { path: 'owner', element: <Owner /> }
       ]

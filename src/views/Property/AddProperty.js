@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Button,
   Dialog,
-  FormControl,
   FormLabel,
   Grid,
   TextField,
@@ -12,6 +11,8 @@ import {
   Select,
   DialogActions,
   DialogContent,
+  Box,
+  Chip,
   DialogTitle,
   Typography,
 } from '@mui/material';
@@ -25,48 +26,61 @@ import PropTypes from 'prop-types';
 import { postApi, getApi } from 'core/apis/api';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
+import CloseIcon from '@mui/icons-material/Close';
 
 const AddProperty = (props) => {
   const { t } = useTranslation();
   const { open, handleClose } = props;
   const [ownerName, setOwnerData] = useState([]);
+  const [attachments, setAttachments] = useState([]);
   const [typeData, setTypeData] = useState([]);
 
   // Fetch company data from localStorage
-  // const company = JSON.parse(localStorage.getItem('companyData'));
   const payload = tokenPayload();
 
-  const fetchOwnerData = async () => {
-    try {
-      const response = await getApi(urls.owner.ownerdata, { id: payload._id });
-      console.log("Fetched Owner Data:", response.data);
-      setOwnerData(response.data);
-    } catch (err) {
-      console.error("Error fetching owner data:", err);
-      toast.error('Failed to fetch owner data!');
+  const handleFileChange = (event) => {
+    const files = event.target.files;
+    if (files) {
+      setAttachments([...attachments, ...Array.from(files)]);
     }
   };
 
+  const handleFileRemove = (filename) => {
+    setAttachments(attachments.filter((file) => file.name !== filename));
+  };
+
+
+
+  const fetchOwnerData = async () => {
+    const response = await getApi(urls.owner.ownerdata, { id: payload._id });
+    setOwnerData(response.data);
+  };
+
   const fetchTypeData = async () => {
-    try {
-      const response = await getApi(urls.propertyTypes.getdata, { id: payload._id });
-      console.log("Fetched Type Data:", response.data);
-      setTypeData(response.data);
-    } catch (err) {
-      console.error("Error fetching type data:", err);
-      toast.error('Failed to fetch property types!');
-    }
+    const response = await getApi(urls.propertyTypes.getdata, { id: payload._id });
+    setTypeData(response.data);
   };
 
   const addProperty = async (values, resetForm) => {
     values.companyId = payload._id;
-    console.log("Property Data:", values);
 
     try {
+      const uploadedFileUrls = [];
+      for (const file of attachments) {
+        const fileUrl = await uploadFile(file);
+        if (fileUrl) {
+          uploadedFileUrls.push(fileUrl);
+        }
+      }
+
+      values.files = uploadedFileUrls;
+      console.log(uploadedFileUrls,"Uploadedfile Urls");
+
       const response = await postApi(urls.property.create, values);
       if (response.success) {
         toast.success('Successfully registered property!');
         resetForm();
+        setAttachments([]); 
         setTimeout(() => {
           handleClose();
         }, 200);
@@ -79,7 +93,6 @@ const AddProperty = (props) => {
     }
   };
 
-  // Fetch data when dialog opens
   useEffect(() => {
     if (open) {
       fetchOwnerData();
@@ -87,7 +100,6 @@ const AddProperty = (props) => {
     }
   }, [open]);
 
-  // Validation schema
   const validationSchema = yup.object({
     propertyname: yup
       .string()
@@ -98,7 +110,7 @@ const AddProperty = (props) => {
       .string()
       .required('Description is required')
       .max(200, t('Description cannot exceed 200 characters')),
-      rent: yup
+    rent: yup
       .number()
       .typeError('Rent must be a number')
       .min(100, 'Rent must be at least 3 digits')
@@ -116,7 +128,6 @@ const AddProperty = (props) => {
     ownerId: yup.string().required('Owner Name is required'),
   });
 
-  // Initial values for Formik
   const initialValues = {
     propertyname: '',
     typeId: '',
@@ -128,27 +139,17 @@ const AddProperty = (props) => {
     ownerId: '',
   };
 
-  // Formik setup
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log("Submitted Values:", values);
       addProperty(values, resetForm);
     },
   });
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="scroll-dialog-title"
-      aria-describedby="scroll-dialog-description"
-    >
-      <DialogTitle
-        id="scroll-dialog-title"
-        style={{ display: 'flex', justifyContent: 'space-between' }}
-      >
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="h6">Add Property</Typography>
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
@@ -156,7 +157,6 @@ const AddProperty = (props) => {
       <DialogContent dividers>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={3}>
-            {/* Property Name */}
             <Grid item xs={12} sm={6}>
               <FormLabel>Property Name</FormLabel>
               <TextField
@@ -171,7 +171,6 @@ const AddProperty = (props) => {
               />
             </Grid>
 
-            {/* Type */}
             <Grid item xs={12} sm={6}>
               <FormLabel>Type</FormLabel>
               <Select
@@ -184,23 +183,16 @@ const AddProperty = (props) => {
                 error={formik.touched.typeId && Boolean(formik.errors.typeId)}
                 displayEmpty
               >
-                <MenuItem value="" disabled>
-                  Select Type
-                </MenuItem>
+                <MenuItem value="" disabled>Select Type</MenuItem>
                 {typeData.map((type) => (
-                  <MenuItem key={type._id} value={type._id}>
-                    {type.name}
-                  </MenuItem>
+                  <MenuItem key={type._id} value={type._id}>{type.name}</MenuItem>
                 ))}
               </Select>
               {formik.touched.typeId && formik.errors.typeId && (
-                <Typography variant="body2" color="error">
-                  {formik.errors.typeId}
-                </Typography>
+                <Typography variant="body2" color="error">{formik.errors.typeId}</Typography>
               )}
             </Grid>
 
-            {/* Owner Name */}
             <Grid item xs={12} sm={6}>
               <FormLabel>Owner Name</FormLabel>
               <Autocomplete
@@ -212,20 +204,13 @@ const AddProperty = (props) => {
                 }))}
                 getOptionLabel={(option) => option.label}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    error={formik.touched.ownerId && Boolean(formik.errors.ownerId)}
-                    helperText={formik.touched.ownerId && formik.errors.ownerId}
-                  />
+                  <TextField {...params} fullWidth error={formik.touched.ownerId && Boolean(formik.errors.ownerId)} helperText={formik.touched.ownerId && formik.errors.ownerId} />
                 )}
-                onChange={(event, value) => {
-                  formik.setFieldValue('ownerId', value ? value.value : '');
-                }}
+                onChange={(event, value) => formik.setFieldValue('ownerId', value ? value.value : '')}
               />
             </Grid>
-               {/* Rent */}
-               <Grid item xs={12} sm={6}>
+
+            <Grid item xs={12} sm={6}>
               <FormLabel>Rent</FormLabel>
               <TextField
                 id="rent"
@@ -240,7 +225,21 @@ const AddProperty = (props) => {
               />
             </Grid>
 
-            {/* Description */}
+            <Grid item xs={12}>
+              <Box mb={1}>
+                <FormLabel>{t('Attachment')}</FormLabel>
+              </Box>
+              <Button variant="contained" component="label">
+                {t('Upload Files')}
+                <input type="file" multiple hidden onChange={handleFileChange} />
+              </Button>
+              <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, flexWrap: 'wrap', maxHeight: '100px', overflowY: 'auto', marginTop: 1 }}>
+                {attachments.map((file, index) => (
+                  <Chip key={index} sx={{ background: 'green', color: 'white' }} label={file.name} onDelete={() => handleFileRemove(file.name)} deleteIcon={<CloseIcon />} />
+                ))}
+              </Box>
+            </Grid>
+
             <Grid item xs={12}>
               <FormLabel>Description</FormLabel>
               <TextField
@@ -257,7 +256,6 @@ const AddProperty = (props) => {
               />
             </Grid>
 
-            {/* Address */}
             <Grid item xs={12}>
               <FormLabel>Address</FormLabel>
               <TextField
@@ -272,9 +270,6 @@ const AddProperty = (props) => {
               />
             </Grid>
 
-         
-
-            {/* Zip Code */}
             <Grid item xs={12} sm={6}>
               <FormLabel>Zip Code</FormLabel>
               <TextField
@@ -289,7 +284,6 @@ const AddProperty = (props) => {
               />
             </Grid>
 
-            {/* Google Map Link */}
             <Grid item xs={12} sm={6}>
               <FormLabel>Google Map Link</FormLabel>
               <TextField
@@ -308,24 +302,8 @@ const AddProperty = (props) => {
       </DialogContent>
 
       <DialogActions>
-        <Button
-          onClick={formik.handleSubmit}
-          variant="contained"
-          color="primary"
-          type="submit"
-        >
-          Save
-        </Button>
-        <Button
-          onClick={() => {
-            formik.resetForm();
-            handleClose();
-          }}
-          variant="outlined"
-          color="error"
-        >
-          Cancel
-        </Button>
+        <Button onClick={formik.handleSubmit} variant="contained" color="primary" type="submit">Save</Button>
+        <Button onClick={() => { formik.resetForm(); handleClose(); }} variant="outlined" color="error">Cancel</Button>
       </DialogActions>
     </Dialog>
   );

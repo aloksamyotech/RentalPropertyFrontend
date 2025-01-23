@@ -39,21 +39,18 @@ const PropertyTypes = () => {
   const [ownerData, setOwnerData] = useState([]);
   const [currentRow, setCurrentRow] = useState([]);
 
-  // const company = JSON.parse(localStorage.getItem('companyData'));
   const payload = tokenPayload();
-  // Fetch owner data
+
   const fetchPropertyData = async () => {
     try {
       const response = await getApi(urls.propertyTypes.getdata, { id: payload._id });
-     
-      setOwnerData(response.data);
+      setOwnerData(response?.data);
     } catch (error) {
       console.error('Error fetching owner data:', error);
       toast.error(t('Failed to fetch owner data!'));
     }
   };
 
-  // Close Edit Dialog
   const handleCloseEditPropertyType = () => {
     setOpenEdit(false);
   };
@@ -62,7 +59,6 @@ const PropertyTypes = () => {
     setOpenDelete(false);
   };
 
-  // Open Edit Dialog with selected row data
   const handleOpenEditProperty = (currentRow) => {
 
     setRowData(currentRow);
@@ -77,13 +73,10 @@ const PropertyTypes = () => {
   };
 
 
-  // Close Add Dialog
   const handleCloseAdd = () => setOpenAdd(false);
 
-  // Open Add Dialog
   const handleOpenAdd = () => setOpenAdd(true);
 
-  // Popover Handlers
   const handlePopoverOpen = (event, row) => {
     setAnchorEl(event.currentTarget);
     setRowData(row);

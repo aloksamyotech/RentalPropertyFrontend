@@ -24,7 +24,6 @@ import { tokenPayload } from 'helper';
 
 const EditPropertyTypes = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
-  // const company = JSON.parse(localStorage.getItem('companyData'));
   const payload = tokenPayload();
 
   const EditPropertyType = async (values, resetForm) => {
@@ -54,7 +53,7 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
       .required(t('Property Type Name is required')),
     description: yup
       .string()
-      .max(50, t('Description cannot exceed 50 characters'))
+      .max(200, t('Description cannot exceed 200 characters'))
       .required(t('Description is required')),
   });
 
