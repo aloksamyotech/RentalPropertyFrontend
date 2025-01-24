@@ -304,5 +304,12 @@
   "cannotDeleteProperty": "No se puede eliminar la propiedad. Por favor, intenta de nuevo.",
   "cancel": "Cancelar",
   "deleting": "Eliminando...",
-  "delete": "Eliminar"
+  "delete": "Eliminar",
+  "back": "Atrás",
+"owner_information": "Información del Propietario",
+"Owner_name": "Nombre del Propietario",
+"Owner_address": "Dirección del Propietario",
+"property_rent": "Renta de la Propiedad",
+"property_description": "Descripción de la Propiedad",
+"not_available": "No Disponible"
 }

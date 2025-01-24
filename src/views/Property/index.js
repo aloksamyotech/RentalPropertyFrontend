@@ -38,7 +38,7 @@ console.log(currentRow,"currentrow")
 
   const fetchPropertyData = async () => {
     try {
-      const response = await getApi(urls.property.propertydata, { id: payload.companyId });
+      const response = await getApi(urls.property.propertyDataAll, { id: payload.companyId });
       if (response?.data) {
         setPropertyData(response.data);
       } else {
@@ -53,7 +53,7 @@ console.log(currentRow,"currentrow")
 
   useEffect(() => {
     fetchPropertyData();
-  }, []);
+  }, [openAdd,openDelete,openEdit]);
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);

@@ -50,7 +50,7 @@ const Tenants = () => {
 
   const fetchTenantData = async () => {
     try {
-      const response = await getApi(urls.tenant.tenantdata, { id: payload.companyId });
+      const response = await getApi(urls.tenant.getAllTenants, { id: payload.companyId });
       console.log(response.data, "Fetched Tenant Data");
 
       if (Array.isArray(response.data)) {

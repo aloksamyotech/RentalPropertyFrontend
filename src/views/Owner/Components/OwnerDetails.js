@@ -7,27 +7,38 @@ import { getApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 
-const Propertyview = () => {
+const OwnerDetails = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const propertyId = queryParams.get('id');
+  const ownerId = queryParams.get('id');
 
-  const [propertyData, setPropertyData] = useState({});
+  const [ownerData, setOwnerData] = useState([]);
+  const [propertyData, setPropertyData] = useState([]);
 
+  const fetchOwnerData = async () => {
+    try {
+      const response = await getApi(urls.owner.ownerById, { id: ownerId });
+      setOwnerData(response.data); 
+    } catch (error) {
+      console.error('Error fetching property data:', error);
+    }
+  };
+  
   const fetchPropertyData = async () => {
     try {
-      const response = await getApi(urls.property.getPropertyById, { id: propertyId });
-      setPropertyData(response.data || {}); 
+      const response = await getApi(urls.owner.getPropertyByOwnerId, { id: ownerId  });
+      setPropertyData(response.data); 
     } catch (error) {
       console.error('Error fetching property data:', error);
     }
   };
 
   useEffect(() => {
+    fetchOwnerData();
     fetchPropertyData();
-  }, [propertyId]);
+  }, [ownerId]);
 
   return (
     <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
@@ -55,7 +66,7 @@ const Propertyview = () => {
         <Grid item xs={12}>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', height: '50px', borderRadius: '8px', boxShadow: 3 }}>
             <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-              {t('property_information')}
+              {t('owner_information')}
             </Typography>
           </Box>
         </Grid>
@@ -64,41 +75,25 @@ const Propertyview = () => {
         <Grid item xs={12}>
           <Paper sx={{ padding: 3, border: '1px solid #333', borderRadius: '8px', backgroundColor: '#fff', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
             <Typography variant="h5" gutterBottom>
-              {t('property_name')}
+              {t('Owner_name')}
             </Typography>
-            <Typography>{propertyData.propertyname || t('not_available')}</Typography>
+            <Typography>{ownerData.ownerName || t('not_available')}</Typography>
             <Divider sx={{ my: 2 }} />
             <Typography variant="h5" gutterBottom>
-              {t('property_address')}
+              {t('Owner_address')}
             </Typography>
-            <Typography>{propertyData.address || t('not_available')}</Typography>
+            <Typography>{ownerData.phoneNo || t('not_available')}</Typography>
             <Divider sx={{ my: 2 }} />
             <Typography variant="h5" gutterBottom>
               {t('property_rent')}
             </Typography>
-            <Typography>{propertyData.rent || t('not_available')}</Typography>
+            <Typography>{ownerData.address || t('not_available')}</Typography>
             <Divider sx={{ my: 2 }} />
             <Typography variant="h5" gutterBottom>
-              {t('property_description')}
+              {t('Total Properties Listed')}
             </Typography>
-            <Typography>{propertyData.description || t('not_available')}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              {t('property_is_vacant')}
-            </Typography>
-            <Typography>{propertyData.isVacant ? t('yes') : t('no')}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              {t('property_zipcode')}
-            </Typography>
-            <Typography>{propertyData.zipcode || t('not_available')}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              {t('property_map_link')}
-            </Typography>
-            <a href={propertyData.maplink} target="_blank" rel="noopener noreferrer">
-              {t('view_map')}
-            </a>
+            <Typography>{propertyData || t('not_available')}</Typography>
+           
           </Paper>
         </Grid>
       </Grid>
@@ -106,4 +101,4 @@ const Propertyview = () => {
   );
 };
 
-export default Propertyview;
+export default OwnerDetails;

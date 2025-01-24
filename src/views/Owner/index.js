@@ -13,7 +13,9 @@ import {
   IconButton,
 } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { useNavigate , useLocation} from 'react-router';
 import { getApi } from 'core/apis/api';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
@@ -31,8 +33,9 @@ import { tokenPayload } from 'helper';
 
 const Owner = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [dialogState, setDialogState] = useState({ add: false, edit: false, delete: false });
-  const [rowData, setRowData] = useState(null);
+  const [rowData, setRowData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [ownerData, setOwnerData] = useState([]);
    const payload = tokenPayload();
@@ -64,6 +67,11 @@ const Owner = () => {
     setDialogState((prev) => ({ ...prev, [type]: false }));
     setRowData(null);
   };
+
+  const handleOpenView = () => {
+    navigate(`/dashboard/owner/view?id=${rowData._id}`);
+  };
+
 
   // Popover Handlers
   const handlePopoverOpen = (event, row) => {
@@ -129,6 +137,10 @@ const Owner = () => {
             <MenuItem onClick={() => openDialog('edit', rowData)} disableRipple>
               <EditIcon sx={{ mr: 1 }} />
               {t('Edit')}
+            </MenuItem>
+            <MenuItem onClick={handleOpenView} >
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('view')}
             </MenuItem>
             <MenuItem
               onClick={() => openDialog('delete', rowData)}
