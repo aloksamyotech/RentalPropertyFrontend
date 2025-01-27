@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import { useState, useEffect } from 'react';
 import React from 'react';
@@ -35,18 +36,13 @@ const PropertyView = () => {
   const [ownerData, setOwnerData] = useState({});
   const [typeData, setTypeData] = useState({});
 
-  // Fetch property data
   const fetchPropertyData = async () => {
-    try {
+  
       const response = await getApi(urls.property.getPropertyById, { id: propertyId });
-      console.log(response.data, 'response data');
       setPropertyData(response.data);
       setOwnerData(response.data.ownerId);
       setTypeData(response.data.typeId);
       setPropertyImages(response.data.files);
-    } catch (error) {
-      console.error('Error fetching property data:', error);
-    }
   };
 
   useEffect(() => {
@@ -83,7 +79,6 @@ const PropertyView = () => {
         </Stack>
       </Card>
 
-      {/* Tabs for Property Details and Images */}
       <Card sx={{ p: 2, mb: 2 }}>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -93,7 +88,6 @@ const PropertyView = () => {
             </TabList>
           </Box>
 
-          {/* Property Details Tab */}
           <TabPanel value="1">
             {Object.keys(propertyData).length ? (
               <Grid container spacing={3}>
@@ -136,7 +130,7 @@ const PropertyView = () => {
                           </a>
                         </TableCell>
                       </TableRow>
-                      {/* Owner Details */}
+                
                       <TableRow>
                         <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Name')}</TableCell>
                         <TableCell>{ownerData.ownerName}</TableCell>
@@ -164,7 +158,6 @@ const PropertyView = () => {
             )}
           </TabPanel>
 
-          {/* Property Images Tab */}
           <TabPanel value="2">
             {propertyImages.length > 0 ? (
               <Grid container spacing={2}>

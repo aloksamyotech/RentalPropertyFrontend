@@ -31,19 +31,13 @@ const TenentView = () => {
 
   const [value, setValue] = useState('1');
   const [tenantData, setTenantData] = useState({});
-  const [tenantImages, setTenantImages] = useState([]);
-  // const [ownerData, setOwnerData] = useState({});
-  // const [typeData, setTypeData] = useState({});
+  const [tenantDocs, setTenantDocs] = useState([]);
 
-  // Fetch property data
   const fetchTenantData = async () => {
     try {
       const response = await getApi(urls.tenant.getTenantById, { id: tenantId });
-      console.log(response.data, 'response data');
       setTenantData(response.data);
-      // setOwnerData(response.data.ownerId);
-      // setTypeData(response.data.typeId);
-      // setPropertyImages(response.data.files);
+      setTenantDocs(response.data.images);
     } catch (error) {
       console.error('Error fetching property data:', error);
     }
@@ -66,12 +60,12 @@ const TenentView = () => {
     </Link>,
     <Typography key="view" color="text.primary">
       {t('View')}
-    </Typography>,
+    </Typography>
   ];
 
   return (
     <Container>
-      {/* Breadcrumb and Heading */}
+
       <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
           <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -83,7 +77,7 @@ const TenentView = () => {
         </Stack>
       </Card>
 
-      {/* Tabs for Property Details and Images */}
+   
       <Card sx={{ p: 2, mb: 2 }}>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -93,7 +87,7 @@ const TenentView = () => {
             </TabList>
           </Box>
 
-          {/* Property Details Tab */}
+     
           <TabPanel value="1">
             {Object.keys(tenantData).length ? (
               <Grid container spacing={3}>
@@ -136,23 +130,6 @@ const TenentView = () => {
                           </a>
                         </TableCell>
                       </TableRow>
-                      {/* Owner Details */}
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Name')}</TableCell>
-                        <TableCell>{ownerData.ownerName}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Address')}</TableCell>
-                        <TableCell>{ownerData.address}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Email')}</TableCell>
-                        <TableCell>{ownerData.email}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Phone No.')}</TableCell>
-                        <TableCell>{ownerData.phoneNo}</TableCell>
-                      </TableRow>
                     </TableBody>
                   </Table>
                 </Grid>
@@ -164,11 +141,10 @@ const TenentView = () => {
             )}
           </TabPanel>
 
-          {/* Property Images Tab */}
           <TabPanel value="2">
-            {tenantImages.length > 0 ? (
+            {tenantDocs.length > 0 ? (
               <Grid container spacing={2}>
-                {tenantImages.map((image, index) => (
+                {tenantDocs.map((image, index) => (
                   <Grid item xs={12} sm={6} md={4} key={index}>
                     <img
                       src={image}
@@ -185,7 +161,7 @@ const TenentView = () => {
               </Grid>
             ) : (
               <Typography variant="body2" color="textSecondary">
-                {t('No images available for this property.')}
+                {t('No Do available for this .')}
               </Typography>
             )}
           </TabPanel>
