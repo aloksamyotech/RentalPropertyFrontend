@@ -2,26 +2,15 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
-import {
-  Stack,
-  Button,
-  Container,
-  Typography,
-  Box,
-  Link,
-  Breadcrumbs,
-  Card,
-  Popover,
-  MenuItem,
-  IconButton,
-} from '@mui/material';
+import { Stack, Button, Container, Typography, Box, Link, Breadcrumbs, Card, Popover, MenuItem, IconButton } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-
+import { useNavigate , useLocation} from 'react-router';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
 import AddProperty from './AddProperty';
 import { IconHome } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { urls } from 'core/Constant/urls';
 import { getApi } from 'core/apis/api';
 import EditProperty from './EditProperty';
@@ -31,23 +20,25 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { tokenPayload } from 'helper';
 
-// ----------------------------------------------------------------------
 
 const Property = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
   const [openAdd, setOpenAdd] = useState(false);
   const [propertyData, setPropertyData] = useState([]);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [rowData, setRowData] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentRow, setCurrentRow] = useState(null);
-
+  const [currentRow, setCurrentRow] = useState([]);
+console.log(currentRow,"currentrow")
   const payload = tokenPayload();
 
   const fetchPropertyData = async () => {
     try {
-      const response = await getApi(urls.property.propertydata, { id: payload.companyId });
+      const response = await getApi(urls.property.propertyDataAll, { id: payload.companyId });
       if (response?.data) {
         setPropertyData(response.data);
       } else {
@@ -62,8 +53,7 @@ const Property = () => {
 
   useEffect(() => {
     fetchPropertyData();
-  }, [openAdd, openEdit, openDelete]);
-
+  }, [openAdd,openDelete,openEdit]);
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
@@ -87,6 +77,10 @@ const Property = () => {
     handleClose();
   };
 
+  const handleOpenView = () => {
+    navigate(`/dashboard/property/view?id=${currentRow._id}`);
+  };
+
   const handleCloseEditProperty = () => setOpenEdit(false);
   const handleCloseDeleteProperty = () => setOpenDelete(false);
 
@@ -95,27 +89,27 @@ const Property = () => {
       field: 'propertyname',
       headerName: t('Property Name'),
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize',
+      cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'description',
       headerName: t('Description'),
-      flex: 1,
+      flex: 1
     },
     {
       field: 'rent',
       headerName: t('Rent'),
-      flex: 1,
+      flex: 1
     },
     {
       field: 'address',
       headerName: t('Address'),
-      flex: 1,
+      flex: 1
     },
     {
       field: 'zipcode',
       headerName: t('Zip Code'),
-      flex: 1,
+      flex: 1
     },
     {
       field: 'isVacant',
@@ -125,12 +119,12 @@ const Property = () => {
         <Typography
           style={{
             color: params.row.isVacant ? 'red' : 'green',
-            fontWeight: 'bold',
+            fontWeight: 'bold'
           }}
         >
           {params.row.isVacant ? t('Vacant') : t('Occupied')}
         </Typography>
-      ),
+      )
     },
     {
       field: 'action',
@@ -138,10 +132,7 @@ const Property = () => {
       flex: 1,
       renderCell: (params) => (
         <>
-          <IconButton
-            aria-describedby={params?.row._id}
-            onClick={(event) => handleClick(event, params?.row)}
-          >
+          <IconButton aria-describedby={params?.row._id} onClick={(event) => handleClick(event, params?.row)}>
             <MoreVertIcon />
           </IconButton>
           <Popover
@@ -151,12 +142,16 @@ const Property = () => {
             onClose={handleClose}
             anchorOrigin={{
               vertical: 'bottom',
-              horizontal: 'left',
+              horizontal: 'left'
             }}
           >
             <MenuItem onClick={handleOpenEditProperty}>
               <EditIcon style={{ marginRight: '8px' }} />
               {t('Edit')}
+            </MenuItem>
+            <MenuItem onClick={handleOpenView} >
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('view')}
             </MenuItem>
             <MenuItem onClick={handleOpenDeleteProperty} sx={{ color: 'red' }}>
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
@@ -164,8 +159,8 @@ const Property = () => {
             </MenuItem>
           </Popover>
         </>
-      ),
-    },
+      )
+    }
   ];
 
   const breadcrumbs = [
@@ -177,7 +172,7 @@ const Property = () => {
     </Link>,
     <Typography key="3" sx={{ color: 'text.primary' }}>
       {t('Items')}
-    </Typography>,
+    </Typography>
   ];
 
   const handleOpenAdd = () => setOpenAdd(true);
@@ -198,11 +193,7 @@ const Property = () => {
                 {breadcrumbs}
               </Breadcrumbs>
             </Typography>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={handleOpenAdd}
-            >
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
               {t('Add Property')}
             </Button>
           </Stack>

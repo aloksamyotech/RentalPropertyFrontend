@@ -30,7 +30,9 @@ export const urls = Object.freeze({
     // login: base + '/owner/login',
     delete: base + '/owner/delete',
     edit: base + '/owner/edit',
-    ownerdata: base + '/owner/getAllOwner'
+    ownerdata: base + '/owner/getAllOwner',
+    ownerById : base + '/owner/getOwnerById',
+    getPropertyByOwnerId: base +'/owner/getPropertyByOwnerId'
   },
   agent:{
     create: base + '/agent/register',
@@ -43,9 +45,11 @@ export const urls = Object.freeze({
     create: base + '/property/register',
     editdata: base +'/property/editproperty',
     propertydata: base + '/property/getproperty',
+    propertyDataAll: base + '/property/getAllProperties',
     delete: base + '/property/delete',
     getVacantProperty : base + '/property/vacantproperty',
-     uploadPics : base + '/property/upload'
+     uploadPics : base + '/property/upload',
+   
   },
   tenant:{
     create: base + '/tenant/register',
@@ -55,7 +59,8 @@ export const urls = Object.freeze({
     getTenantById: base + '/tenant/getTenantById',
     delete: base + '/tenant/delete',
     tenantBookingData : base+ '/tenant/mybooking',
-    getMyTenants: base + '/tenant/getMyTenants'
+    getMyTenants: base + '/tenant/getMyTenants',
+    getAllTenants: base + '/tenant/getAllTenants'
   },
   booking:{
     create: base + '/booking/create',

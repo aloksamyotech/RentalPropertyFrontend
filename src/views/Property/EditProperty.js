@@ -6,6 +6,8 @@ import {
   Select,
   Button,
   Dialog,
+  Box,
+  Chip,
   FormControl,
   FormLabel,
   Grid,
@@ -19,6 +21,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { updateApi, getApi } from 'core/apis/api'; // Ensure getApi is imported
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
+import CloseIcon from '@mui/icons-material/Close';
 import Autocomplete from '@mui/material/Autocomplete';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
@@ -29,47 +32,46 @@ import { tokenPayload } from 'helper';
 const EditProperty = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const [ownerName, setOwnerData] = useState([]);
+  const [attachments, setAttachments] = useState([]);
   const [typeData, setTypeData] = useState([]);
-  const payload = tokenPayload(); 
-    // const company = JSON.parse(localStorage.getItem('companyData')); 
+  const payload = tokenPayload();
 
-
+  useEffect(() => {
+    if (open) {
+      fetchOwnerData();
+      fetchTypeData();
+    }
+  }, [open]);
 
   const fetchOwnerData = async () => {
-    try {
       const response = await getApi(urls.owner.ownerdata, { id: payload._id });
-      console.log('Fetched Owner Data:', response.data);
       setOwnerData(response.data);
-    } catch (err) {
-      console.error('Error fetching owner data:', err);
-      toast.error(t('Failed to fetch owner data!'));
-    }
   };
-  const fetchTypeData = async () => {
-      try {
-        const response = await getApi(urls.propertyTypes.getdata, { id: payload._id });
-        console.log("Fetched Type Data:", response.data);
-        setTypeData(response.data);
-      } catch (err) {
-        console.error("Error fetching type data:", err);
-        toast.error('Failed to fetch property types!');
-      }
-    };
 
-      useEffect(() => {
-        if (open) {
-          fetchOwnerData();
-          fetchTypeData();
-        }
-      }, [open]);
-  
+  const fetchTypeData = async () => {
+      const response = await getApi(urls.propertyTypes.getdata, { id: payload._id });
+      setTypeData(response.data);
+  };
+
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files);
+    setAttachments((prev) => [...prev, ...files]);
+  };
+
+  const handleFileRemove = (filename) => {
+    setAttachments((prev) => prev.filter((file) => file.name !== filename));
+  };
 
   const editProperty = async (values, resetForm) => {
-    const updatedValues = { ...values, companyId: payload._id };
+    const formData = new FormData();
+    Object.keys(values).forEach((key) => {
+      if (key !== 'files') formData.append(key, values[key]);
+    });
+    attachments.forEach((file) => formData.append('files', file));
+    formData.append('companyId', payload._id);
 
     try {
-      console.log(data,"dataaaaaaaaaaaaaaaa")
-      const response = await updateApi(urls.property.editdata, updatedValues, { id: data._id });
+      const response = await updateApi(urls.property.editdata, formData,{ id: data._id }, { 'Content-Type': 'multipart/form-data' });
 
       if (response.success) {
         toast.success(t('Property updated successfully!'));
@@ -85,51 +87,33 @@ const EditProperty = ({ open, handleClose, data }) => {
   };
 
   const validationSchema = yup.object({
-  propertyname: yup
-       .string()
-       .max(50, 'Property Name must be at most 50 characters')
-       .required('Property Name is required'),
-     typeId: yup.string().required('Type is required'),
-     description: yup
-       .string()
-       .required('Description is required')
-       .max(200, t('Description cannot exceed 200 characters')),
-       rent: yup
-       .number()
-       .typeError('Rent must be a number')
-       .min(100, 'Rent must be at least 3 digits')
-       .max(999999, 'Rent cannot exceed 6 digits')
-       .required('Rent is required'),
-     address: yup
-       .string()
-       .max(100, t('Address cannot exceed 100 characters'))
-       .required(t('Address is required')),
-     zipcode: yup.string().required('Zip Code is required'),
-     maplink: yup
-       .string()
-       .url('Must be a valid URL')
-       .required('Google Map Link is required'),
-     ownerId: yup.string().required('Owner Id is required'),
+    propertyname: yup.string().max(50, t('Property Name must be at most 50 characters')).required(t('Property Name is required')),
+    typeId: yup.string().required(t('Type is required')),
+    description: yup.string().max(200, t('Description cannot exceed 200 characters')).required(t('Description is required')),
+    rent: yup.number().min(100, t('Rent must be at least 3 digits')).max(999999, t('Rent cannot exceed 6 digits')).required(t('Rent is required')),
+    address: yup.string().max(100, t('Address cannot exceed 100 characters')).required(t('Address is required')),
+    zipcode: yup.string().required(t('Zip Code is required')),
+    maplink: yup.string().url(t('Must be a valid URL')).required(t('Google Map Link is required')),
+    ownerId: yup.string().required(t('Owner Id is required')),
   });
-  
 
   const formik = useFormik({
     initialValues: {
       propertyname: data?.propertyname || '',
       typeId: data?.typeId || '',
       description: data?.description || '',
-      address: data?.address || '',
       rent: data?.rent || '',
+      address: data?.address || '',
       zipcode: data?.zipcode || '',
       maplink: data?.maplink || '',
       ownerId: data?.ownerId || '',
+      files: [],
     },
     enableReinitialize: true,
     validationSchema,
-    onSubmit: (values, { resetForm }) => {
-      editProperty(values, resetForm);
-    },
+    onSubmit: (values, { resetForm }) => editProperty(values, resetForm),
   });
+
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -226,6 +210,37 @@ const EditProperty = ({ open, handleClose, data }) => {
                        helperText={formik.touched.rent && formik.errors.rent}
                      />
                    </Grid>
+
+                   <Grid item xs={12}>
+              <Box mb={1}>
+                <FormLabel>{t('Attachment')}</FormLabel>
+              </Box>
+              <Button variant="contained" component="label">
+                {t('Upload Files')}
+                <input type="file" multiple hidden onChange={handleFileChange} />
+              </Button>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: 1,
+                  flexWrap: 'wrap',
+                  maxHeight: '100px',
+                  overflowY: 'auto',
+                  marginTop: 1,
+                }}
+              >
+                {attachments.map((file, index) => (
+                  <Chip
+                    key={index}
+                    sx={{ background: 'green', color: 'white' }}
+                    label={file.name}
+                    onDelete={() => handleFileRemove(file.name)}
+                    deleteIcon={<CloseIcon />}
+                  />
+                ))}
+              </Box>
+            </Grid>
 
                    {/* Description */}
                    <Grid item xs={12}>

@@ -299,7 +299,20 @@
       "advance_amount": "Advance Amount",
       "status": "Status",
       "not_available": "Not Available",
-      "booking_information":"Booking Information"
+      "booking_information":"Booking Information",
+      "deleteCustomer": "Are you sure you want to delete this property?",
+      "areYouSureDeleteCustomer": "Once deleted, this action cannot be undone.",
+      "cannotDeleteProperty": "Unable to delete property. Please try again.",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "delete": "Delete",
+      "back": "Back",
+  "owner_information": "Owner Information",
+  "Owner_name": "Owner Name",
+  "Owner_address": "Owner Address",
+  "property_rent": "Property Rent",
+  "property_description": "Property Description",
+  "not_available": "Not Available"
     
     
   
