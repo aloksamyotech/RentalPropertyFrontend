@@ -33,7 +33,6 @@ const Property = () => {
   const [rowData, setRowData] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState([]);
-console.log(currentRow,"currentrow")
   const payload = tokenPayload();
 
   const fetchPropertyData = async () => {
@@ -164,15 +163,15 @@ console.log(currentRow,"currentrow")
   ];
 
   const breadcrumbs = [
-    <Link underline="hover" key="1" color="primary" href="/">
+    <Link key="1" to="/" underline="hover"     color="inherit">
       <IconHome />
     </Link>,
-    <Link underline="hover" key="2" color="primary">
-      {t('Add Property')}
+    <Link key="2" to="/dashboard/property" underline="hover"     color="inherit">
+      {t('property management')}
     </Link>,
-    <Typography key="3" sx={{ color: 'text.primary' }}>
-      {t('Items')}
-    </Typography>
+    // <Link key="3" to={`/dashboard/property/view?id=${propertyId}`} underline="hover" color="primary">
+    //   {t('view')}
+    // </Link>,
   ];
 
   const handleOpenAdd = () => setOpenAdd(true);
@@ -189,9 +188,9 @@ console.log(currentRow,"currentrow")
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               {t('Property Management')}
-              <Breadcrumbs separator="›" aria-label="breadcrumb">
-                {breadcrumbs}
-              </Breadcrumbs>
+            <Breadcrumbs separator="›" aria-label="breadcrumb">
+              {breadcrumbs}
+            </Breadcrumbs>
             </Typography>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
               {t('Add Property')}

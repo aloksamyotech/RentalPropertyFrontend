@@ -45,10 +45,11 @@ export const urls = Object.freeze({
     create: base + '/property/register',
     editdata: base +'/property/editproperty',
     propertydata: base + '/property/getproperty',
+    getPropertyById: base + '/property/getPropertyById',
     propertyDataAll: base + '/property/getAllProperties',
     delete: base + '/property/delete',
     getVacantProperty : base + '/property/vacantproperty',
-     uploadPics : base + '/property/upload',
+    uploadPics : base + '/property/upload',
    
   },
   tenant:{

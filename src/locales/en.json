@@ -312,8 +312,27 @@
   "Owner_address": "Owner Address",
   "property_rent": "Property Rent",
   "property_description": "Property Description",
-  "not_available": "Not Available"
-    
+  "not_available": "Not Available",
+  "Property Details": "Property Details",
+  "Property Name": "Property Name:",
+  "Property Type": "Property Type:",
+  "Property Type Description": "Property Type Description:",
+  "Description": "Description",
+  "Address": "Address:",
+  "Rent": "Rent:",
+  "Zipcode": "Zipcode:",
+  "Google Map Location": "Google Map Location:",
+  "View on Map": "View on Map",
+  "Owner Name": "Owner Name:",
+  "Owner Address": "Owner Address:",
+  "Owner Email": "Owner Email:",
+  "Owner Phone No.": "Owner Phone No.:",
+  "No property details available.": "No property details available.",
+  "Property Management": "Property Management",
+  "View": "View",
+  "No images available for this property.": "No images available for this property.",
+  "Property Images": "Property Images",
+  "Description":"Description:"
     
   
   

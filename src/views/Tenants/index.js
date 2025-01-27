@@ -16,6 +16,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { IconHome } from '@tabler/icons';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -33,10 +34,12 @@ import { tokenPayload } from 'helper';
 import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
+import { useNavigate } from 'react-router';
 import TabList from '@mui/lab/TabList';
 
 const Tenants = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [openAdd, setOpenAdd] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null); 
@@ -81,6 +84,11 @@ const Tenants = () => {
       setTenantData([]);
     }
   };
+
+  const handleOpenView = () => {
+    navigate(`/dashboard/tenant/view?id=${currentRow._id}`);
+  };
+
 
   useEffect(() => {
     if (value === '1') {
@@ -186,6 +194,10 @@ const Tenants = () => {
             <MenuItem onClick={handleOpenEditTenant} disableRipple>
               <EditIcon style={{ marginRight: '8px' }} />
               {t('Edit')}
+            </MenuItem>
+            <MenuItem onClick={handleOpenView} >
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('view')}
             </MenuItem>
             <MenuItem
               onClick={handleOpenDeleteTenantDialog}

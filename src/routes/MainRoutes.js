@@ -25,6 +25,7 @@ import VacantProperties from 'views/VacantProperties';
 import { element } from 'prop-types';
 import Propertyview from 'views/Property/component/propertyView';
 import OwnerDetails from 'views/Owner/Components/OwnerDetails';
+import TenentView from 'views/Tenants/component/TenentViews';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -101,6 +102,7 @@ const companyAdminRoutes = {
         { path: 'Announcement', element: <Announcement /> },
         { path: '/dashboard/property/view', element:<Propertyview/> },
         { path: '/dashboard/owner/view', element:<OwnerDetails/> },
+        {path:'/dashboard/tenant/view' , element:<TenentView/>},
         { path: 'meeting', element: <Metting /> },
         // { path: 'calender', element: <Calender /> },
         { path: 'document', element: <Document /> },
