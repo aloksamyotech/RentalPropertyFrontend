@@ -2,16 +2,10 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import { useState, useEffect } from 'react';
 import React from 'react';
-import {
-  Stack,
-  Button,
-  Container,
-  Typography,
-  Card,
-  Box,
-  Breadcrumbs,
-  Grid,
-} from '@mui/material';
+import { Stack, Button, Container, Typography, Card, Box, Breadcrumbs, Grid } from '@mui/material';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+
 import { Table, TableBody, TableRow, TableCell } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -36,13 +30,14 @@ const PropertyView = () => {
   const [ownerData, setOwnerData] = useState({});
   const [typeData, setTypeData] = useState({});
 
+  const imagepath = urls.property.image;
+
   const fetchPropertyData = async () => {
-  
-      const response = await getApi(urls.property.getPropertyById, { id: propertyId });
-      setPropertyData(response.data);
-      setOwnerData(response.data.ownerId);
-      setTypeData(response.data.typeId);
-      setPropertyImages(response.data.files);
+    const response = await getApi(urls.property.getPropertyById, { id: propertyId });
+    setPropertyData(response.data);
+    setOwnerData(response.data.ownerId);
+    setTypeData(response.data.typeId);
+    setPropertyImages(response.data.files);
   };
 
   useEffect(() => {
@@ -62,7 +57,7 @@ const PropertyView = () => {
     </Link>,
     <Typography key="view" color="text.primary">
       {t('View')}
-    </Typography>,
+    </Typography>
   ];
 
   return (
@@ -130,7 +125,7 @@ const PropertyView = () => {
                           </a>
                         </TableCell>
                       </TableRow>
-                
+
                       <TableRow>
                         <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Name')}</TableCell>
                         <TableCell>{ownerData.ownerName}</TableCell>
@@ -159,26 +154,25 @@ const PropertyView = () => {
           </TabPanel>
 
           <TabPanel value="2">
-            {propertyImages.length > 0 ? (
-              <Grid container spacing={2}>
-                {propertyImages.map((image, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={index}>
+            {propertyImages && propertyImages.length > 0 ? (
+              <ImageList cols={3} gap={8}>
+                {propertyImages.map((img, index) => (
+                  <>
+                  <ImageListItem key={index}>
                     <img
-                      src={image}
-                      alt={`Property Image ${index + 1}`}
-                      style={{
-                        width: '100%',
-                        height: 'auto',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                      }}
+                      src={`${imagepath}${img}`}
+                      srcSet={`${imagepath}${img}`}
+                      alt={`Property image ${index + 1}`}
+                      loading="lazy"
+                      style={{ borderRadius: '8px' }}
                     />
-                  </Grid>
+                  </ImageListItem>
+                  </>
                 ))}
-              </Grid>
+              </ImageList>
             ) : (
               <Typography variant="body2" color="textSecondary">
-                {t('No images available for this property.')}
+                {t('No images available.')}
               </Typography>
             )}
           </TabPanel>

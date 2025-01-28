@@ -6,8 +6,7 @@ import { useNavigate, useLocation } from 'react-router';
 import { getApi, patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { useFormik } from 'formik';
-import SendIcon from '@mui/icons-material/Send';
-import * as Yup from 'yup'; // Optional: For validation
+import * as Yup from 'yup'; 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
@@ -31,7 +30,6 @@ const BookingDetailsPage = () => {
   const fetchBookingData = async () => {
     try {
       const response = await getApi(urls.booking.getBookingById, { id: bookingId });
-      console.log(response.data,"response,,..././..")
       setBookingData(response.data);
       setTenantData(response.data.tenantId);
       setPropertyData(response.data.propertyId);

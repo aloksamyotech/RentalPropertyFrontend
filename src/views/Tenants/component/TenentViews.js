@@ -1,6 +1,4 @@
-/* eslint-disable jsx-a11y/img-redundant-alt */
-import { useState, useEffect } from 'react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Stack,
   Button,
@@ -10,19 +8,22 @@ import {
   Box,
   Breadcrumbs,
   Grid,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
 } from '@mui/material';
-import { Table, TableBody, TableRow, TableCell } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { getApi } from 'core/apis/api';
 import Tab from '@mui/material/Tab';
 import { useTranslation } from 'react-i18next';
-import { urls } from 'core/Constant/urls';
 import { useLocation, Link } from 'react-router-dom';
 import { IconHome } from '@tabler/icons';
+import { getApi } from 'core/apis/api';
+import { urls } from 'core/Constant/urls';
 
-const TenentView = () => {
+const TenantView = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
@@ -31,15 +32,17 @@ const TenentView = () => {
 
   const [value, setValue] = useState('1');
   const [tenantData, setTenantData] = useState({});
+  const [propertyData, setPropertyData] = useState([]);
   const [tenantDocs, setTenantDocs] = useState([]);
 
   const fetchTenantData = async () => {
     try {
       const response = await getApi(urls.tenant.getTenantById, { id: tenantId });
-      setTenantData(response.data);
+      setTenantData(response.data.tenant);
+      setPropertyData(response.data.booking);
       setTenantDocs(response.data.images);
     } catch (error) {
-      console.error('Error fetching property data:', error);
+      console.error('Error fetching tenant data:', error);
     }
   };
 
@@ -52,24 +55,23 @@ const TenentView = () => {
   };
 
   const breadcrumbs = [
-    <Link underline="hover" key="home" to="/dashboard" style={{ color: 'inherit' }}>
+    <Link key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
       <IconHome />
     </Link>,
-    <Link underline="hover" key="property-management" to="/dashboard/tenents" style={{ color: 'inherit' }}>
+    <Link key="tenant-management" to="/dashboard/tenents" style={{ color: 'inherit' }}>
       {t('Tenant Management')}
     </Link>,
     <Typography key="view" color="text.primary">
       {t('View')}
-    </Typography>
+    </Typography>,
   ];
 
   return (
     <Container>
-
       <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
           <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {t('Tenants Details')}
+            {t('Tenant Details')}
             <Breadcrumbs separator="›" aria-label="breadcrumb">
               {breadcrumbs}
             </Breadcrumbs>
@@ -77,17 +79,15 @@ const TenentView = () => {
         </Stack>
       </Card>
 
-   
       <Card sx={{ p: 2, mb: 2 }}>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <TabList onChange={handleTabChange} aria-label="Property tabs">
+            <TabList onChange={handleTabChange} aria-label="Tenant tabs">
               <Tab label={t('Tenant Details')} value="1" />
-              <Tab label={t('Tenant Document')} value="2" />
+              <Tab label={t('Tenant Documents')} value="2" />
             </TabList>
           </Box>
 
-     
           <TabPanel value="1">
             {Object.keys(tenantData).length ? (
               <Grid container spacing={3}>
@@ -95,40 +95,43 @@ const TenentView = () => {
                   <Table sx={{ width: '100%' }}>
                     <TableBody>
                       <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>{t('Property Name:')}</TableCell>
-                        <TableCell sx={{ width: '60%' }}>{tenantData.tenantname}</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>{t('Tenant Name:')}</TableCell>
+                        <TableCell sx={{ width: '60%' }}>{tenantData.tenantName}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Type')}</TableCell>
-                        <TableCell>{tenantData.name}</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Email Id')}</TableCell>
+                        <TableCell>{tenantData.email}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Type Description')}</TableCell>
-                        <TableCell>{tenantData.description}</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Mobile No.')}</TableCell>
+                        <TableCell>{tenantData.phoneno}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Description')}</TableCell>
-                        <TableCell>{tenantData.description}</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Emergency No.')}</TableCell>
+                        <TableCell>{tenantData.emergencyNo}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Documents')}</TableCell>
+                        <TableCell>{tenantData.identityCardType}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Identity No')}</TableCell>
+                        <TableCell>{tenantData.identityNo}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('isOccupied')}</TableCell>
+                        <TableCell
+                          sx={{
+                            color: tenantData.isOccupied ? 'green' : 'red',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {tenantData.isOccupied ? 'Yes' : 'No'}
+                        </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell sx={{ fontWeight: 'bold' }}>{t('Address')}</TableCell>
                         <TableCell>{tenantData.address}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Rent')}</TableCell>
-                        <TableCell>{tenantData.rent}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Zipcode')}</TableCell>
-                        <TableCell>{tenantData.zipcode}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Google Map Location')}</TableCell>
-                        <TableCell>
-                          <a href={tenantData.maplink} target="_blank" rel="noopener noreferrer">
-                            {t('View on Map')}
-                          </a>
-                        </TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
@@ -136,32 +139,76 @@ const TenentView = () => {
               </Grid>
             ) : (
               <Typography variant="body2" color="textSecondary">
-                {t('No  Tenants details available.')}
+                {t('No tenant details available.')}
+              </Typography>
+            )}
+
+            {/* Map over property data */}
+            {propertyData.length ? (
+              propertyData.map((property, index) => (
+                <Grid container spacing={3} key={index}>
+                  <Grid item sm={12}>
+                    <Table sx={{ width: '100%' }}>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>{t('Property Name:')}</TableCell>
+                          <TableCell sx={{ width: '60%' }}>{property.propertyName}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 'bold' }}>{t('Description')}</TableCell>
+                          <TableCell>{property.description}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 'bold' }}>{t('Rent')}</TableCell>
+                          <TableCell>{property.rent}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Address')}</TableCell>
+                          <TableCell>{property.address}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </Grid>
+                </Grid>
+              ))
+            ) : (
+              <Typography variant="body2" color="textSecondary">
+                {t('No property details is available for this Tenant.')}
               </Typography>
             )}
           </TabPanel>
 
           <TabPanel value="2">
-            {tenantDocs.length > 0 ? (
-              <Grid container spacing={2}>
-                {tenantDocs.map((image, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={index}>
-                    <img
-                      src={image}
-                      alt={`Tenant Document ${index + 1}`}
-                      style={{
-                        width: '100%',
-                        height: 'auto',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                      }}
-                    />
+          {tenantData.length ? (
+              tenantData.map((tenant, index) => (
+                <Grid container spacing={3} key={index}>
+                  <Grid item sm={12}>
+                    <Table sx={{ width: '100%' }}>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>{t('Property Name:')}</TableCell>
+                          <TableCell sx={{ width: '60%' }}>{tenant.propertyName}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 'bold' }}>{t('Description')}</TableCell>
+                          <TableCell>{property.description}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 'bold' }}>{t('Rent')}</TableCell>
+                          <TableCell>{property.rent}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Address')}</TableCell>
+                          <TableCell>{property.address}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
                   </Grid>
-                ))}
-              </Grid>
+                </Grid>
+              ))
             ) : (
               <Typography variant="body2" color="textSecondary">
-                {t('No Do available for this .')}
+                {t('No property details is available for this Tenant.')}
               </Typography>
             )}
           </TabPanel>
@@ -171,4 +218,4 @@ const TenentView = () => {
   );
 };
 
-export default TenentView;
+export default TenantView;
