@@ -155,14 +155,14 @@ const agentDashboard = {
       icon: PersonIcon,
       breadcrumbs: false,
     },
-    {
-      id: '3',
-      title: 'Property Management',
-      type: 'item',
-      url: '/dashboard/property',
-      icon: AddHomeWorkIcon,
-      breadcrumbs: false,
-    },
+    // {
+    //   id: '3',
+    //   title: 'Property Management',
+    //   type: 'item',
+    //   url: '/dashboard/property',
+    //   icon: AddHomeWorkIcon,
+    //   breadcrumbs: false,
+    // },
     {
       id: '4',
       title: 'Complaints',

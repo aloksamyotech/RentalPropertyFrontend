@@ -2,14 +2,26 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import { useState, useEffect } from 'react';
 import React from 'react';
-import { Stack, Button, Container, Typography, Card, Box, Breadcrumbs, Grid } from '@mui/material';
+import {
+  Stack,
+  Button,
+  Container,
+  Typography,
+  Card,
+  Box,
+  Breadcrumbs,
+  Grid,
+  Dialog,
+  DialogContent,
+  IconButton,
+} from '@mui/material';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-
 import { Table, TableBody, TableRow, TableCell } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import { Close } from '@mui/icons-material';
 import { getApi } from 'core/apis/api';
 import Tab from '@mui/material/Tab';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +38,7 @@ const PropertyView = () => {
 
   const [value, setValue] = useState('1');
   const [propertyData, setPropertyData] = useState({});
+  const [selectedImage, setSelectedImage] = useState(null);
   const [propertyImages, setPropertyImages] = useState([]);
   const [ownerData, setOwnerData] = useState({});
   const [typeData, setTypeData] = useState({});
@@ -33,15 +46,29 @@ const PropertyView = () => {
   const imagepath = urls.property.image;
 
   const fetchPropertyData = async () => {
-    const response = await getApi(urls.property.getPropertyById, { id: propertyId });
-    setPropertyData(response.data);
-    setOwnerData(response.data.ownerId);
-    setTypeData(response.data.typeId);
-    setPropertyImages(response.data.files);
+    try {
+      const response = await getApi(urls.property.getPropertyById, { id: propertyId });
+      setPropertyData(response.data || {});
+      setOwnerData(response.data?.ownerId || {});
+      setTypeData(response.data?.typeId || {});
+      setPropertyImages(response.data?.files || []);
+    } catch (error) {
+      console.error('Error fetching property data:', error);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedImage(null);
+  };
+
+  const handleImageClick = (img) => {
+    setSelectedImage(`${imagepath}${img}`);
   };
 
   useEffect(() => {
-    fetchPropertyData();
+    if (propertyId) {
+      fetchPropertyData();
+    }
   }, [propertyId]);
 
   const handleTabChange = (event, newValue) => {
@@ -57,8 +84,10 @@ const PropertyView = () => {
     </Link>,
     <Typography key="view" color="text.primary">
       {t('View')}
-    </Typography>
+    </Typography>,
   ];
+
+  
 
   return (
     <Container>
@@ -95,11 +124,11 @@ const PropertyView = () => {
                       </TableRow>
                       <TableRow>
                         <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Type')}</TableCell>
-                        <TableCell>{typeData.name}</TableCell>
+                        <TableCell>{typeData?.name || 'N/A'}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Type Description')}</TableCell>
-                        <TableCell>{typeData.description}</TableCell>
+                        <TableCell>{typeData?.description || 'N/A'}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell sx={{ fontWeight: 'bold' }}>{t('Description')}</TableCell>
@@ -128,19 +157,19 @@ const PropertyView = () => {
 
                       <TableRow>
                         <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Name')}</TableCell>
-                        <TableCell>{ownerData.ownerName}</TableCell>
+                        <TableCell>{ownerData?.ownerName || 'N/A'}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Address')}</TableCell>
-                        <TableCell>{ownerData.address}</TableCell>
+                        <TableCell>{ownerData?.address || 'N/A'}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Email')}</TableCell>
-                        <TableCell>{ownerData.email}</TableCell>
+                        <TableCell>{ownerData?.email || 'N/A'}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Phone No.')}</TableCell>
-                        <TableCell>{ownerData.phoneNo}</TableCell>
+                        <TableCell>{ownerData?.phoneNo || 'N/A'}</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
@@ -157,17 +186,15 @@ const PropertyView = () => {
             {propertyImages && propertyImages.length > 0 ? (
               <ImageList cols={3} gap={8}>
                 {propertyImages.map((img, index) => (
-                  <>
-                  <ImageListItem key={index}>
+                  <ImageListItem key={index} onClick={() => handleImageClick(img)}>
                     <img
                       src={`${imagepath}${img}`}
                       srcSet={`${imagepath}${img}`}
                       alt={`Property image ${index + 1}`}
                       loading="lazy"
-                      style={{ borderRadius: '8px' }}
+                      style={{ borderRadius: '8px', cursor: 'pointer' }}
                     />
                   </ImageListItem>
-                  </>
                 ))}
               </ImageList>
             ) : (
@@ -178,6 +205,35 @@ const PropertyView = () => {
           </TabPanel>
         </TabContext>
       </Card>
+
+      {/* Image Popup Dialog */}
+      <Dialog open={Boolean(selectedImage)} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+        <DialogContent sx={{ position: 'relative' }}>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseDialog}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <Close />
+          </IconButton>
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Selected Property"
+              style={{
+                width: '100%',
+                height: 'auto',
+                borderRadius: '8px',
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 };

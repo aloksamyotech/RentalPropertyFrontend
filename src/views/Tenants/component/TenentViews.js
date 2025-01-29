@@ -6,6 +6,7 @@ import {
   Typography,
   Card,
   Box,
+  Chip,
   Breadcrumbs,
   Grid,
   Table,
@@ -22,11 +23,14 @@ import { useLocation, Link } from 'react-router-dom';
 import { IconHome } from '@tabler/icons';
 import { getApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 const TenantView = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
+  
   const queryParams = new URLSearchParams(location.search);
   const tenantId = queryParams.get('id');
 

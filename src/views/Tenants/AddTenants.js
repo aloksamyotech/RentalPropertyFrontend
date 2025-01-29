@@ -1,51 +1,68 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   MenuItem,
   Select,
   Button,
   Dialog,
-  FormControl,
   FormLabel,
   Grid,
+  Chip,
+  Box,
   TextField,
   Typography,
   DialogActions,
   DialogContent,
   DialogTitle,
 } from '@mui/material';
-
 import ClearIcon from '@mui/icons-material/Clear';
 import { postApi } from 'core/apis/api';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import CloseIcon from '@mui/icons-material/Close';
 
 const AddTenants = ({ open, handleClose }) => {
   const { t } = useTranslation();
-
-  // const company = JSON.parse(localStorage.getItem('companyData'));
+  const [attachments, setAttachments] = useState([]);
+  
   const payload = tokenPayload();
 
   const AddTenants = async (values, resetForm) => {
-    values.companyId = payload.companyId;
-    values.reporterId = payload._id;
+    const formData = new FormData();
+
+    formData.append('tenantName', values.tenantName);
+    formData.append('email', values.email);
+    formData.append('password', values.password);
+    formData.append('phoneno', values.phoneno);
+    formData.append('identityCardType', values.identityCardType);
+    formData.append('identityNo', values.identityNo);
+    formData.append('address', values.address);
+
+    attachments.forEach((file) => {
+      formData.append('document', file); 
+    });
+
+    formData.append('companyId', payload._id);
+    formData.append('reporterId', payload._id);
+
     try {
-      const response = await postApi(urls.tenant.create, values);
+      const response = await postApi(urls.tenant.create, formData, {
+        'Content-Type': 'multipart/form-data',
+      });
+
       if (response.success) {
         toast.success('Successfully registered tenant!');
         resetForm();
-        setTimeout(() => {
-          handleClose();
-        }, 200);
+        setAttachments([]);
+        handleClose();
       } else {
-        toast.error('Failed to register tenant!');
+        throw new Error();
       }
     } catch (err) {
       console.error('Error adding tenant:', err);
@@ -53,7 +70,17 @@ const AddTenants = ({ open, handleClose }) => {
     }
   };
 
-  // Validation schema
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length) {
+      setAttachments((prev) => [...prev, ...files]);
+    }
+  };
+
+  const handleFileRemove = (fileName) => {
+    setAttachments((prev) => prev.filter((file) => file.name !== fileName));
+  };
+
   const validationSchema = yup.object({
     tenantName: yup
       .string()
@@ -67,18 +94,12 @@ const AddTenants = ({ open, handleClose }) => {
       .required(t('Phone number is required')),
     identityCardType: yup.string().required(t('Identity Card Type is required')),
     identityNo: yup.string().required(t('Identity Number is required')),
-    identityImage: yup.mixed().nullable(),
-    emergencyNo: yup
-      .string()
-      .matches(/^[0-9]{10}$/, t('Emergency number must be 10 digits'))
-      .required(t('Emergency number is required')),
     address: yup
       .string()
       .max(100, t('Address must be at most 100 characters'))
       .required(t('Address is required')),
   });
 
-  // Initial values
   const initialValues = {
     tenantName: '',
     email: '',
@@ -86,34 +107,27 @@ const AddTenants = ({ open, handleClose }) => {
     phoneno: '',
     identityCardType: '',
     identityNo: '',
-    identityImage: null,
-    emergencyNo: '',
     address: '',
+    document: [],
   };
 
-  // Formik setup
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values, { resetForm }) => {
       console.log('Submitted Values:', values);
-      AddTenants(values, resetForm);
+      AddTenants({ ...values, document: attachments }, resetForm);
     },
   });
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle
-        id="scroll-dialog-title"
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
+      <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="h6">{t('Add New Tenant')}</Typography>
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
- <DialogContent dividers>
+
+      <DialogContent dividers>
         <form onSubmit={formik.handleSubmit}>
           <Typography variant="h6" style={{ marginBottom: '15px' }}>
             {t('Tenant Information')}
@@ -182,21 +196,6 @@ const AddTenants = ({ open, handleClose }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Emergency Number')}</FormLabel>
-              <TextField
-                id="emergencyNo"
-                name="emergencyNo"
-                type="tel"
-                size="small"
-                fullWidth
-                value={formik.values.emergencyNo}
-                onChange={formik.handleChange}
-                error={formik.touched.emergencyNo && Boolean(formik.errors.emergencyNo)}
-                helperText={formik.touched.emergencyNo && formik.errors.emergencyNo}
-              />
-            </Grid>
-
             {/* Identity Card Type */}
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Identity Card Type')}</FormLabel>
@@ -207,10 +206,7 @@ const AddTenants = ({ open, handleClose }) => {
                 fullWidth
                 value={formik.values.identityCardType}
                 onChange={formik.handleChange}
-                error={
-                  formik.touched.identityCardType &&
-                  Boolean(formik.errors.identityCardType)
-                }
+                error={formik.touched.identityCardType && Boolean(formik.errors.identityCardType)}
               >
                 <MenuItem value="" disabled>
                   {t('Select Identity Card Type')}
@@ -236,20 +232,36 @@ const AddTenants = ({ open, handleClose }) => {
               />
             </Grid>
 
-            {/* Identity Image */}
-            <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Identity Image')}</FormLabel>
-              <input
-                id="identityImage"
-                name="identityImage"
-                type="file"
-                onChange={(event) => {
-                  formik.setFieldValue('identityImage', event.currentTarget.files[0]);
+            {/* Documents */}
+            <Grid item xs={12}>
+              <Box mb={1}>
+                <FormLabel>{t('Documents')}</FormLabel>
+              </Box>
+              <Button variant="contained" component="label">
+                {t('Upload Files')}
+                <input type="file" multiple hidden onChange={handleFileChange} />
+              </Button>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: 1,
+                  flexWrap: 'wrap',
+                  maxHeight: '100px',
+                  overflowY: 'auto',
+                  marginTop: 1,
                 }}
-              />
-              {formik.touched.identityImage && formik.errors.identityImage && (
-                <Typography color="error">{formik.errors.identityImage}</Typography>
-              )}
+              >
+                {attachments.map((file, index) => (
+                  <Chip
+                    key={index}
+                    sx={{ background: 'green', color: 'white' }}
+                    label={file.name}
+                    onDelete={() => handleFileRemove(file.name)}
+                    deleteIcon={<CloseIcon />}
+                  />
+                ))}
+              </Box>
             </Grid>
 
             {/* Address */}
@@ -271,13 +283,9 @@ const AddTenants = ({ open, handleClose }) => {
           </Grid>
         </form>
       </DialogContent>
+
       <DialogActions>
-        <Button
-          onClick={formik.handleSubmit}
-          variant="contained"
-          color="primary"
-          type="submit"
-        >
+        <Button variant="contained" color="primary" type="submit" onClick={formik.handleSubmit}>
           {t('Save')}
         </Button>
         <Button

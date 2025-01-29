@@ -112,7 +112,8 @@ const AddProperty = ({ open, handleClose }) => {
     rent: yup
       .number()
       .typeError('Rent must be a number')
-      .min(100, 'Rent must be at least 3 digits')
+      .min(0, 'Rent cannot be negative')
+      .min(100, 'Rent must be at least 2 digits')
       .max(999999, 'Rent cannot exceed 6 digits')
       .required('Rent is required'),
     address: yup
@@ -138,6 +139,7 @@ const AddProperty = ({ open, handleClose }) => {
     },
     validationSchema,
     onSubmit: (values, { resetForm }) => {
+      console.log({ ...values, files: attachments },"asdjkasbd")
       addProperty({ ...values, files: attachments }, resetForm);
     },
   });
@@ -229,9 +231,9 @@ const AddProperty = ({ open, handleClose }) => {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <Box mb={1}>
-                <FormLabel>{t('Attachment')}</FormLabel>
+                <FormLabel>{t('Documents')}</FormLabel>
               </Box>
               <Button variant="contained" component="label">
                 {t('Upload Files')}
