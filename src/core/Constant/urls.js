@@ -3,6 +3,7 @@
 import Complaints from "views/Complaints";
 
 const base = 'http://localhost:7200/api/v1';
+const imageBase = 'http://localhost:7200/';
 
 export const urls = Object.freeze({
   // SuperAdmin
@@ -45,10 +46,12 @@ export const urls = Object.freeze({
     create: base + '/property/register',
     editdata: base +'/property/editproperty',
     propertydata: base + '/property/getproperty',
+    getPropertyById: base + '/property/getPropertyById',
     propertyDataAll: base + '/property/getAllProperties',
     delete: base + '/property/delete',
     getVacantProperty : base + '/property/vacantproperty',
-     uploadPics : base + '/property/upload',
+    uploadPics : base + '/property/upload',
+    image: imageBase
    
   },
   tenant:{

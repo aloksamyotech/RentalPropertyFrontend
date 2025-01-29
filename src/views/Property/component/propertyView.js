@@ -1,109 +1,185 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import { useState, useEffect } from 'react';
-import { Box, Grid, Typography, Paper, Button, Divider } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate, useLocation } from 'react-router';
-import { getApi } from 'core/apis/api';
-import { urls } from 'core/Constant/urls';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
+import { Stack, Button, Container, Typography, Card, Box, Breadcrumbs, Grid } from '@mui/material';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
 
-const Propertyview = () => {
+import { Table, TableBody, TableRow, TableCell } from '@mui/material';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import { getApi } from 'core/apis/api';
+import Tab from '@mui/material/Tab';
+import { useTranslation } from 'react-i18next';
+import { urls } from 'core/Constant/urls';
+import { useLocation, Link } from 'react-router-dom';
+import { IconHome } from '@tabler/icons';
+
+const PropertyView = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const location = useLocation();
+
   const queryParams = new URLSearchParams(location.search);
   const propertyId = queryParams.get('id');
 
+  const [value, setValue] = useState('1');
   const [propertyData, setPropertyData] = useState({});
+  const [propertyImages, setPropertyImages] = useState([]);
+  const [ownerData, setOwnerData] = useState({});
+  const [typeData, setTypeData] = useState({});
+
+  const imagepath = urls.property.image;
 
   const fetchPropertyData = async () => {
-    try {
-      const response = await getApi(urls.property.getPropertyById, { id: propertyId });
-      setPropertyData(response.data || {}); 
-    } catch (error) {
-      console.error('Error fetching property data:', error);
-    }
+    const response = await getApi(urls.property.getPropertyById, { id: propertyId });
+    setPropertyData(response.data);
+    setOwnerData(response.data.ownerId);
+    setTypeData(response.data.typeId);
+    setPropertyImages(response.data.files);
   };
 
   useEffect(() => {
     fetchPropertyData();
   }, [propertyId]);
 
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const breadcrumbs = [
+    <Link underline="hover" key="home" to="/dashboard" style={{ color: 'inherit' }}>
+      <IconHome />
+    </Link>,
+    <Link underline="hover" key="property-management" to="/dashboard/property" style={{ color: 'inherit' }}>
+      {t('Property Management')}
+    </Link>,
+    <Typography key="view" color="text.primary">
+      {t('View')}
+    </Typography>
+  ];
+
   return (
-    <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sx={{ mb: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
-              variant="outlined"
-              startIcon={<ArrowBackIcon />}
-              onClick={() => navigate(-1)}
-              sx={{
-                color: '#673ab7',
-                borderColor: '#673ab7',
-                '&:hover': {
-                  backgroundColor: '#f3e5f5',
-                },
-              }}
-            >
-              {t('back')}
-            </Button>
-          </Box>
-        </Grid>
+    <Container>
+      {/* Breadcrumb and Heading */}
+      <Card sx={{ p: 2, mb: 2 }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {t('Property Details')}
+            <Breadcrumbs separator="›" aria-label="breadcrumb">
+              {breadcrumbs}
+            </Breadcrumbs>
+          </Typography>
+        </Stack>
+      </Card>
 
-        {/* Property Information Section */}
-        <Grid item xs={12}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', height: '50px', borderRadius: '8px', boxShadow: 3 }}>
-            <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-              {t('property_information')}
-            </Typography>
+      <Card sx={{ p: 2, mb: 2 }}>
+        <TabContext value={value}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <TabList onChange={handleTabChange} aria-label="Property tabs">
+              <Tab label={t('Property Details')} value="1" />
+              <Tab label={t('Property Images')} value="2" />
+            </TabList>
           </Box>
-        </Grid>
 
-        {/* Property Details */}
-        <Grid item xs={12}>
-          <Paper sx={{ padding: 3, border: '1px solid #333', borderRadius: '8px', backgroundColor: '#fff', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-            <Typography variant="h5" gutterBottom>
-              {t('property_name')}
-            </Typography>
-            <Typography>{propertyData.propertyname || t('not_available')}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              {t('property_address')}
-            </Typography>
-            <Typography>{propertyData.address || t('not_available')}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              {t('property_rent')}
-            </Typography>
-            <Typography>{propertyData.rent || t('not_available')}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              {t('property_description')}
-            </Typography>
-            <Typography>{propertyData.description || t('not_available')}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              {t('property_is_vacant')}
-            </Typography>
-            <Typography>{propertyData.isVacant ? t('yes') : t('no')}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              {t('property_zipcode')}
-            </Typography>
-            <Typography>{propertyData.zipcode || t('not_available')}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              {t('property_map_link')}
-            </Typography>
-            <a href={propertyData.maplink} target="_blank" rel="noopener noreferrer">
-              {t('view_map')}
-            </a>
-          </Paper>
-        </Grid>
-      </Grid>
-    </Box>
+          <TabPanel value="1">
+            {Object.keys(propertyData).length ? (
+              <Grid container spacing={3}>
+                <Grid item sm={12}>
+                  <Table sx={{ width: '100%' }}>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>{t('Property Name:')}</TableCell>
+                        <TableCell sx={{ width: '60%' }}>{propertyData.propertyname}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Type')}</TableCell>
+                        <TableCell>{typeData.name}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Type Description')}</TableCell>
+                        <TableCell>{typeData.description}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Description')}</TableCell>
+                        <TableCell>{propertyData.description}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Address')}</TableCell>
+                        <TableCell>{propertyData.address}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Rent')}</TableCell>
+                        <TableCell>{propertyData.rent}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Zipcode')}</TableCell>
+                        <TableCell>{propertyData.zipcode}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Google Map Location')}</TableCell>
+                        <TableCell>
+                          <a href={propertyData.maplink} target="_blank" rel="noopener noreferrer">
+                            {t('View on Map')}
+                          </a>
+                        </TableCell>
+                      </TableRow>
+
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Name')}</TableCell>
+                        <TableCell>{ownerData.ownerName}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Address')}</TableCell>
+                        <TableCell>{ownerData.address}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Email')}</TableCell>
+                        <TableCell>{ownerData.email}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Phone No.')}</TableCell>
+                        <TableCell>{ownerData.phoneNo}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </Grid>
+              </Grid>
+            ) : (
+              <Typography variant="body2" color="textSecondary">
+                {t('No property details available.')}
+              </Typography>
+            )}
+          </TabPanel>
+
+          <TabPanel value="2">
+            {propertyImages && propertyImages.length > 0 ? (
+              <ImageList cols={3} gap={8}>
+                {propertyImages.map((img, index) => (
+                  <>
+                  <ImageListItem key={index}>
+                    <img
+                      src={`${imagepath}${img}`}
+                      srcSet={`${imagepath}${img}`}
+                      alt={`Property image ${index + 1}`}
+                      loading="lazy"
+                      style={{ borderRadius: '8px' }}
+                    />
+                  </ImageListItem>
+                  </>
+                ))}
+              </ImageList>
+            ) : (
+              <Typography variant="body2" color="textSecondary">
+                {t('No images available.')}
+              </Typography>
+            )}
+          </TabPanel>
+        </TabContext>
+      </Card>
+    </Container>
   );
 };
 
-export default Propertyview;
+export default PropertyView;
