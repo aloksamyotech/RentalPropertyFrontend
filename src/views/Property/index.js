@@ -41,11 +41,9 @@ const Property = () => {
       if (response?.data) {
         setPropertyData(response.data);
       } else {
-        console.error('Failed to fetch property data.');
         setPropertyData([]);
       }
     } catch (error) {
-      console.error('Error fetching property data:', error);
       setPropertyData([]);
     }
   };

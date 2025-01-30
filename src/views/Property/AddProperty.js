@@ -71,9 +71,7 @@ const AddProperty = ({ open, handleClose }) => {
     attachments.forEach((files) => {
       formData.append('files', files);
     });
-    // for (let [key, value] of formData.entries()) {
-    //   console.log(`${key}:`, value);
-    // }
+   
     formData.append('companyId', payload._id);
   
     try {
@@ -139,8 +137,6 @@ const AddProperty = ({ open, handleClose }) => {
     },
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log({ ...values, files: attachments },"asdjkasbd")
-      addProperty({ ...values, files: attachments }, resetForm);
     },
   });
 

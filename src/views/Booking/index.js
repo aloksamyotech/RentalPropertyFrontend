@@ -75,14 +75,11 @@ const isAdmin = payload?.role === 'companyAdmin';
           : 'N/A',
       }));
       setBookingData(formattedData);
-    // } else {
-    //   setBookingData([]);
-    // }
+    
   };
 
   const fetchBookingData = async () => {
     const response = await getApi(urls.booking.bookingdata, { id: payload._id });
-    // if (response?.data && Array.isArray(response.data)) {
       const formattedData = response.data.map((item) => ({
         ...item,
         tenantName: item.tenantId?.tenantName,
@@ -95,14 +92,11 @@ const isAdmin = payload?.role === 'companyAdmin';
           : 'N/A',
       }));
       setBookingData(formattedData);
-    // } else {
-    //   setBookingData([]);
-    // }
+   
   };
 
   const fetchAllBookingData = async () => {
     const response = await getApi(urls.booking.allbooking, { id: payload.companyId });
-    // if (response?.data && Array.isArray(response.data)) {
       const formattedData = response.data.map((item) => ({
         ...item,
         tenantName: item.tenantId?.tenantName,
@@ -115,9 +109,6 @@ const isAdmin = payload?.role === 'companyAdmin';
           : 'N/A',
       }));
       setBookingData(formattedData);
-    // } else {
-    //   setBookingData([]);
-    // }
   };
 
   useEffect(() => {
@@ -147,7 +138,6 @@ const isAdmin = payload?.role === 'companyAdmin';
   };
 
   const handleOpenView = () => {
-    console.log(currentRow,"currentRow")
     navigate(`/dashboard/booking/view?id=${currentRow._id}&reporterName=${currentRow.name}`);
   };
 

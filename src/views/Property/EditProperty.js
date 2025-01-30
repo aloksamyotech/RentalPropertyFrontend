@@ -81,7 +81,6 @@ const EditProperty = ({ open, handleClose, data }) => {
         toast.error(t('Failed to update property!'));
       }
     } catch (err) {
-      console.error('Error updating property:', err);
       toast.error(t('Something went wrong!'));
     }
   };
