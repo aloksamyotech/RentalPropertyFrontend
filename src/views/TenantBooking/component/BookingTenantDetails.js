@@ -29,19 +29,14 @@ const BookingDetailsTenantPage = () => {
   const [tenantData, setTenantData] = useState({});
   const [propertyData, setPropertyData] = useState({});
   const [status, setStatus] = useState(false);
-  console.log(bookingData,"bookingDatabookingDatabookingData")
+
 
   const fetchBookingData = async () => {
-    try {
       const response = await getApi(urls.booking.getBookingById, { id: bookingId });
-      console.log(response.data,"response,,..././..")
       setBookingData(response.data);
       setTenantData(response.data.tenantId);
       setPropertyData(response.data.propertyId);
       setStatus(response.data.status); 
-    } catch (error) {
-      console.error('Error fetching booking data:', error);
-    }
   };
 
   useEffect(() => {
