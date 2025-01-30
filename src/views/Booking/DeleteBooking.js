@@ -16,12 +16,10 @@ const DeleteBooking = ({ open, handleClose, id }) => {
   const { t } = useTranslation(); 
   const navigate = useNavigate(); 
   const [loading, setLoading] = useState(false); 
- console.log(id,"idididididid")
   const handleDelete = async () => {
     setLoading(true); 
     try {
       const result = await patchApi(urls.booking.breakTheBooking,{}, { id });
-
       if (result?.status === 200 || result?.success) {
         toast.success(t('companyDeletedSuccessfully')); 
         handleClose(); 
@@ -29,7 +27,6 @@ const DeleteBooking = ({ open, handleClose, id }) => {
         toast.error(t('cannotDeletecompany')); 
       }
     } catch (error) {
-      console.error('Error deleting Company:', error);
       toast.error(t('cannotDeleteCompany')); 
     } finally {
       setLoading(false);

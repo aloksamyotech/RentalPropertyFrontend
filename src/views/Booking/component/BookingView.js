@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
-import { Box, Grid, Typography, TextField, Paper, Button, Divider, Switch, Stack } from '@mui/material';
+import { Box, Grid, Typography, TextField, Paper, Button, Divider, Switch, Container,Card, Breadcrumbs,Stack } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useLocation } from 'react-router';
 import { getApi, patchApi } from 'core/apis/api';
@@ -10,6 +10,8 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
+import { Link } from 'react-router-dom';
+import { IconHome } from '@tabler/icons';
 
 
 const BookingDetailsPage = () => {
@@ -100,49 +102,40 @@ const BookingDetailsPage = () => {
     },
   });
 
+     const breadcrumbs = [
+        <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
+          <IconHome />
+        </Link>,
+        <Link underline="hover" key="property-management" to="/dashboard/booking" style={{ color: 'inherit' }}>
+          {t('Booking Management')}
+        </Link>,
+        <Typography key="view" color="text.primary">
+          {t('View')}
+        </Typography>,
+      ];
+
   return (
     <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
       <Grid container spacing={3}>
-        <Grid item xs={12} sx={{ mb: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
-              variant="outlined"
-              startIcon={<ArrowBackIcon />}
-              onClick={() => navigate(-1)}
-              sx={{
-                color: '#673ab7',
-                borderColor: '#673ab7',
-                '&:hover': {
-                  backgroundColor: '#f3e5f5',
-                },
-              }}
-            >
-              {t('back')}
-            </Button>
-          </Box>
-        </Grid>
+    
 
         {/* Booking Title Section */}
         <Grid item xs={12}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'white',
-              height: '50px',
-              borderRadius: '8px',
-              boxShadow: 3,
-            }}
-          >
-            <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-              {t('booking_information')}
-            </Typography>
-          </Box>
+        <Card sx={{ p: 2, mb: 2 }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {t('Booking Details')}
+            <Breadcrumbs separator="›" aria-label="breadcrumb">
+              {breadcrumbs}
+            </Breadcrumbs>
+          </Typography>
+        </Stack>
+      </Card>
+     
         </Grid>
-
         {/* Tenant Info Section */}
-        <Grid item xs={12} md={6}>
+        
+        <Grid item xs={12}>
           <Paper
             sx={{
               padding: 3,
@@ -186,7 +179,7 @@ const BookingDetailsPage = () => {
         </Grid>
 
         {/* Property Info Section */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12}>
           <Paper
             sx={{
               padding: 3,

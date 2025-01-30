@@ -1,16 +1,20 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
-import { Box, Grid, Typography, TextField, Paper, Button, Divider, Switch, Stack } from '@mui/material';
+import { Box, Grid, Typography, TextField, Paper, Button,  Card, Divider,   Container, Breadcrumbs, Switch, Stack } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useLocation } from 'react-router';
 import { getApi, patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { useFormik } from 'formik';
 import SendIcon from '@mui/icons-material/Send';
-import * as Yup from 'yup'; // Optional: For validation
+import { Link } from 'react-router-dom';
+import * as Yup from 'yup'; 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
+import { IconHome } from '@tabler/icons';
+
+
 
 const BookingDetailsTenantPage = () => {
   const { t } = useTranslation();
@@ -25,125 +29,53 @@ const BookingDetailsTenantPage = () => {
   const [tenantData, setTenantData] = useState({});
   const [propertyData, setPropertyData] = useState({});
   const [status, setStatus] = useState(false);
-  console.log(bookingData,"bookingDatabookingDatabookingData")
+
 
   const fetchBookingData = async () => {
-    try {
       const response = await getApi(urls.booking.getBookingById, { id: bookingId });
-      console.log(response.data,"response,,..././..")
       setBookingData(response.data);
       setTenantData(response.data.tenantId);
       setPropertyData(response.data.propertyId);
       setStatus(response.data.status); 
-    } catch (error) {
-      console.error('Error fetching booking data:', error);
-    }
   };
 
   useEffect(() => {
     fetchBookingData();
   }, [bookingId]);
 
-  // const validationSchema = Yup.object({
-  //   comment: Yup.string().required(t('comment_required')),
-  // });
-
-  // const initialValues = {
-  //   comment: '',
-  // };
-
-  // const addComment = async (values, resetForm) => {
-  //   try {
-  //     const response = await patchApi(
-  //       urls.booking.addCommentToBooking,
-  //       { comment: values.comment },
-  //       { id: bookingId }
-  //     );
-
-  //     if (response.success) {
-  //       toast.success(t('comment_added_successfully'));
-  //       resetForm();
-  //     } else {
-  //       toast.error(t('something_went_wrong'));
-  //     }
-  //   } catch (error) {
-  //     console.error('Error adding comment:', error);
-  //     toast.error(t('something_went_wrong'));
-  //   }
-  // };
-
-  // const handleStatusChange = async (event) => {
-  //   setStatus(event.target.checked); 
-
-  //   try {
-  //     const response = await patchApi(
-  //       urls.booking.updateBookingStatus,
-  //       { status: event.target.checked }, 
-  //       { id: bookingId }
-  //     );
-
-  //     if (response.success) {
-  //       toast.success(t('booking_status_updated'));
-  //     } else {
-  //       toast.error(t('something_went_wrong'));
-  //     }
-  //   } catch (error) {
-  //     console.error('Error updating status:', error);
-  //     toast.error(t('something_went_wrong'));
-  //   }
-  // };
-
-  // const formik = useFormik({
-  //   initialValues,
-  //   validationSchema,
-  //   onSubmit: async (values, { resetForm }) => {
-  //     await addComment(values, resetForm);
-  //   },
-  // });
+   const breadcrumbs = [
+      <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
+        <IconHome />
+      </Link>,
+      <Link underline="hover" key="property-management" to="/dashboard/booking" style={{ color: 'inherit' }}>
+        {t('My Booking')}
+      </Link>,
+      <Typography key="view" color="text.primary">
+        {t('View')}
+      </Typography>,
+    ];
 
   return (
-    <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
+    <Container>
       <Grid container spacing={3}>
-        <Grid item xs={12} sx={{ mb: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
-              variant="outlined"
-              startIcon={<ArrowBackIcon />}
-              onClick={() => navigate(-1)}
-              sx={{
-                color: '#673ab7',
-                borderColor: '#673ab7',
-                '&:hover': {
-                  backgroundColor: '#f3e5f5',
-                },
-              }}
-            >
-              {t('back')}
-            </Button>
-          </Box>
-        </Grid>
+     
 
         {/* Booking Title Section */}
         <Grid item xs={12}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'white',
-              height: '50px',
-              borderRadius: '8px',
-              boxShadow: 3,
-            }}
-          >
-            <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-              {t('booking_information')}
-            </Typography>
-          </Box>
+        <Card sx={{ p: 2, mb: 2 }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {t('Booking Details')}
+            <Breadcrumbs separator="›" aria-label="breadcrumb">
+              {breadcrumbs}
+            </Breadcrumbs>
+          </Typography>
+        </Stack>
+      </Card>
         </Grid>
 
         {/* Tenant Info Section */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} >
           <Paper
             sx={{
               padding: 3,
@@ -187,7 +119,7 @@ const BookingDetailsTenantPage = () => {
         </Grid>
 
         {/* Property Info Section */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} >
           <Paper
             sx={{
               padding: 3,
@@ -310,7 +242,7 @@ const BookingDetailsTenantPage = () => {
 </Grid>
 
       </Grid>
-    </Box>
+    </Container>
   );
 };
 
