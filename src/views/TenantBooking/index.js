@@ -82,7 +82,6 @@ const TenantBooking = () => {
     fetchBookingData();
   }, []);
 
-  // Column definitions for DataGrid
   const columns = [
     { field: 'propertyName', headerName: t('Property Name'), flex: 1 },
     { field: 'tenantName', headerName: t('Tenant Name'), flex: 1 },
@@ -116,7 +115,6 @@ const TenantBooking = () => {
             <MenuItem
               onClick={() => {
                 handleClose();
-                // Implement Edit functionality
               }}
               disableRipple
             >
@@ -127,7 +125,7 @@ const TenantBooking = () => {
               sx={{ color: 'red' }}
               onClick={() => {
                 handleClose();
-                // Implement Delete functionality
+               
               }}
               disableRipple
             >

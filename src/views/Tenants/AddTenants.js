@@ -15,6 +15,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  FormHelperText
 } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { postApi } from 'core/apis/api';
@@ -30,12 +32,11 @@ import CloseIcon from '@mui/icons-material/Close';
 const AddTenants = ({ open, handleClose }) => {
   const { t } = useTranslation();
   const [attachments, setAttachments] = useState([]);
-  
+
   const payload = tokenPayload();
 
   const AddTenants = async (values, resetForm) => {
     const formData = new FormData();
-
     formData.append('tenantName', values.tenantName);
     formData.append('email', values.email);
     formData.append('password', values.password);
@@ -43,21 +44,20 @@ const AddTenants = ({ open, handleClose }) => {
     formData.append('identityCardType', values.identityCardType);
     formData.append('identityNo', values.identityNo);
     formData.append('address', values.address);
+    formData.append('companyId', payload.companyId);
+    formData.append('reporterId', payload._id);
 
     attachments.forEach((file) => {
-      formData.append('document', file); 
+      formData.append('files', file);
     });
-
-    formData.append('companyId', payload._id);
-    formData.append('reporterId', payload._id);
 
     try {
       const response = await postApi(urls.tenant.create, formData, {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data'
       });
 
       if (response.success) {
-        toast.success('Successfully registered tenant!');
+        toast.success(t('Successfully registered tenant!'));
         resetForm();
         setAttachments([]);
         handleClose();
@@ -66,7 +66,7 @@ const AddTenants = ({ open, handleClose }) => {
       }
     } catch (err) {
       console.error('Error adding tenant:', err);
-      toast.error('Something went wrong!');
+      toast.error(t('Something went wrong!'));
     }
   };
 
@@ -82,10 +82,7 @@ const AddTenants = ({ open, handleClose }) => {
   };
 
   const validationSchema = yup.object({
-    tenantName: yup
-      .string()
-      .max(50, t('Tenant Name must be at most 50 characters'))
-      .required(t('Tenant Name is required')),
+    tenantName: yup.string().max(50, t('Tenant Name must be at most 50 characters')).required(t('Tenant Name is required')),
     email: yup.string().email(t('Invalid email')).required(t('Email is required')),
     password: yup.string().required(t('Password is required')),
     phoneno: yup
@@ -94,10 +91,7 @@ const AddTenants = ({ open, handleClose }) => {
       .required(t('Phone number is required')),
     identityCardType: yup.string().required(t('Identity Card Type is required')),
     identityNo: yup.string().required(t('Identity Number is required')),
-    address: yup
-      .string()
-      .max(100, t('Address must be at most 100 characters'))
-      .required(t('Address is required')),
+    address: yup.string().max(100, t('Address must be at most 100 characters')).required(t('Address is required'))
   });
 
   const initialValues = {
@@ -108,16 +102,15 @@ const AddTenants = ({ open, handleClose }) => {
     identityCardType: '',
     identityNo: '',
     address: '',
-    document: [],
+    document: []
   };
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log('Submitted Values:', values);
       AddTenants({ ...values, document: attachments }, resetForm);
-    },
+    }
   });
 
   return (
@@ -145,6 +138,7 @@ const AddTenants = ({ open, handleClose }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.tenantName && Boolean(formik.errors.tenantName)}
                 helperText={formik.touched.tenantName && formik.errors.tenantName}
+                required
               />
             </Grid>
 
@@ -161,6 +155,7 @@ const AddTenants = ({ open, handleClose }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
+                required
               />
             </Grid>
 
@@ -177,6 +172,7 @@ const AddTenants = ({ open, handleClose }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.password && Boolean(formik.errors.password)}
                 helperText={formik.touched.password && formik.errors.password}
+                required
               />
             </Grid>
 
@@ -193,28 +189,32 @@ const AddTenants = ({ open, handleClose }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.phoneno && Boolean(formik.errors.phoneno)}
                 helperText={formik.touched.phoneno && formik.errors.phoneno}
+                required
               />
             </Grid>
 
             {/* Identity Card Type */}
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Identity Card Type')}</FormLabel>
-              <Select
-                id="identityCardType"
-                name="identityCardType"
-                size="small"
-                fullWidth
-                value={formik.values.identityCardType}
-                onChange={formik.handleChange}
-                error={formik.touched.identityCardType && Boolean(formik.errors.identityCardType)}
-              >
-                <MenuItem value="" disabled>
-                  {t('Select Identity Card Type')}
-                </MenuItem>
-                <MenuItem value="Aadhar">{t('Aadhar')}</MenuItem>
-                <MenuItem value="Passport">{t('Passport')}</MenuItem>
-                <MenuItem value="DriverLicense">{t('Driver License')}</MenuItem>
-              </Select>
+              <FormControl fullWidth size="small" error={formik.touched.identityCardType && Boolean(formik.errors.identityCardType)}>
+                <Select
+                  id="identityCardType"
+                  name="identityCardType"
+                  value={formik.values.identityCardType}
+                  onChange={formik.handleChange}
+                  required
+                >
+                  <MenuItem value="" disabled>
+                    {t('Select Identity Card Type')}
+                  </MenuItem>
+                  <MenuItem value="Aadhar">{t('Aadhar')}</MenuItem>
+                  <MenuItem value="Passport">{t('Passport')}</MenuItem>
+                  <MenuItem value="DriverLicense">{t('Driver License')}</MenuItem>
+                </Select>
+                {formik.touched.identityCardType && formik.errors.identityCardType && (
+                  <FormHelperText>{formik.errors.identityCardType}</FormHelperText>
+                )}
+              </FormControl>
             </Grid>
 
             {/* Identity Number */}
@@ -229,6 +229,7 @@ const AddTenants = ({ open, handleClose }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.identityNo && Boolean(formik.errors.identityNo)}
                 helperText={formik.touched.identityNo && formik.errors.identityNo}
+                required
               />
             </Grid>
 
@@ -249,7 +250,7 @@ const AddTenants = ({ open, handleClose }) => {
                   flexWrap: 'wrap',
                   maxHeight: '100px',
                   overflowY: 'auto',
-                  marginTop: 1,
+                  marginTop: 1
                 }}
               >
                 {attachments.map((file, index) => (
@@ -278,6 +279,7 @@ const AddTenants = ({ open, handleClose }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.address && Boolean(formik.errors.address)}
                 helperText={formik.touched.address && formik.errors.address}
+                required
               />
             </Grid>
           </Grid>
@@ -291,6 +293,7 @@ const AddTenants = ({ open, handleClose }) => {
         <Button
           onClick={() => {
             formik.resetForm();
+            setAttachments([]);
             handleClose();
           }}
           variant="outlined"
@@ -305,7 +308,7 @@ const AddTenants = ({ open, handleClose }) => {
 
 AddTenants.propTypes = {
   open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired
 };
 
 export default AddTenants;

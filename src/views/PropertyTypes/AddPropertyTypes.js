@@ -57,25 +57,22 @@ const AddPropertyTypes = ({ open, handleClose }) => {
   
   
 
-  // Validation schema
   const validationSchema = yup.object({
     name: yup
       .string()
       .max(30, t('Property Name must be at most 30 characters'))
       .required(t('Property Name is required')),
-      description: yup
+    description: yup
       .string()
       .max(200, t('Property Name must be at most 200 characters'))
-      .required(t('Description is required')),
+      // .required(t('Description is required')),
   });
 
-  // Initial values
   const initialValues = {
     name: '',
     description: ''
   };
 
-  // Formik setup
   const formik = useFormik({
     initialValues,
     validationSchema,

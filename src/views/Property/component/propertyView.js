@@ -46,15 +46,12 @@ const PropertyView = () => {
   const imagepath = urls.property.image;
 
   const fetchPropertyData = async () => {
-    try {
       const response = await getApi(urls.property.getPropertyById, { id: propertyId });
-      setPropertyData(response.data || {});
-      setOwnerData(response.data?.ownerId || {});
-      setTypeData(response.data?.typeId || {});
-      setPropertyImages(response.data?.files || []);
-    } catch (error) {
-      console.error('Error fetching property data:', error);
-    }
+      setPropertyData(response.data );
+      setOwnerData(response.data?.ownerId);
+      setTypeData(response.data?.typeId );
+      setPropertyImages(response.data?.files );
+   
   };
 
   const handleCloseDialog = () => {
@@ -228,7 +225,7 @@ const PropertyView = () => {
               style={{
                 width: '100%',
                 height: 'auto',
-                borderRadius: '8px',
+                borderRadius: '8px'
               }}
             />
           )}

@@ -52,7 +52,6 @@ export const urls = Object.freeze({
     getVacantProperty : base + '/property/vacantproperty',
     uploadPics : base + '/property/upload',
     image: imageBase
-   
   },
   tenant:{
     create: base + '/tenant/register',
@@ -63,7 +62,8 @@ export const urls = Object.freeze({
     delete: base + '/tenant/delete',
     tenantBookingData : base+ '/tenant/mybooking',
     getMyTenants: base + '/tenant/getMyTenants',
-    getAllTenants: base + '/tenant/getAllTenants'
+    getAllTenants: base + '/tenant/getAllTenants',
+    image: imageBase
   },
   booking:{
     create: base + '/booking/create',
