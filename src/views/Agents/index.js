@@ -8,7 +8,7 @@ import { Stack, Button, Container, Typography, Box, Card,Link ,Breadcrumbs,   Ic
   Popover, MenuItem} from '@mui/material';
 import { IconHome } from '@tabler/icons';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-
+import { useNavigate } from 'react-router';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
 // import AddLead from './AddLead.js';
@@ -21,6 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { urls } from 'core/Constant/urls';
 import EditAgent from './EditAgent';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useEffect } from 'react';
 import DeleteAgent from './DeleteAgent';
 import { tokenPayload } from 'helper';
@@ -28,6 +29,7 @@ import { tokenPayload } from 'helper';
 
 const Agents = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [agentData, setagentData] = useState([]);
   const [openDelete, setOpenDelete] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
@@ -56,6 +58,11 @@ const Agents = () => {
   
   const handleCloseDeleteAgent = () => {
     setOpenDelete(false);
+  };
+
+  
+  const handleOpenView = () => {
+    navigate(`/dashboard/agent/view?id=${currentRow._id}`);
   };
 
   
@@ -138,6 +145,10 @@ const Agents = () => {
               <EditIcon style={{ marginRight: '8px' }} />
               Edit
             </MenuItem>
+            <MenuItem onClick={handleOpenView} disableRipple>
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('view')}  
+              </MenuItem>
             <MenuItem onClick={handleOpenDeleteAgent} sx={{ color: 'red' }} disableRipple>
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               Delete

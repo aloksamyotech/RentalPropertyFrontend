@@ -40,7 +40,8 @@ export const urls = Object.freeze({
     // login: base + '/agent/login',
     agentdata: base + '/agent/getAllAgent',
     edit: base + '/agent/edit',
-    delete:base + '/agent/delete'
+    delete:base + '/agent/delete',
+    getAgentById: base +'/agent/getAgentById'
   },
   property:{
     create: base + '/property/register',

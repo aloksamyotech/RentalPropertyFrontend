@@ -35,7 +35,7 @@ const OwnerDetails = () => {
   const fetchOwnerData = async () => {
     try {
       const response = await getApi(urls.owner.ownerById, { id: ownerId });
-      setOwnerData(response?.data || {});
+      setOwnerData(response?.data);
     } catch (error) {
       console.error('Error fetching owner data:', error);
     }
@@ -44,7 +44,8 @@ const OwnerDetails = () => {
   const fetchPropertyData = async () => {
     try {
       const response = await getApi(urls.owner.getPropertyByOwnerId, { id: ownerId });
-      setPropertyData(response?.data || []);
+      setPropertyData(response?.data );
+      console.log(response?.data);
     } catch (error) {
       console.error('Error fetching property data:', error);
     }
@@ -61,7 +62,7 @@ const OwnerDetails = () => {
     <Link key="home" to="/dashboard/default" style={{ color: 'inherit', textDecoration: 'none' }}>
       <IconHome />
     </Link>,
-    <Link key="owner-management" to="/dashboard/booking" style={{ color: 'inherit', textDecoration: 'none' }}>
+    <Link key="owner-management" to="/dashboard/owner" style={{ color: 'inherit', textDecoration: 'none' }}>
       {t('Owner Management')}
     </Link>,
     <Typography key="view" color="text.primary">
@@ -73,12 +74,14 @@ const OwnerDetails = () => {
     <Container>
       {/* Breadcrumb and Heading */}
       <Card sx={{ p: 2, mb: 2 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Typography variant="h4">{t('Owner Details')}</Typography>
-          <Breadcrumbs separator="›" aria-label="breadcrumb">
-            {breadcrumbs}
-          </Breadcrumbs>
-        </Stack>
+       <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+                 <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                   {t('Owner Details')}
+                   <Breadcrumbs separator="›" aria-label="breadcrumb">
+                     {breadcrumbs}
+                   </Breadcrumbs>
+                 </Typography>
+               </Stack>
       </Card>
 
       <Grid container spacing={2}>
@@ -123,7 +126,7 @@ const OwnerDetails = () => {
                   <TableBody>
                     <TableRow>
                       <TableCell sx={{ fontWeight: 'bold', width: '30%' }}>{t('Property Name:')}</TableCell>
-                      <TableCell>{property.propertyName || t('not_available')}</TableCell>
+                      <TableCell>{property.propertyname || t('not_available')}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell sx={{ fontWeight: 'bold' }}>{t('Description')}</TableCell>

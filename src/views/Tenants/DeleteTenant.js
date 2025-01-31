@@ -31,7 +31,6 @@ const DeleteTenant = ({ open, handleClose, id }) => {
         toast.error(t('cannotDeleteTenant'));
       }
     } catch (error) {
-      console.error('Error deleting tenant:', error);
       toast.error(t('cannotDeleteTenant'));
     } finally {
       setLoading(false);

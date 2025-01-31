@@ -54,7 +54,6 @@ const TenantView = () => {
       const response = await getApi(urls.tenant.getTenantById, { id: tenantId });
       setTenantData(response?.data?.tenant);
       setPropertyData(response?.data?.booking);
-      console.log(response?.data)
       setTenantDocs(response?.data?.tenant?.files);
     } catch (error) {
       console.error('Error fetching tenant data:', error);
