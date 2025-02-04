@@ -14,6 +14,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Paper,
   DialogContent,
   IconButton,
   Dialog,
@@ -115,83 +116,98 @@ const TenantView = () => {
           </Box>
 
           <TabPanel value="1">
-            {loading ? (
-              <Typography variant="body2" color="textSecondary">{t('Loading...')}</Typography>
-            ) : Object.keys(tenantData).length ? (
-              <Grid container spacing={3}>
-                <Grid item sm={12}>
-                  <Table sx={{ width: '100%' }}>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>{t('Tenant Name:')}</TableCell>
-                        <TableCell sx={{ width: '60%' }}>{tenantData.tenantName}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Email Id')}</TableCell>
-                        <TableCell>{tenantData.email}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Mobile No.')}</TableCell>
-                        <TableCell>{tenantData.phoneno}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Documents')}</TableCell>
-                        <TableCell>{tenantData.identityCardType}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Identity No')}</TableCell>
-                        <TableCell>{tenantData.identityNo}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('isOccupied')}</TableCell>
-                        <TableCell sx={{ color: tenantData.isOccupied ? 'green' : 'red', fontWeight: 'bold' }}>
-                          {tenantData.isOccupied ? 'Yes' : 'No'}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Address')}</TableCell>
-                        <TableCell>{tenantData.address}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </Grid>
-              </Grid>
-            ) : (
-              <Typography variant="body2" color="textSecondary">{t('No tenant details available.')}</Typography>
-            )}
+          {loading ? (
+  <Typography variant="body2" color="textSecondary" sx={{ textAlign: 'center', mt: 4 }}>
+    {t('Loading...')}
+  </Typography>
+) : Object.keys(tenantData).length ? (
+  <Grid container spacing={3} sx={{ mt: 2 }}>
+    <Grid item sm={12}>
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: 'primary.main' }}>
+          {t('Tenant Details')}
+        </Typography>
+        <Table sx={{ width: '100%' }}>
+          <TableBody>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold', width: '20%', color: 'text.secondary' }}>{t('Tenant Name:')}</TableCell>
+              <TableCell sx={{ width: '60%', color: 'text.primary' }}>{tenantData.tenantName}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Email Id')}</TableCell>
+              <TableCell sx={{ color: 'text.primary' }}>{tenantData.email}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Mobile No.')}</TableCell>
+              <TableCell sx={{ color: 'text.primary' }}>{tenantData.phoneno}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Documents')}</TableCell>
+              <TableCell sx={{ color: 'text.primary' }}>{tenantData.identityCardType}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Identity No')}</TableCell>
+              <TableCell sx={{ color: 'text.primary' }}>{tenantData.identityNo}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('isOccupied')}</TableCell>
+              <TableCell sx={{ color: tenantData.isOccupied ? 'success.main' : 'error.main', fontWeight: 'bold' }}>
+                {tenantData.isOccupied ? 'Yes' : 'No'}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Address')}</TableCell>
+              <TableCell sx={{ color: 'text.primary' }}>{tenantData.address}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Paper>
+    </Grid>
+  </Grid>
+) : (
+  <Typography variant="body2" color="textSecondary" sx={{ textAlign: 'center', mt: 4 }}>
+    {t('No tenant details available.')}
+  </Typography>
+)}
 
-            {Array.isArray(propertyData) && propertyData.length ? (
-              propertyData.map((property, index) => (
-                <Grid container spacing={3} key={index}>
-                  <Grid item sm={12}>
-                    <Table sx={{ width: '100%' }}>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>{t('Property Name:')}</TableCell>
-                          <TableCell sx={{ width: '60%' }}>{property.propertyName}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: 'bold' }}>{t('Description')}</TableCell>
-                          <TableCell>{property.description}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: 'bold' }}>{t('Rent')}</TableCell>
-                          <TableCell>{property.rent}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Address')}</TableCell>
-                          <TableCell>{property.address}</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </Grid>
-                </Grid>
-              ))
-            ) : (
-              <Typography variant="body2" color="textSecondary">{t('No property details are available for this Tenant.')}</Typography>
-            )}
-          </TabPanel>
-
+{Array.isArray(propertyData) && propertyData.length ? (
+  propertyData.map((property, index) => (
+    <Grid container spacing={3} key={index} sx={{ mt: 2 }}>
+      <Grid item sm={12}>
+        <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: 'primary.main' }}>
+            {t('Property Details')}
+          </Typography>
+          <Table sx={{ width: '100%' }}>
+            <TableBody>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 'bold', width: '20%', color: 'text.secondary' }}>{t('Property Name:')}</TableCell>
+                <TableCell sx={{ width: '60%', color: 'text.primary' }}>{property.propertyName}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Description')}</TableCell>
+                <TableCell sx={{ color: 'text.primary' }}>{property.description}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Rent')}</TableCell>
+                <TableCell sx={{ color: 'text.primary' }}>{property.rent}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Property Address')}</TableCell>
+                <TableCell sx={{ color: 'text.primary' }}>{property.address}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Paper>
+      </Grid>
+    </Grid>
+  ))
+) : (
+  <Typography variant="body2" color="textSecondary" sx={{ textAlign: 'center', mt: 4 }}>
+    {t('No property details are available for this Tenant.')}
+  </Typography>
+)}
+</TabPanel>
           <TabPanel value="2">
           {tenantDocs && tenantDocs.length > 0 ? (
               <ImageList cols={3} gap={8}>

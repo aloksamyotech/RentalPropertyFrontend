@@ -27,6 +27,7 @@ import Propertyview from 'views/Property/component/propertyView';
 import OwnerDetails from 'views/Owner/Components/OwnerDetails';
 import TenentView from 'views/Tenants/component/TenentViews';
 import AgentView from 'views/Agents/components/AgentView';
+import CreateBill from 'views/Booking/component/CreateBill';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -101,6 +102,7 @@ const companyAdminRoutes = {
         { path: 'complain/view', element: <ComplainDetailsPage/> },
         { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
+        { path: '/dashboard/booking/createbill', element:<CreateBill/> },
         { path: '/dashboard/property/view', element:<Propertyview/> },
         { path: '/dashboard/owner/view', element:<OwnerDetails/> },
         {path:'/dashboard/tenant/view' , element:<TenentView/>},

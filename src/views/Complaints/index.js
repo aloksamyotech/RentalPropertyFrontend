@@ -49,11 +49,7 @@ const Complaints = () => {
   const fetchComplaintData = async () => {
     try {
       const response = await getApi(urls.Complaints.getComplain, { id: payload._id });
-      if (response?.data && Array.isArray(response.data)) {
         setComplaintData(response.data);
-      } else {
-        setComplaintData([]);
-      }
     } catch (error) {
       console.error(t('Error fetching complaints data:'), error);
     }
@@ -68,11 +64,6 @@ const Complaints = () => {
   const handleCloseAdd = () => setOpenAdd(false);
 
   const handleCloseEditComplain = () => setOpenEdit(false);
-  // const handleOpenEditComplain = () => {
-  //   setRowData(currentRow);
-  //   setOpenEdit(true);
-  //   handleClose();
-  // };
 
     
   const handleOpenView = () => {
@@ -109,8 +100,7 @@ const Complaints = () => {
     setOpenDelete(true);
     handleClose();
   };
-
-  // Define table columns
+  
   const columns = [
     {
       field: 'concernTopic',

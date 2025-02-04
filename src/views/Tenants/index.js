@@ -55,13 +55,7 @@ const Tenants = () => {
     try {
       const response = await getApi(urls.tenant.getAllTenants, { id: payload.companyId });
       console.log(response.data, "Fetched Tenant Data");
-
-      if (Array.isArray(response.data)) {
         setTenantData(response.data);
-      } else {
-        console.error("Invalid data format received from API:", response.data);
-        setTenantData([]);
-      }
     } catch (error) {
       console.error("Error fetching tenant data:", error);
       setTenantData([]);
@@ -72,13 +66,7 @@ const Tenants = () => {
     try {
       const response = await getApi(urls.tenant.getMyTenants, { id: payload._id });
       console.log(response.data, "Fetched Tenant Data");
-
-      if (Array.isArray(response.data)) {
         setTenantData(response.data);
-      } else {
-        console.error("Invalid data format received from API:", response.data);
-        setTenantData([]);
-      }
     } catch (error) {
       console.error("Error fetching tenant data:", error);
       setTenantData([]);

@@ -22,10 +22,11 @@ import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 
-const AddBooking = (props) => {
+const CreateBill = (props) => {
   const { t } = useTranslation();
   const { open, handleClose } = props;
   const [tenantData, setTenantData] = useState([]);
+  const [openCreate, setOpenCreate] = useState(false);
   const [propertyData, setPropertyData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -54,8 +55,16 @@ const AddBooking = (props) => {
     setLoading(true);
     try {
       const response = await getApi(urls.tenant.tenantdata, { id: payload.companyId });
+      
+      if (Array.isArray(response?.data)) {
+
         setTenantData(response.data);
+      } else {
+        setTenantData([]); 
+        toast.error(t('Unexpected data format for tenant data!'));
+      }
     } catch (err) {
+      console.error('Error fetching tenant data:', err);
       toast.error(t('Failed to fetch tenant data!'));
       setTenantData([]); 
     } finally {
@@ -274,9 +283,9 @@ const AddBooking = (props) => {
   );
 };
 
-AddBooking.propTypes = {
+CreateBill.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
 };
 
-export default AddBooking;
+export default CreateBill;

@@ -42,7 +42,7 @@ const EditComplain = ({ open, handleClose, data }) => {
   const fetchPropertyData = async () => {
     setLoading(true);
     try {
-      const response = await getApi(urls.property.propertydata, { id: payload.companyId });
+      const response = await getApi(urls.property.propertyDataAll, { id: payload.companyId });
       setPropertyData(response?.data || []);
     } catch (error) {
       toast.error(t('failedToFetchPropertyData'));

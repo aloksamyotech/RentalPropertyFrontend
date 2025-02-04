@@ -88,6 +88,5 @@ export const urls = Object.freeze({
     allComplainForCompany: base +'/complain/allComplainForCompany',
     addCommentToComplain: base +'/complain/addCommentToComplain',
     resolveComplain: base + '/complain/resolveComplain'
-
   }
 })

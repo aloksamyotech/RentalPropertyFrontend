@@ -38,6 +38,8 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import CreateIcon from '@mui/icons-material/Create';
+import GenerateMonthlyBill from './EditBooking';
 
 
 
@@ -222,7 +224,11 @@ const isAdmin = payload?.role === 'companyAdmin';
               {t('Edit')}
             </MenuItem>
             <MenuItem onClick={handleOpenView} disableRipple>
-              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              <CreateIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('create bill')}  
+              </MenuItem>
+              <MenuItem onClick={handleOpenView} disableRipple>
+              <VisibilityIcon style={{ marginRight: '8px' }} />
               {t('view')}  
               </MenuItem>
             <MenuItem
@@ -246,7 +252,7 @@ const isAdmin = payload?.role === 'companyAdmin';
   return (
     <>
     <AddBooking open={openAdd} handleClose={handleCloseAdd} />
-    <EditBooking open={openEdit} handleClose={handleCloseEditBooking} data={rowData} />
+    <GenerateMonthlyBill open={openEdit} handleClose={handleCloseEditBooking} data={currentRow} />
     <DeleteBooking open={openDelete} handleClose={handleCloseDelete} id={rowData?._id} />
 
     <Container>

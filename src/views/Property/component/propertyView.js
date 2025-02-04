@@ -14,6 +14,7 @@ import {
   Dialog,
   DialogContent,
   IconButton,
+  Paper,
 } from '@mui/material';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -46,12 +47,11 @@ const PropertyView = () => {
   const imagepath = urls.property.image;
 
   const fetchPropertyData = async () => {
-      const response = await getApi(urls.property.getPropertyById, { id: propertyId });
-      setPropertyData(response.data );
-      setOwnerData(response.data?.ownerId);
-      setTypeData(response.data?.typeId );
-      setPropertyImages(response.data?.files );
-   
+    const response = await getApi(urls.property.getPropertyById, { id: propertyId });
+    setPropertyData(response.data);
+    setOwnerData(response.data?.ownerId);
+    setTypeData(response.data?.typeId);
+    setPropertyImages(response.data?.files);
   };
 
   const handleCloseDialog = () => {
@@ -73,10 +73,10 @@ const PropertyView = () => {
   };
 
   const breadcrumbs = [
-    <Link underline="hover" key="home" to="/dashboard" style={{ color: 'inherit' }}>
+    <Link underline="hover" key="home" to="/dashboard" style={{ color: 'inherit', textDecoration: 'none' }}>
       <IconHome />
     </Link>,
-    <Link underline="hover" key="property-management" to="/dashboard/property" style={{ color: 'inherit' }}>
+    <Link underline="hover" key="property-management" to="/dashboard/property" style={{ color: 'inherit', textDecoration: 'none' }}>
       {t('Property Management')}
     </Link>,
     <Typography key="view" color="text.primary">
@@ -84,12 +84,10 @@ const PropertyView = () => {
     </Typography>,
   ];
 
-  
-
   return (
     <Container>
       {/* Breadcrumb and Heading */}
-      <Card sx={{ p: 2, mb: 2 }}>
+      <Card sx={{ p: 2, mb: 2, borderRadius: 2, boxShadow: 3 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
           <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             {t('Property Details')}
@@ -100,7 +98,7 @@ const PropertyView = () => {
         </Stack>
       </Card>
 
-      <Card sx={{ p: 2, mb: 2 }}>
+      <Card sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleTabChange} aria-label="Property tabs">
@@ -111,76 +109,82 @@ const PropertyView = () => {
 
           <TabPanel value="1">
             {Object.keys(propertyData).length ? (
-              <Grid container spacing={3}>
-                <Grid item sm={12}>
-                  <Table sx={{ width: '100%' }}>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>{t('Property Name:')}</TableCell>
-                        <TableCell sx={{ width: '60%' }}>{propertyData.propertyname}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Type')}</TableCell>
-                        <TableCell>{typeData?.name || 'N/A'}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Property Type Description')}</TableCell>
-                        <TableCell>{typeData?.description || 'N/A'}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Description')}</TableCell>
-                        <TableCell>{propertyData.description}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Address')}</TableCell>
-                        <TableCell>{propertyData.address}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Rent')}</TableCell>
-                        <TableCell>{propertyData.rent}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Zipcode')}</TableCell>
-                        <TableCell>{propertyData.zipcode}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Google Map Location')}</TableCell>
-                        <TableCell>
-                          <a href={propertyData.maplink} target="_blank" rel="noopener noreferrer">
-                            {t('View on Map')}
-                          </a>
-                        </TableCell>
-                      </TableRow>
-
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Name')}</TableCell>
-                        <TableCell>{ownerData?.ownerName || 'N/A'}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Address')}</TableCell>
-                        <TableCell>{ownerData?.address || 'N/A'}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Email')}</TableCell>
-                        <TableCell>{ownerData?.email || 'N/A'}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{t('Owner Phone No.')}</TableCell>
-                        <TableCell>{ownerData?.phoneNo || 'N/A'}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </Grid>
-              </Grid>
+              <Paper sx={{ p: 3, borderRadius: 2, boxShadow: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: 'primary.main' }}>
+                  {t('Property Information')}
+                </Typography>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', width: '30%', color: 'text.secondary' }}>
+                        {t('Property Name:')}
+                      </TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{propertyData.propertyname}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Property Type')}</TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{typeData?.name || 'N/A'}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
+                        {t('Property Type Description')}
+                      </TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{typeData?.description || 'N/A'}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Description')}</TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{propertyData.description}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Address')}</TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{propertyData.address}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Rent')}</TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{propertyData.rent}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Zipcode')}</TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{propertyData.zipcode}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
+                        {t('Google Map Location')}
+                      </TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>
+                        <a href={propertyData.maplink} target="_blank" rel="noopener noreferrer">
+                          {t('View on Map')}
+                        </a>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Owner Name')}</TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{ownerData?.ownerName || 'N/A'}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Owner Address')}</TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{ownerData?.address || 'N/A'}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Owner Email')}</TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{ownerData?.email || 'N/A'}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Owner Phone No.')}</TableCell>
+                      <TableCell sx={{ color: 'text.primary' }}>{ownerData?.phoneNo || 'N/A'}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Paper>
             ) : (
-              <Typography variant="body2" color="textSecondary">
+              <Typography variant="body2" color="textSecondary" sx={{ textAlign: 'center', mt: 4 }}>
                 {t('No property details available.')}
               </Typography>
             )}
           </TabPanel>
 
           <TabPanel value="2">
-            {propertyImages && propertyImages.length > 0 ? (
+              {propertyImages && propertyImages.length > 0 ? (
               <ImageList cols={3} gap={8}>
                 {propertyImages.map((img, index) => (
                   <ImageListItem key={index} onClick={() => handleImageClick(img)}>
@@ -225,7 +229,7 @@ const PropertyView = () => {
               style={{
                 width: '100%',
                 height: 'auto',
-                borderRadius: '8px'
+                borderRadius: '8px',
               }}
             />
           )}

@@ -233,10 +233,10 @@ const AddProperty = ({ open, handleClose }) => {
 
             <Grid item xs={12}>
               <Box mb={1}>
-                <FormLabel>{t('Attachment')}</FormLabel>
+                <FormLabel>{t('Property Images')}</FormLabel>
               </Box>
               <Button variant="contained" component="label">
-                {t('Upload Files')}
+                {t('Upload Images')}
                 <input type="file" multiple hidden onChange={handleFileChange} />
               </Button>
               <Box
