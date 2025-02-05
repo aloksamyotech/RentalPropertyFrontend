@@ -31,7 +31,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import AddBooking from './AddBooking';
-import EditBooking from './EditBooking';
+import EditBooking from './CreateBill';
 import { tokenPayload } from 'helper';
 import DeleteBooking from './DeleteBooking';
 import Tab from '@mui/material/Tab';
@@ -39,7 +39,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import CreateIcon from '@mui/icons-material/Create';
-import GenerateMonthlyBill from './EditBooking';
+import GenerateMonthlyBill from './CreateBill';
 
 
 
@@ -221,12 +221,8 @@ const isAdmin = payload?.role === 'companyAdmin';
               disabled={!isAdmin} 
             >
               <EditIcon style={{ marginRight: '8px' }} />
-              {t('Edit')}
+              {t('CreateBill')}
             </MenuItem>
-            <MenuItem onClick={handleOpenView} disableRipple>
-              <CreateIcon style={{ marginRight: '8px', color: 'green' }} />
-              {t('create bill')}  
-              </MenuItem>
               <MenuItem onClick={handleOpenView} disableRipple>
               <VisibilityIcon style={{ marginRight: '8px' }} />
               {t('view')}  
