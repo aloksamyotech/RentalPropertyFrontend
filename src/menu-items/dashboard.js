@@ -10,7 +10,7 @@ import {
   IconChecklist,
   IconNotebook,
   IconPhoneCheck,
-  IconUsers,
+  IconUsers
 } from '@tabler/icons';
 import AdUnitsIcon from '@mui/icons-material/AdUnits';
 import PersonIcon from '@mui/icons-material/Person';
@@ -49,17 +49,17 @@ const superAdminDashboard = {
       type: 'item',
       url: '/dashboard/default',
       icon: icons.IconHome,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
       id: '1',
       title: 'Company Management',
       type: 'item',
-      url: '/dashboard/company',
+      url: '//company',
       icon: icons.IconFileInvoice,
-      breadcrumbs: false,
-    },
-  ],
+      breadcrumbs: false
+    }
+  ]
 };
 
 // Company Admin Dashboard
@@ -73,7 +73,7 @@ const companyAdminDashboard = {
       type: 'item',
       url: '/dashboard/default',
       icon: icons.IconHome,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
       id: '1',
@@ -97,7 +97,7 @@ const companyAdminDashboard = {
       type: 'item',
       url: '/dashboard/property',
       icon: AddHomeWorkIcon,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
       id: '4',
@@ -105,7 +105,7 @@ const companyAdminDashboard = {
       type: 'item',
       url: '/dashboard/agents',
       icon: Person2Icon,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
       id: '5',
@@ -130,8 +130,8 @@ const companyAdminDashboard = {
       url: '/dashboard/companyComplaints',
       icon: Person2Icon,
       breadcrumbs: false
-    },
-  ],
+    }
+  ]
 };
 
 // Agent Dashboard
@@ -145,7 +145,7 @@ const agentDashboard = {
       type: 'item',
       url: '/dashboard/default',
       icon: icons.IconHome,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
       id: '2',
@@ -153,7 +153,7 @@ const agentDashboard = {
       type: 'item',
       url: '/dashboard/tenents',
       icon: PersonIcon,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     // {
     //   id: '3',
@@ -185,9 +185,9 @@ const agentDashboard = {
       type: 'item',
       url: '/dashboard/vacantproperty',
       icon: icons.IconFileUpload,
-      breadcrumbs: false,
-    },
-  ],
+      breadcrumbs: false
+    }
+  ]
 };
 
 // Tenant Dashboard
@@ -201,7 +201,7 @@ const tenantDashboard = {
       type: 'item',
       url: '/dashboard/default',
       icon: icons.IconHome,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
       id: '1',
@@ -209,7 +209,7 @@ const tenantDashboard = {
       type: 'item',
       url: '/dashboard/payment',
       icon: PaymentIcon,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
       id: '2',
@@ -217,7 +217,7 @@ const tenantDashboard = {
       type: 'item',
       url: '/dashboard/announcement',
       icon: icons.IconMail,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     // {
     //   id: '3',
@@ -233,7 +233,7 @@ const tenantDashboard = {
       type: 'item',
       url: '/dashboard/vacantproperty',
       icon: icons.IconFileUpload,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
       id: '5',
@@ -241,7 +241,7 @@ const tenantDashboard = {
       type: 'item',
       url: '/dashboard/tenantBooking',
       icon: icons.IconFileUpload,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
     {
       id: '6',
@@ -249,9 +249,9 @@ const tenantDashboard = {
       type: 'item',
       url: '/dashboard/complaints',
       icon: icons.IconFileUpload,
-      breadcrumbs: false,
-    },
-  ],
+      breadcrumbs: false
+    }
+  ]
 };
 
 const payload = tokenPayload();

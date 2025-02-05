@@ -26,6 +26,8 @@ import { element } from 'prop-types';
 import Propertyview from 'views/Property/component/propertyView';
 import OwnerDetails from 'views/Owner/Components/OwnerDetails';
 import TenentView from 'views/Tenants/component/TenentViews';
+import AgentView from 'views/Agents/components/AgentView';
+import CreateBill from 'views/Booking/component/CreateBill';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -100,9 +102,11 @@ const companyAdminRoutes = {
         { path: 'complain/view', element: <ComplainDetailsPage/> },
         { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
+        { path: '/dashboard/booking/createbill', element:<CreateBill/> },
         { path: '/dashboard/property/view', element:<Propertyview/> },
         { path: '/dashboard/owner/view', element:<OwnerDetails/> },
         {path:'/dashboard/tenant/view' , element:<TenentView/>},
+        {path:'/dashboard/agent/view' , element:<AgentView/>},
         { path: 'meeting', element: <Metting /> },
         // { path: 'calender', element: <Calender /> },
         { path: 'document', element: <Document /> },
@@ -158,6 +162,7 @@ const agentDashboardRoutes = {
         { path: 'tenents', element: <Tenents /> },
         { path: 'payment', element: <Payment /> },
         { path: 'booking', element: <Booking /> },
+        {path:'/dashboard/tenant/view' , element:<TenentView/>},
         { path: 'vacantproperty', element:<VacantProperties /> },
         { path: 'agents', element: <Agents /> },
         { path: 'complaints', element: <Complaints /> },

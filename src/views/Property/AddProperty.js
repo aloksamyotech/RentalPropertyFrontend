@@ -71,7 +71,9 @@ const AddProperty = ({ open, handleClose }) => {
     attachments.forEach((files) => {
       formData.append('files', files);
     });
-   
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(`${key}:`, value);
+    // }
     formData.append('companyId', payload._id);
   
     try {
@@ -107,12 +109,12 @@ const AddProperty = ({ open, handleClose }) => {
       .string()
       .max(200, 'Description cannot exceed 200 characters')
       .required('Description is required'),
-    rent: yup
+      rent: yup
       .number()
       .typeError('Rent must be a number')
-      .min(0, 'Rent cannot be negative')
-      .min(100, 'Rent must be at least 2 digits')
+      .min(1, 'must be positive')
       .max(999999, 'Rent cannot exceed 6 digits')
+      .test('is-positive', 'Rent must be greater than zero', (value) => value > 0)
       .required('Rent is required'),
     address: yup
       .string()
@@ -137,6 +139,7 @@ const AddProperty = ({ open, handleClose }) => {
     },
     validationSchema,
     onSubmit: (values, { resetForm }) => {
+      addProperty({ ...values, files: attachments }, resetForm);
     },
   });
 
@@ -150,6 +153,7 @@ const AddProperty = ({ open, handleClose }) => {
       <DialogContent dividers>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={3}>
+            
             <Grid item xs={12} sm={6}>
               <FormLabel>Property Name</FormLabel>
               <TextField
@@ -227,12 +231,12 @@ const AddProperty = ({ open, handleClose }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <Box mb={1}>
-                <FormLabel>{t('Documents')}</FormLabel>
+                <FormLabel>{t('Property Images')}</FormLabel>
               </Box>
               <Button variant="contained" component="label">
-                {t('Upload Files')}
+                {t('Upload Images')}
                 <input type="file" multiple hidden onChange={handleFileChange} />
               </Button>
               <Box

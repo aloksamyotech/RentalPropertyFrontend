@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import { Link } from 'react-router-dom';
 import { IconHome } from '@tabler/icons';
+import CreateBill from './CreateBill';
 
 
 const BookingDetailsPage = () => {
@@ -23,11 +24,12 @@ const BookingDetailsPage = () => {
   const bookingId = queryParams.get('id');
   const reporterName = queryParams.get('reporterName')
 
+    const [rowData, setRowData] = useState([]);
+  const [openCreate, setOpenCreate] = useState(false);
   const [bookingData, setBookingData] = useState({});
   const [tenantData, setTenantData] = useState({});
   const [propertyData, setPropertyData] = useState({});
   const [status, setStatus] = useState(false);
-  console.log(bookingData,"bookingDatabookingDatabookingData")
 
   const fetchBookingData = async () => {
     try {
@@ -41,66 +43,13 @@ const BookingDetailsPage = () => {
     }
   };
 
+  const handleCloseCreate = () => setOpenEdit(false);
+
   useEffect(() => {
     fetchBookingData();
   }, [bookingId]);
 
-  const validationSchema = Yup.object({
-    comment: Yup.string().required(t('comment_required')),
-  });
 
-  const initialValues = {
-    comment: '',
-  };
-
-  const addComment = async (values, resetForm) => {
-    try {
-      const response = await patchApi(
-        urls.booking.addCommentToBooking,
-        { comment: values.comment },
-        { id: bookingId }
-      );
-
-      if (response.success) {
-        toast.success(t('comment_added_successfully'));
-        resetForm();
-      } else {
-        toast.error(t('something_went_wrong'));
-      }
-    } catch (error) {
-      console.error('Error adding comment:', error);
-      toast.error(t('something_went_wrong'));
-    }
-  };
-
-  const handleStatusChange = async (event) => {
-    setStatus(event.target.checked); 
-
-    try {
-      const response = await patchApi(
-        urls.booking.updateBookingStatus,
-        { status: event.target.checked }, 
-        { id: bookingId }
-      );
-
-      if (response.success) {
-        toast.success(t('booking_status_updated'));
-      } else {
-        toast.error(t('something_went_wrong'));
-      }
-    } catch (error) {
-      console.error('Error updating status:', error);
-      toast.error(t('something_went_wrong'));
-    }
-  };
-
-  const formik = useFormik({
-    initialValues,
-    validationSchema,
-    onSubmit: async (values, { resetForm }) => {
-      await addComment(values, resetForm);
-    },
-  });
 
      const breadcrumbs = [
         <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
@@ -115,6 +64,9 @@ const BookingDetailsPage = () => {
       ];
 
   return (
+    <>
+      <CreateBill open={openCreate} handleClose={handleCloseCreate} data={rowData} />
+      
     <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
       <Grid container spacing={3}>
     
@@ -129,6 +81,9 @@ const BookingDetailsPage = () => {
               {breadcrumbs}
             </Breadcrumbs>
           </Typography>
+          <Button variant="outlined" sx={{ display: 'flex', alignItems: 'right', gap: 2 }}>
+            {t('Create Booking')}
+          </Button>
         </Stack>
       </Card>
      
@@ -303,6 +258,7 @@ const BookingDetailsPage = () => {
 
       </Grid>
     </Box>
+    </>
   );
 };
 
