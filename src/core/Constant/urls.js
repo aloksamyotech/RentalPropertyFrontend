@@ -12,6 +12,11 @@ export const urls = Object.freeze({
       login: base + '/user/login',
       update: base + '/user/update',
   },
+  bill:{
+      createBill: base + '/bill/createBill',
+      getAllBill: base + '/bill/getAllBill',
+      getBillByT: base + '/bill/getBillForT'
+  },
   company:{
       create: base + '/company/register',
       login: base + '/company/login',

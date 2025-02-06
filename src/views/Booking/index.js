@@ -94,7 +94,6 @@ const isAdmin = payload?.role === 'companyAdmin';
           : 'N/A',
       }));
       setBookingData(formattedData);
-   
   };
 
   const fetchAllBookingData = async () => {

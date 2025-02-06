@@ -7,32 +7,28 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next'; 
 import { updateApi } from 'core/apis/api'; 
 import { tokenPayload } from 'helper'; 
+import { urls } from 'core/Constant/urls';
 
 const GenerateMonthlyBill = ({ open, handleClose, data }) => { 
   const { t } = useTranslation(); 
-  const [loading, setLoading] = useState(false); 
   const payload = tokenPayload(); 
-  const [property , setProperty] = useState([]); 
-  const [tenant , setTenant] = useState([]); 
+  const [property , setProperty] = useState(null); 
+  const [tenant , setTenant] = useState(null); 
 
   useEffect(() => {
-    if (data?.propertyId) {
-      setProperty(data.propertyId);
-    }
-
-    if (data?.tenantId) {
-      setTenant(data.tenantId);
-    }
+    if (data?.propertyId) setProperty(data.propertyId);
+    if (data?.tenantId) setTenant(data.tenantId);
   }, [data]);
 
   const calculateElectricityBill = (units, rate) => {
     return units * rate; 
   };
 
-  const calculateTotalBill = (rate,units,rent, extra) => {
-    const totalelectricity  =  units * rate; 
-    const totalRent = rent  
-    const totalAmount = totalRent + totalelectricity + extra; 
+  const calculateTotalBill = (rate, units, rent, extra) => {
+    // please check this 
+    console.log(rate, units, rent, extra)
+    const totalElectricity = calculateElectricityBill(units, rate); 
+    const totalAmount = rent + totalElectricity + extra; 
     return totalAmount;
   };
 
@@ -45,11 +41,11 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
       rentAmount: parseFloat(values.rentAmount),
       extraAmount: parseFloat(values.extraAmount), 
       electricityBillAmount: calculateElectricityBill(values.electricityUnit, values.electricityRate),
-      totalBillAmount: calculateTotalBill(values.electricityRate,values.electricityUnit,values.rentAmount, values.extraAmount),
+      totalBillAmount: calculateTotalBill(values.electricityRate, values.electricityUnit, values.rentAmount, values.extraAmount),
     };
 
     try {
-      const response = await updateApi('billing.generateBill', updatedValues);
+      const response = await updateApi(urls.bill.createBill, updatedValues);
       if (response.success) {
         toast.success(t('billGeneratedSuccessfully'));
         resetForm();
@@ -72,16 +68,16 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     electricityRate: yup.number().required(t('Rate of Electricity Bill Unit is required')).positive(t('Electricity Rate must be positive')),
     electricityBillAmount: yup.number(),
     note: yup.string(),
-    totalBillAmount: yup.string()
+    totalBillAmount: yup.number()
   });
 
   const formik = useFormik({
     initialValues: {
-      tenantId: tenant?._id || '',
-      propertyId: property?._id || '',
+      tenantId: tenant?._id || '', 
+      propertyId: property?._id || '', 
       billingMonth: data?.billingMonth ? new Date(data.billingMonth).toISOString().split('T')[0] : '',
-      rentAmount: data?.rentAmount ,
-      extraAmount: data?.extraAmount || '',
+      rentAmount: data?.rentAmount || 0,  
+      extraAmount: data?.extraAmount || 0,
       electricityUnit: data?.electricityUnit || 0, 
       electricityRate: data?.electricityRate || 0,
       electricityBillAmount: 0,
@@ -96,10 +92,11 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
 
   useEffect(() => {
     const electricityBillAmount = calculateElectricityBill(formik.values.electricityUnit, formik.values.electricityRate);
-    const totalAmount = calculateTotalBill(formik.values.rentAmount, formik.values.extraAmount, electricityBillAmount);
-    
+    const totalAmount = calculateTotalBill(formik.values.electricityRate, formik.values.electricityUnit, formik.values.rentAmount, formik.values.extraAmount);
+
+    formik.setFieldValue('electricityBillAmount', electricityBillAmount);
     formik.setFieldValue('totalBillAmount', totalAmount);
-  }, [formik.values.rentAmount, formik.values.extraAmount, formik.values.electricityUnit, formik.values.electricityRate]);
+  }, [formik.values.electricityUnit, formik.values.electricityRate, formik.values.extraAmount, formik.values.rentAmount]);
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -119,10 +116,10 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                 name="tenantId"
                 size="small"
                 fullWidth
-                value={formik.values.tenantId} 
+                value={formik.values.tenantId}
                 onChange={formik.handleChange}
-                error={formik.touched.tenantId && Boolean(formik.errors.tenantId)} 
-                helperText={formik.touched.tenantId && formik.errors.tenantId} 
+                error={formik.touched.tenantId && Boolean(formik.errors.tenantId)}
+                helperText={formik.touched.tenantId && formik.errors.tenantId}
                 required
               />
             </Grid>
@@ -133,14 +130,13 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                 name="propertyId"
                 size="small"
                 fullWidth
-                value={formik.values.propertyId} 
+                value={formik.values.propertyId}
                 onChange={formik.handleChange}
-                error={formik.touched.propertyId && Boolean(formik.errors.propertyId)} 
-                helperText={formik.touched.propertyId && formik.errors.propertyId} 
+                error={formik.touched.propertyId && Boolean(formik.errors.propertyId)}
+                helperText={formik.touched.propertyId && formik.errors.propertyId}
                 required
               />
             </Grid>
-
 
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Rent Amount')}</FormLabel>
@@ -211,7 +207,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                 type="number"
                 size="small"
                 fullWidth
-                value={calculateElectricityBill(formik.values.electricityUnit, formik.values.electricityRate)}
+                value={formik.values.electricityBillAmount}
                 disabled
               />
             </Grid>
@@ -253,8 +249,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                 type="number"
                 size="small"
                 fullWidth
-                // value={formik.values.totalBillAmount}
-                 value={calculateTotalBill(formik.values.electricityRate,formik.values.electricityUnit,formik.values.rentAmount, formik.values.extraAmount)}
+                value={formik.values.totalBillAmount}
                 disabled
               />
             </Grid>
