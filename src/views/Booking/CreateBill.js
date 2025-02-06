@@ -1,57 +1,41 @@
-/* eslint-disable prettier/prettier */ 
-/* eslint-disable react/prop-types */ 
 import React, { useEffect, useState } from 'react'; 
 import { Button, Dialog, FormLabel, Grid, TextField, Typography, DialogActions, DialogContent, DialogTitle } from '@mui/material'; 
 import ClearIcon from '@mui/icons-material/Clear'; 
-import Autocomplete from '@mui/material/Autocomplete'; 
 import { useFormik } from 'formik'; 
 import * as yup from 'yup'; 
 import { toast } from 'react-toastify'; 
 import { useTranslation } from 'react-i18next'; 
-import { updateApi, getApi } from 'core/apis/api'; 
+import { updateApi } from 'core/apis/api'; 
 import { tokenPayload } from 'helper'; 
-import { urls } from 'core/Constant/urls'; 
 
 const GenerateMonthlyBill = ({ open, handleClose, data }) => { 
   const { t } = useTranslation(); 
-  const [tenantData, setTenantData] = useState([]); 
-  const [propertyData, setPropertyData] = useState([]); 
   const [loading, setLoading] = useState(false); 
   const payload = tokenPayload(); 
-  console.log(data, "data");
+  const [property , setProperty] = useState([]); 
+  const [tenant , setTenant] = useState([]); 
 
-  const fetchTenantData = async () => { 
-    try { 
-      setLoading(true); 
-      const response = await getApi(urls.tenant.tenantdata, { id: payload.companyId }); 
-      setTenantData(response?.data || []); 
-    } catch (error) { 
-      toast.error(t('failedToFetchTenantData')); 
-    } finally { 
-      setLoading(false); 
-    } 
-  }; 
+  useEffect(() => {
+    if (data?.propertyId) {
+      setProperty(data.propertyId);
+    }
 
-  const fetchPropertyData = async () => { 
-    try { 
-      setLoading(true); 
-      const response = await getApi(urls.property.propertydata, { id: payload.companyId }); 
-      setPropertyData(response?.data || []); 
-    } catch (error) { 
-      toast.error(t('failedToFetchPropertyData')); 
-    } finally { 
-      setLoading(false); 
-    } 
+    if (data?.tenantId) {
+      setTenant(data.tenantId);
+    }
+  }, [data]);
+
+  const calculateElectricityBill = (units, rate) => {
+    return units * rate; 
   };
 
-  useEffect(() => { 
-    if (open) { 
-      fetchTenantData(); 
-      fetchPropertyData(); 
-    } 
-  }, [open]);
+  const calculateTotalBill = (rate,units,rent, extra) => {
+    const totalelectricity  =  units * rate; 
+    const totalRent = rent  
+    const totalAmount = totalRent + totalelectricity + extra; 
+    return totalAmount;
+  };
 
-  // Function to generate the bill
   const generateBill = async (values, resetForm) => {
     const updatedValues = {
       ...values,
@@ -61,11 +45,11 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
       rentAmount: parseFloat(values.rentAmount),
       extraAmount: parseFloat(values.extraAmount), 
       electricityBillAmount: calculateElectricityBill(values.electricityUnit, values.electricityRate),
-      totalBillAmount: calculateTotalBill(values.rentAmount, values.extraAmount, values.billDuration, values.electricityBillAmount),
+      totalBillAmount: calculateTotalBill(values.electricityRate,values.electricityUnit,values.rentAmount, values.extraAmount),
     };
 
     try {
-      const response = await updateApi(urls.billing.generateBill, updatedValues);
+      const response = await updateApi('billing.generateBill', updatedValues);
       if (response.success) {
         toast.success(t('billGeneratedSuccessfully'));
         resetForm();
@@ -78,16 +62,6 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     }
   };
 
-  const calculateElectricityBill = (units, rate) => {
-    return units * rate; // Electricity bill is calculated by multiplying units and rate
-  };
-
-  const calculateTotalBill = (rent, extra, duration, electricityBill) => {
-    const totalRent = rent * duration; 
-    const totalAmount = totalRent + electricityBill + extra; 
-    return totalAmount;
-  };
-
   const validationSchema = yup.object({
     tenantId: yup.string().required(t('Tenant is required')),
     propertyId: yup.string().required(t('Property is required')),
@@ -96,19 +70,22 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     extraAmount: yup.number().required(t('Extra Amount is required')).min(0, t('Extra Amount cannot be negative')),
     electricityUnit: yup.number().required(t('Electricity Bill Unit is required')).min(0, t('Electricity Bill Unit cannot be negative')),
     electricityRate: yup.number().required(t('Rate of Electricity Bill Unit is required')).positive(t('Electricity Rate must be positive')),
-    billDuration: yup.number().required(t('Bill Duration (in months) is required')).min(1, t('Duration must be at least 1 month')),
+    electricityBillAmount: yup.number(),
+    note: yup.string(),
+    totalBillAmount: yup.string()
   });
 
   const formik = useFormik({
     initialValues: {
-      tenantId: data?.tenantId?._id || '',
-      propertyId: data?.propertyId?._id || '',
+      tenantId: tenant?._id || '',
+      propertyId: property?._id || '',
       billingMonth: data?.billingMonth ? new Date(data.billingMonth).toISOString().split('T')[0] : '',
-      rentAmount: data?.rentAmount || '',
+      rentAmount: data?.rentAmount ,
       extraAmount: data?.extraAmount || '',
       electricityUnit: data?.electricityUnit || 0, 
-      electricityRate: data?.electricityRate || 0, 
-      billDuration: data?.billDuration || 1, 
+      electricityRate: data?.electricityRate || 0,
+      electricityBillAmount: 0,
+      totalBillAmount: 0, 
     },
     enableReinitialize: true,
     validationSchema,
@@ -116,6 +93,13 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
       generateBill(values, resetForm);
     },
   });
+
+  useEffect(() => {
+    const electricityBillAmount = calculateElectricityBill(formik.values.electricityUnit, formik.values.electricityRate);
+    const totalAmount = calculateTotalBill(formik.values.rentAmount, formik.values.extraAmount, electricityBillAmount);
+    
+    formik.setFieldValue('totalBillAmount', totalAmount);
+  }, [formik.values.rentAmount, formik.values.extraAmount, formik.values.electricityUnit, formik.values.electricityRate]);
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -130,48 +114,33 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Tenant Name')}</FormLabel>
-                 <TextField
-                              id="ownerName"
-                              name="ownerName"
-                              size="small"
-                              fullWidth
-                              value={formik.values.tenantId}
-                              onChange={formik.handleChange}
-                              error={formik.touched.ownerName && Boolean(formik.errors.ownerName)}
-                              helperText={formik.touched.ownerName && formik.errors.ownerName}
-                            />
-            
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Property')}</FormLabel>
-              <Autocomplete
-                disablePortal
+              <TextField
+                id="tenantId"
+                name="tenantId"
                 size="small"
-                options={propertyData.map((property) => ({
-                  label: property.propertyname,
-                  value: property._id,
-                  rentAmount: property.rent,
-                }))}
-                value={
-                  propertyData
-                    .map((property) => ({ label: property.propertyname, value: property._id }))
-                    .find((option) => option.value === formik.values.propertyId) || null
-                }
-                onChange={(event, value) => {
-                  formik.setFieldValue('propertyId', value?.value || '');
-                  formik.setFieldValue('rentAmount', value?.rentAmount || formik.values.rentAmount);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    error={formik.touched.propertyId && Boolean(formik.errors.propertyId)}
-                    helperText={formik.touched.propertyId && formik.errors.propertyId}
-                  />
-                )}
+                fullWidth
+                value={formik.values.tenantId} 
+                onChange={formik.handleChange}
+                error={formik.touched.tenantId && Boolean(formik.errors.tenantId)} 
+                helperText={formik.touched.tenantId && formik.errors.tenantId} 
+                required
               />
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Property Name')}</FormLabel>
+              <TextField
+                id="propertyId"
+                name="propertyId"
+                size="small"
+                fullWidth
+                value={formik.values.propertyId} 
+                onChange={formik.handleChange}
+                error={formik.touched.propertyId && Boolean(formik.errors.propertyId)} 
+                helperText={formik.touched.propertyId && formik.errors.propertyId} 
+                required
+              />
+            </Grid>
+
 
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Rent Amount')}</FormLabel>
@@ -263,20 +232,32 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Bill Duration (Months)')}</FormLabel>
+              <FormLabel>{t('Note')}</FormLabel>
               <TextField
-                id="billDuration"
-                name="billDuration"
-                type="number"
+                id="note"
+                name="note"
                 size="small"
                 fullWidth
-                value={formik.values.billDuration}
+                value={formik.values.note}
                 onChange={formik.handleChange}
-                error={formik.touched.billDuration && Boolean(formik.errors.billDuration)}
-                helperText={formik.touched.billDuration && formik.errors.billDuration}
+                error={formik.touched.note && Boolean(formik.errors.note)}
+                helperText={formik.touched.note && formik.errors.note}
               />
             </Grid>
 
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Total Amount')}</FormLabel>
+              <TextField
+                id="totalBillAmount"
+                name="totalBillAmount"
+                type="number"
+                size="small"
+                fullWidth
+                // value={formik.values.totalBillAmount}
+                 value={calculateTotalBill(formik.values.electricityRate,formik.values.electricityUnit,formik.values.rentAmount, formik.values.extraAmount)}
+                disabled
+              />
+            </Grid>
           </Grid>
           <DialogActions>
             <Button type="submit" variant="contained" color="secondary">

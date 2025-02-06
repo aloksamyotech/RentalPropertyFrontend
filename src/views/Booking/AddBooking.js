@@ -69,12 +69,7 @@ const AddBooking = (props) => {
     setLoading(true);
     try {
       const response = await getApi(urls.property.propertydata, { id: payload.companyId });
-      if (Array.isArray(response?.data)) {
       setPropertyData(response?.data || []);
-    } else {
-      setPropertyData([]); 
-      toast.error(t('Unexpected data format for tenant data!'));
-    }
     } catch (err) {
       console.error('Error fetching property data:', err);
       toast.error(t('Failed to fetch property data!'));

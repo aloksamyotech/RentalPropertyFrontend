@@ -54,10 +54,8 @@ const Tenants = () => {
   const fetchTenantData = async () => {
     try {
       const response = await getApi(urls.tenant.getAllTenants, { id: payload.companyId });
-      console.log(response.data, "Fetched Tenant Data");
         setTenantData(response.data);
     } catch (error) {
-      console.error("Error fetching tenant data:", error);
       setTenantData([]);
     }
   };
@@ -65,10 +63,8 @@ const Tenants = () => {
   const fetchMyTenantData = async () => {
     try {
       const response = await getApi(urls.tenant.getMyTenants, { id: payload._id });
-      console.log(response.data, "Fetched Tenant Data");
         setTenantData(response.data);
     } catch (error) {
-      console.error("Error fetching tenant data:", error);
       setTenantData([]);
     }
   };

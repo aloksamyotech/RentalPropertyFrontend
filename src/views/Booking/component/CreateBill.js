@@ -121,7 +121,6 @@ const CreateBill = (props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      console.log(values)
       addBooking(values, resetForm);
     },
   });
