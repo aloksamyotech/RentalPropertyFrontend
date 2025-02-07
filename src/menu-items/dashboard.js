@@ -55,7 +55,7 @@ const superAdminDashboard = {
       id: '1',
       title: 'Company Management',
       type: 'item',
-      url: '//company',
+      url: '/company',
       icon: icons.IconFileInvoice,
       breadcrumbs: false
     }
@@ -130,7 +130,15 @@ const companyAdminDashboard = {
       url: '/dashboard/companyComplaints',
       icon: Person2Icon,
       breadcrumbs: false
-    }
+    },
+    {
+      id: '8',
+      title: 'Bill Management',
+      type: 'item',
+      url: '/dashboard/billC',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
   ]
 };
 
@@ -181,6 +189,14 @@ const agentDashboard = {
     },
     {
       id: '6',
+      title: 'Bill Management',
+      type: 'item',
+      url: '/dashboard/bill',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '7',
       title: 'Vacant Properties',
       type: 'item',
       url: '/dashboard/vacantproperty',
@@ -250,7 +266,15 @@ const tenantDashboard = {
       url: '/dashboard/complaints',
       icon: icons.IconFileUpload,
       breadcrumbs: false
-    }
+    },
+    {
+      id: '7',
+      title: 'Bill Management',
+      type: 'item',
+      url: '/dashboard/billT',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
   ]
 };
 

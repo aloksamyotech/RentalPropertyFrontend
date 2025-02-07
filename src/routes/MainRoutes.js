@@ -28,6 +28,8 @@ import OwnerDetails from 'views/Owner/Components/OwnerDetails';
 import TenentView from 'views/Tenants/component/TenentViews';
 import AgentView from 'views/Agents/components/AgentView';
 import CreateBill from 'views/Booking/component/CreateBill';
+import Bill from 'views/Bill/indexC';
+import BillT from 'views/Bill/indexT';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -96,6 +98,7 @@ const companyAdminRoutes = {
         { path: 'propertyTypes', element: <PropertyTypes /> },
         { path: 'tenents', element: <Tenents /> },
         { path: 'payment', element: <Payment /> },
+        { path: 'billC', element: <Bill /> },
         { path: 'companyComplaints', element: <CompanyComplaints/> },
         { path: 'agents', element: <Agents /> },
         { path: 'booking', element: <Booking /> },
@@ -133,6 +136,7 @@ const tenantRoutes = {
         { path: 'tenantBooking', element: <TenantBooking /> },
         { path: 'payment', element: <Payment /> },
         { path: 'agents', element: <Agents /> },
+        { path: 'billT', element: <BillT /> },
         { path: 'vacantproperty', element:<VacantProperties /> },
         { path: 'complain/tenant/view', element: <ComplainDetailsPageForTenant/> },
         { path: 'complaints', element: <Complaints /> },
