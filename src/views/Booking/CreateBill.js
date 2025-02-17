@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react'; 
 import { Button, Dialog, FormLabel, Grid, TextField, Typography, DialogActions, DialogContent, DialogTitle } from '@mui/material'; 
 import ClearIcon from '@mui/icons-material/Clear'; 
@@ -14,6 +15,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
   const payload = tokenPayload(); 
   const [property , setProperty] = useState(null); 
   const [tenant , setTenant] = useState(null); 
+  console.log("data",data);
 
   useEffect(() => {
     if (data?.propertyId) setProperty(data.propertyId);
@@ -31,15 +33,15 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     const totalAmount = rent + totalElectricity + extra; 
     return totalAmount;
   };
-
+ console.log(typeof(data?.rentAmount))
   const generateBill = async (values, resetForm) => {
     const updatedValues = {
       ...values,
       companyId: payload.companyId,
       createdBy: payload._id,
       billingMonth: new Date(values.billingMonth).toISOString().split('T')[0], 
-      rentAmount: parseFloat(values.rentAmount),
-      extraAmount: parseFloat(values.extraAmount), 
+      rentAmount :values.rentAmount,
+      extraAmount: values.extraAmount, 
       electricityBillAmount: calculateElectricityBill(values.electricityUnit, values.electricityRate),
       totalBillAmount: calculateTotalBill(values.electricityRate, values.electricityUnit, values.rentAmount, values.extraAmount),
     };
@@ -62,7 +64,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     tenantId: yup.string().required(t('Tenant is required')),
     propertyId: yup.string().required(t('Property is required')),
     billingMonth: yup.date().required(t('Billing Month is required')),
-    rentAmount: yup.number().required(t('Rent Amount is required')).positive(t('Rent Amount must be positive')),
+    rentAmount: yup.number().required(t('Rent Amount is required')),
     extraAmount: yup.number().required(t('Extra Amount is required')).min(0, t('Extra Amount cannot be negative')),
     electricityUnit: yup.number().required(t('Electricity Bill Unit is required')).min(0, t('Electricity Bill Unit cannot be negative')),
     electricityRate: yup.number().required(t('Rate of Electricity Bill Unit is required')).positive(t('Electricity Rate must be positive')),
@@ -76,7 +78,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
       tenantId: tenant?._id || '', 
       propertyId: property?._id || '', 
       billingMonth: data?.billingMonth ? new Date(data.billingMonth).toISOString().split('T')[0] : '',
-      rentAmount: data?.rentAmount || 0,  
+      rentAmount: data?.rentAmount  ,  
       extraAmount: data?.extraAmount || 0,
       electricityUnit: data?.electricityUnit || 0, 
       electricityRate: data?.electricityRate || 0,
@@ -137,6 +139,9 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                 required
               />
             </Grid>
+
+         
+
 
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Rent Amount')}</FormLabel>
