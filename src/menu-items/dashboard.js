@@ -147,6 +147,14 @@ const companyAdminDashboard = {
       icon: AddHomeWorkIcon,
       breadcrumbs: false
     },
+    {
+      id: '10',
+      title: 'Announcements',
+      type: 'item',
+      url: '/dashboard/announcement',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
   ]
 };
 

@@ -45,9 +45,7 @@ const Agents = () => {
   const fetchAgentData= async()=>{
     try {
       const response = await getApi(urls.agent.agentdata, { id: payload._id });
-      console.log("Fetched Company Data:", response);
         const data = Array.isArray(response.data) ? response.data : [response.data];
-        console.log("Formatted Company Data:", data);
         setagentData(data);
     } catch (error) {
       console.error("Error fetching company data:", error);
@@ -68,12 +66,10 @@ const Agents = () => {
   
   const handleOpenEditAgent = () => {
     setRowData(currentRow); 
-    console.log("currentRow",currentRow);
     setOpenEdit(true);
     handleClose(); 
   };
   const handleOpenDeleteAgent = () => {
-    console.log(rowData,"rowData   1 1  1 1 1 ");
     setRowData(currentRow); 
     setOpenDelete(true);
     handleClose();
