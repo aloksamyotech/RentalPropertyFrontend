@@ -27,12 +27,6 @@ const EditAnnouncement = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const payload = tokenPayload();
 
-  useEffect(() => {
-    if (open) {
-      fetchOwnerData();
-    }
-  }, [open]);
-
   const handleEditAnnouncement = async (values, resetForm) => {
     const updatedValues = { ...values, companyId: payload._id, id: data._id };
 
