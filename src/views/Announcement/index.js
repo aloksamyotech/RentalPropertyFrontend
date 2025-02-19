@@ -22,6 +22,8 @@ import EditAnnouncement from './EditAnnouncement';
 import DeleteAnnouncement from './DeleteAnnouncement';
 
 const Announcement = () => {
+  const payload = tokenPayload()
+  const isCompanyAdmin = payload?.role === 'companyAdmin';
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState([]);
@@ -120,18 +122,23 @@ const Announcement = () => {
               horizontal: 'left',
             }}
           >
-            <MenuItem onClick={handleOpenEditAgent} disableRipple>
-              <EditIcon style={{ marginRight: '8px' }} />
-              Edit
-            </MenuItem>
-            <MenuItem onClick={handleOpenView} disableRipple>
+              <MenuItem onClick={handleOpenView} disableRipple>
               <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
               {t('view')}  
               </MenuItem>
-            <MenuItem onClick={handleOpenDeleteAgent} sx={{ color: 'red' }} disableRipple>
-              <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
-              Delete
-            </MenuItem>
+              {isCompanyAdmin && (
+              <>
+                <MenuItem onClick={handleOpenEditAgent} disableRipple>
+                  <EditIcon style={{ marginRight: '8px' }} />
+                  Edit
+                </MenuItem>
+                <MenuItem onClick={handleOpenDeleteAgent} sx={{ color: 'red' }} disableRipple>
+                  <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
+                  Delete
+                </MenuItem>
+              </>
+            )}
+
           </Popover>
         </>
       ),

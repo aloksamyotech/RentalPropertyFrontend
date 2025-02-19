@@ -100,6 +100,7 @@ const companyAdminRoutes = {
         { path: 'announcement', element: <Announcement /> },
         { path: 'payment', element: <Payment /> },
         { path: 'billC', element: <Bill /> },
+        // { path: 'announcement/view', element: <Announcem /> },
         { path: 'serviceprovider', element: <ServiceProvider /> },
         { path: 'companyComplaints', element: <CompanyComplaints/> },
         { path: 'agents', element: <Agents /> },

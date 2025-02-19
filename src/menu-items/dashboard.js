@@ -227,6 +227,14 @@ const agentDashboard = {
       icon: AddHomeWorkIcon,
       breadcrumbs: false
     },
+    {
+      id: '9',
+      title: 'Announcements',
+      type: 'item',
+      url: '/dashboard/announcement',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
   ]
 };
 
@@ -304,6 +312,14 @@ const tenantDashboard = {
       title: 'Service Provider',
       type: 'item',
       url: '/dashboard/serviceprovider',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '9',
+      title: 'Announcements',
+      type: 'item',
+      url: '/dashboard/announcement',
       icon: AddHomeWorkIcon,
       breadcrumbs: false
     },
