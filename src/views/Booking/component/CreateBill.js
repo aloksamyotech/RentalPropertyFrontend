@@ -22,7 +22,7 @@ import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 
-const CreateBill = (props) => {
+const CreateBillPage = (props) => {
   const { t } = useTranslation();
   const { open, handleClose } = props;
   const [tenantData, setTenantData] = useState([]);
@@ -282,9 +282,9 @@ const CreateBill = (props) => {
   );
 };
 
-CreateBill.propTypes = {
+CreateBillPage.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
 };
 
-export default CreateBill;
+export default CreateBillPage;

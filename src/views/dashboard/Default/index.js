@@ -17,6 +17,9 @@ import KingBedIcon from '@mui/icons-material/KingBed';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
+import TotalVacantProperties from './TotalVacantProperty';
+import TotalComplains from './TotalComplains';
+import TotalBooking from './TotalBooking';
 
 const RoomTypeIcons = {
   single: <SingleBedIcon sx={{ fontSize: '2.5rem' }} />,
@@ -42,6 +45,9 @@ const MainDashboard = () => {
   const [tenant, setTenant] = useState([]);
   const [customerData, setcustomerData] = useState([]);
   const [property, setProperty] = useState([]);
+  const [vacantpropertyData,setVacantpropertyData] = useState([]);
+  const [complainData,setComplainData] = useState([]);
+  const [booking,setBooking] = useState([]);
 
 
   const fetchAgentData = async () => {
@@ -53,6 +59,27 @@ const MainDashboard = () => {
       console.log(error);
     }
   };
+
+  const fetchBookingData = async () => {
+    try {
+      const response = await getApi( urls.booking.allbooking, { id: payload.companyId });
+      console.log(response.data,"response data");
+      setBooking(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchVacantPropertyData = async () => {
+    try {
+      const response = await getApi( urls.property.getVacantProperty, { id: payload.companyId });
+      console.log(response.data,"response data");
+      setVacantpropertyData(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   const fetchPropertyData = async () => {
     try {
@@ -81,11 +108,23 @@ const MainDashboard = () => {
     }
   };
 
+  const fetchComplainData = async () => {
+    try {
+      const response = await getApi(urls.Complaints.allComplainForCompany,{id: payload.companyId});
+      setComplainData(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchAgentData();
     fetchPropertyData();
     fetchcustomerData();
     fetchTenantData();
+    fetchVacantPropertyData();
+    fetchComplainData();
+    fetchBookingData();
   }, [openReserveRoom]);
 
   // Function to handle dialog closing
@@ -149,6 +188,19 @@ const MainDashboard = () => {
             </Grid>
             <Grid
               item
+              lg={3}
+              md={6}
+              sm={6}
+              xs={12}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                navigate('/dashboard/property');
+              }}
+            >
+              <TotalVacantProperties isLoading={isLoading} vacantPropertyData={vacantpropertyData} />
+            </Grid>
+            <Grid
+              item
               sm={6}
               xs={12}
               md={6}
@@ -161,6 +213,33 @@ const MainDashboard = () => {
               <TotalProperties isLoading={isLoading} property={property} />
             </Grid>
 
+            <Grid
+              item
+              sm={6}
+              xs={12}
+              md={6}
+              lg={3}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                navigate('/dashboard/companyComplaints');
+              }}
+            >
+              <TotalComplains isLoading={isLoading} complainData={complainData} />
+            </Grid>
+
+            <Grid
+              item
+              sm={6}
+              xs={12}
+              md={6}
+              lg={3}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                navigate('/dashboard/booking');
+              }}
+            >
+              <TotalBooking isLoading={isLoading} booking={booking} />
+            </Grid>
             <Grid
               item
               sm={6}

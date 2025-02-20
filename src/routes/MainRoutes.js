@@ -31,6 +31,7 @@ import CreateBill from 'views/Booking/component/CreateBill';
 import Bill from 'views/Bill/indexC';
 import BillT from 'views/Bill/indexT';
 import ServiceProvider from 'views/ServiceProvider';
+import AnnouncementViewPage from 'views/Announcement/components/AnnouncementView';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -100,7 +101,7 @@ const companyAdminRoutes = {
         { path: 'announcement', element: <Announcement /> },
         { path: 'payment', element: <Payment /> },
         { path: 'billC', element: <Bill /> },
-        // { path: 'announcement/view', element: <Announcem /> },
+        { path: 'announcement/view', element: <AnnouncementViewPage/> },
         { path: 'serviceprovider', element: <ServiceProvider /> },
         { path: 'companyComplaints', element: <CompanyComplaints/> },
         { path: 'agents', element: <Agents /> },
@@ -109,10 +110,10 @@ const companyAdminRoutes = {
         { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
         { path: 'dashboard/booking/createbill', element:<CreateBill/> },
-        { path: 'dashboard/property/view', element:<Propertyview/> },
-        { path: 'dashboard/owner/view', element:<OwnerDetails/> },
-        { path: 'dashboard/tenant/view' , element:<TenentView/>},
-        { path: 'dashboard/agent/view' , element:<AgentView/>},
+        { path: 'property/view', element:<Propertyview/> },
+        { path: 'owner/view', element:<OwnerDetails/> },
+        { path: 'tenant/view' , element:<TenentView/>},
+        { path: 'agent/view' , element:<AgentView/>},
         { path: 'meeting', element: <Metting /> },
         { path: 'document', element: <Document /> },
         { path: 'owner', element: <Owner /> },
@@ -135,6 +136,7 @@ const tenantRoutes = {
       children: [
         { path: 'default', element: <DashboardDefault /> },
         { path: 'property', element: <Property /> },
+        { path: 'announcement/view', element: <AnnouncementViewPage/> },
         { path: 'tenantBooking', element: <TenantBooking /> },
         { path: 'payment', element: <Payment /> },
         { path: 'serviceprovider', element: <ServiceProvider /> },
@@ -168,6 +170,7 @@ const agentDashboardRoutes = {
         { path: 'default', element: <DashboardDefault /> },
         { path: 'property', element: <Property /> },
         { path: 'tenents', element: <Tenents /> },
+        { path: 'announcement/view', element: <AnnouncementViewPage/> }, 
         { path: 'payment', element: <Payment /> },
         { path: 'booking', element: <Booking /> },
          { path: 'announcement', element: <Announcement /> },

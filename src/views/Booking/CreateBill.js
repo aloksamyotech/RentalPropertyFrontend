@@ -1,14 +1,15 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react'; 
-import { Button, Dialog, FormLabel, Grid, TextField, Typography, DialogActions, DialogContent, DialogTitle } from '@mui/material'; 
+import { Button, Dialog, FormLabel, Grid,Paper, TextField, Typography, DialogActions, DialogContent, DialogTitle } from '@mui/material'; 
 import ClearIcon from '@mui/icons-material/Clear'; 
-import { useFormik } from 'formik'; 
+import { useFormik, FieldArray } from 'formik'; 
 import * as yup from 'yup'; 
 import { toast } from 'react-toastify'; 
 import { useTranslation } from 'react-i18next'; 
 import { updateApi } from 'core/apis/api'; 
 import { tokenPayload } from 'helper'; 
 import { urls } from 'core/Constant/urls';
+import Divider from '@mui/material/Divider';
 
 const GenerateMonthlyBill = ({ open, handleClose, data }) => { 
   const { t } = useTranslation(); 
@@ -33,13 +34,14 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     const totalAmount = rent + totalElectricity + extra; 
     return totalAmount;
   };
- console.log(typeof(data?.rentAmount))
+  // const billingMonth = new Date(values.billingMonth).toISOString().split('T')[0]
+  // console.log( billingMonth,"billingMonth")
   const generateBill = async (values, resetForm) => {
     const updatedValues = {
       ...values,
       companyId: payload.companyId,
       createdBy: payload._id,
-      billingMonth: new Date(values.billingMonth).toISOString().split('T')[0], 
+      billingMonth: new Date(values.billingMonth).toISOString().split('T')[0],
       rentAmount :values.rentAmount,
       extraAmount: values.extraAmount, 
       electricityBillAmount: calculateElectricityBill(values.electricityUnit, values.electricityRate),
@@ -64,7 +66,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     tenantId: yup.string().required(t('Tenant is required')),
     propertyId: yup.string().required(t('Property is required')),
     billingMonth: yup.date().required(t('Billing Month is required')),
-    rentAmount: yup.number().required(t('Rent Amount is required')),
+    rentAmount: yup.number(),
     extraAmount: yup.number().required(t('Extra Amount is required')).min(0, t('Extra Amount cannot be negative')),
     electricityUnit: yup.number().required(t('Electricity Bill Unit is required')).min(0, t('Electricity Bill Unit cannot be negative')),
     electricityRate: yup.number().required(t('Rate of Electricity Bill Unit is required')).positive(t('Electricity Rate must be positive')),
@@ -159,7 +161,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <FormLabel>{t('Extra Amount')}</FormLabel>
               <TextField
                 id="extraAmount"
@@ -172,8 +174,40 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                 error={formik.touched.extraAmount && Boolean(formik.errors.extraAmount)}
                 helperText={formik.touched.extraAmount && formik.errors.extraAmount}
               />
-            </Grid>
+            </Grid> */}
 
+<FieldArray name="extraCharges">
+  {({ push, remove }) => (
+    (formik.values.extraCharges || []).map((charge, index) => (
+      <Grid container spacing={2} key={index}>
+        <Grid item xs={6}>
+          <TextField 
+            name={`extraCharges[${index}].description`} 
+            label={t('Description')} 
+            fullWidth 
+            onChange={formik.handleChange} 
+            value={charge.description || ''}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField 
+            name={`extraCharges[${index}].price`} 
+            label={t('Price')} 
+            type="number" 
+            fullWidth 
+            onChange={formik.handleChange} 
+            value={charge.price || ''}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <Button onClick={() => remove(index)}>Remove</Button>
+        </Grid>
+      </Grid>
+    ))
+  )}
+</FieldArray>
+
+            <Divider />
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Electricity Bill Unit')}</FormLabel>
               <TextField
@@ -216,6 +250,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                 disabled
               />
             </Grid>
+
 
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Billing Month')}</FormLabel>
