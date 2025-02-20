@@ -53,7 +53,6 @@ const MainDashboard = () => {
   const fetchAgentData = async () => {
     try {
       const response = await getApi( urls.agent.agentdata, { id: payload.companyId });
-      console.log(response.data,"response data");
       setAgent(response?.data);
     } catch (error) {
       console.log(error);
@@ -63,7 +62,6 @@ const MainDashboard = () => {
   const fetchBookingData = async () => {
     try {
       const response = await getApi( urls.booking.allbooking, { id: payload.companyId });
-      console.log(response.data,"response data");
       setBooking(response?.data);
     } catch (error) {
       console.log(error);
@@ -73,7 +71,6 @@ const MainDashboard = () => {
   const fetchVacantPropertyData = async () => {
     try {
       const response = await getApi( urls.property.getVacantProperty, { id: payload.companyId });
-      console.log(response.data,"response data");
       setVacantpropertyData(response?.data);
     } catch (error) {
       console.log(error);

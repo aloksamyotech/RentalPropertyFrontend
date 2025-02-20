@@ -18,8 +18,7 @@ const AnnouncementViewPage = () => {
   const fetchAnnouncement = async () => {
     try {
       const response = await getApi(urls.Announcement.getAnnouncementById, { id: announcementId });
-      console.log(response)
-      setAnnouncement(response?.data[0] || {});
+      setAnnouncement(response?.data[0]);
     } catch (error) {
       console.error('Error fetching announcement data:', error);
     }
