@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 
-const DeleteProperty = ({ open, handleClose, id }) => {
+const DeleteServiceProvider = ({ open, handleClose, id }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -21,18 +21,17 @@ const DeleteProperty = ({ open, handleClose, id }) => {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const result = await patchApi(urls.property.delete, { isDeleted: true }, { id });
+      const result = await patchApi(urls.serviceProvider.delete, { isDeleted: true }, { id });
 
       if (result?.status === 200 || result?.success) {
-        toast.success(t('Property Deleted Successfully'));
-        // navigate('/dashboard/property');
+        toast.success(t('Service Provider Deleted Successfully'));
         handleClose();
       } else {
-        toast.error(t('cannotDeleteProperty'));
+        toast.error(t('Cannot Deleted Service Provider'));
       }
     } catch (error) {
       console.error('Error deleting property:', error);
-      toast.error(t('cannotDeleteProperty'));
+      toast.error(t('Error in deleteing Property;'));
     } finally {
       setLoading(false);
     }
@@ -40,9 +39,9 @@ const DeleteProperty = ({ open, handleClose, id }) => {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{t('deleteCustomer')}</DialogTitle>
+      <DialogTitle>{t('Delete Service Provider')}</DialogTitle>
       <DialogContent>
-        <p>{t('areYouSureDeleteCustomer')}</p>
+        <p>{t('Are you sure want to Delete ')}</p>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary" disabled={loading}>
@@ -52,7 +51,7 @@ const DeleteProperty = ({ open, handleClose, id }) => {
           onClick={handleDelete}
           color="error"
           variant="contained"
-          disabled={loading} 
+          disabled={loading}
         >
           {loading ? t('deleting') : t('delete')}
         </Button>
@@ -61,10 +60,10 @@ const DeleteProperty = ({ open, handleClose, id }) => {
   );
 };
 
-DeleteProperty.propTypes = {
+DeleteServiceProvider.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired
 };
 
-export default DeleteProperty;
+export default DeleteServiceProvider;

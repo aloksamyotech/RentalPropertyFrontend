@@ -93,5 +93,17 @@ export const urls = Object.freeze({
     allComplainForCompany: base +'/complain/allComplainForCompany',
     addCommentToComplain: base +'/complain/addCommentToComplain',
     resolveComplain: base + '/complain/resolveComplain'
+  },
+  serviceProvider:{
+    create : base + '/serviceProvider/register',
+    getAll : base + '/serviceProvider/getServiceProviders',
+    updateServiceProvider : base + '/serviceProvider/edit',
+    delete : base + '/serviceProvider/delete'
+  },
+  Announcement:{
+    create : base + '/announcement/create',
+    getAllAnnouncement : base + '/announcement/getAllAnnouncement',
+    editAnnouncement: base + '/announcement/editAnnouncement',
+    delete: base + '/announcement/delete'
   }
 })

@@ -1,69 +1,65 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import { FormControl, FormLabel, Grid, TextField } from '@mui/material';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Typography from '@mui/material/Typography';
+import React, { useEffect } from 'react';
+import {
+  Button,
+  Dialog,
+  FormLabel,
+  Grid,
+  TextField,
+  Typography,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+} from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
+import { updateApi, getApi } from 'core/apis/api';
+import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import { tokenPayload } from 'helper';
-import { postApi } from 'core/apis/api'; // Import postApi
 import { urls } from 'core/Constant/urls';
+import { tokenPayload } from 'helper';
 
-const AddAnnouncement = (props) => {
+const EditAnnouncement = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
-  const { open, handleClose } = props;
   const payload = tokenPayload();
 
-  // API call function
-  const AddAnnouncement = async (values, resetForm) => {
-    const data = { ...values, companyId: payload.companyId };
+  const handleEditAnnouncement = async (values, resetForm) => {
+    const updatedValues = { ...values, companyId: payload._id, id: data._id };
 
     try {
-      const response = await postApi(urls.Announcement.create, data);
-     
+      const response = await updateApi(urls.Announcement.editAnnouncement, updatedValues, { id: data._id });
 
       if (response.success) {
-        toast.success(t('announcementAdded')); // Success message
-        resetForm(); // Reset the form
-        setTimeout(() => {
-          handleClose(); // Close the dialog
-        }, 200);
+        toast.success(t('Announcement updated successfully!'));
+        resetForm();
+        setTimeout(handleClose, 200);
       } else {
-        toast.error(response.message || t('errorOccurred'));
+        toast.error(response.message || t('Failed to update announcement!'));
       }
     } catch (err) {
-      console.error("Error:", err);
-      toast.error(err.message || t('errorOccurred'));
+      console.error('Error updating announcement:', err);
+      toast.error(err.message || t('Something went wrong!'));
     }
   };
 
-  // Validation Schema
   const validationSchema = yup.object({
-    topic: yup.string().required(t('topicRequired')),
-    details: yup.string().required(t('detailsRequired')),
+    topic: yup.string().max(50, t('Topic cannot exceed 50 characters')).required(t('Topic is required')),
+    details: yup.string().required(t('Details are required')), 
   });
 
-  // Initial Form Values
-  const initialValues = {
-    topic: '',
-    details: '',
-  };
-
-  // Formik
   const formik = useFormik({
-    initialValues,
+    initialValues: {
+      topic: data?.topic || '',
+      details: data?.details || '',
+    },
+    enableReinitialize: true,
     validationSchema,
-    onSubmit: async (values, { resetForm }) => {
-      AddAnnouncement(values, resetForm);
+    onSubmit: (values, { resetForm }) => {
+      handleEditAnnouncement(values, resetForm);
     },
   });
 
@@ -78,7 +74,7 @@ const AddAnnouncement = (props) => {
         id="scroll-dialog-title"
         sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
       >
-        <Typography variant="h6">{t('addNew')}</Typography>
+        <Typography variant="h6">{t('editAnnouncement')}</Typography>
         <ClearIcon onClick={handleClose} sx={{ cursor: 'pointer' }} />
       </DialogTitle>
       <form onSubmit={formik.handleSubmit}>
@@ -139,4 +135,10 @@ const AddAnnouncement = (props) => {
   );
 };
 
-export default AddAnnouncement;
+EditAnnouncement.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  data: PropTypes.object,
+};
+
+export default EditAnnouncement;

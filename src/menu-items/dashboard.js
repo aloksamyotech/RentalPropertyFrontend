@@ -139,6 +139,22 @@ const companyAdminDashboard = {
       icon: AddHomeWorkIcon,
       breadcrumbs: false
     },
+    {
+      id: '9',
+      title: 'Service Provider',
+      type: 'item',
+      url: '/dashboard/serviceprovider',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '10',
+      title: 'Announcements',
+      type: 'item',
+      url: '/dashboard/announcement',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
   ]
 };
 
@@ -202,7 +218,23 @@ const agentDashboard = {
       url: '/dashboard/vacantproperty',
       icon: icons.IconFileUpload,
       breadcrumbs: false
-    }
+    },
+    {
+      id: '8',
+      title: 'Service Provider',
+      type: 'item',
+      url: '/dashboard/serviceprovider',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '9',
+      title: 'Announcements',
+      type: 'item',
+      url: '/dashboard/announcement',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
   ]
 };
 
@@ -272,6 +304,22 @@ const tenantDashboard = {
       title: 'Bill Management',
       type: 'item',
       url: '/dashboard/billT',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '8',
+      title: 'Service Provider',
+      type: 'item',
+      url: '/dashboard/serviceprovider',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '9',
+      title: 'Announcements',
+      type: 'item',
+      url: '/dashboard/announcement',
       icon: AddHomeWorkIcon,
       breadcrumbs: false
     },

@@ -5,7 +5,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import PropTypes from 'prop-types';
@@ -13,26 +12,25 @@ import { useTranslation } from 'react-i18next';
 import { patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 
-const DeleteProperty = ({ open, handleClose, id }) => {
+const DeleteAnnouncement = ({ open, handleClose, id }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
 
   const handleDelete = async () => {
-    setLoading(true);
+    setLoading(true); 
     try {
-      const result = await patchApi(urls.property.delete, { isDeleted: true }, { id });
+      const result = await patchApi(urls.Announcement.delete, { isDeleted: true }, { id });
 
-      if (result?.status === 200 || result?.success) {
-        toast.success(t('Property Deleted Successfully'));
-        // navigate('/dashboard/property');
-        handleClose();
+      if (result?.success) {
+        toast.success(t('Announcement Deleted Successfully')); 
+        handleClose(); 
       } else {
-        toast.error(t('cannotDeleteProperty'));
+        toast.error(t('Cannot Delete Announcement')); 
       }
     } catch (error) {
-      console.error('Error deleting property:', error);
-      toast.error(t('cannotDeleteProperty'));
+      console.error('Error deleting Company:', error);
+      toast.error(t('Cannot Delete Announcement')); 
     } finally {
       setLoading(false);
     }
@@ -40,9 +38,9 @@ const DeleteProperty = ({ open, handleClose, id }) => {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{t('deleteCustomer')}</DialogTitle>
+      <DialogTitle>{t('deleteCompany')}</DialogTitle>
       <DialogContent>
-        <p>{t('areYouSureDeleteCustomer')}</p>
+        <p>{t('areYouSureDeleteCompany')}</p>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary" disabled={loading}>
@@ -52,7 +50,7 @@ const DeleteProperty = ({ open, handleClose, id }) => {
           onClick={handleDelete}
           color="error"
           variant="contained"
-          disabled={loading} 
+          disabled={loading}
         >
           {loading ? t('deleting') : t('delete')}
         </Button>
@@ -61,10 +59,11 @@ const DeleteProperty = ({ open, handleClose, id }) => {
   );
 };
 
-DeleteProperty.propTypes = {
-  open: PropTypes.bool.isRequired,
+
+DeleteAnnouncement.propTypes = {
+  open: PropTypes.bool.isRequired, 
   handleClose: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired, 
 };
 
-export default DeleteProperty;
+export default DeleteAnnouncement;
