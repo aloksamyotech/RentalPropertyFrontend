@@ -29,7 +29,6 @@ const AddAnnouncement = (props) => {
 
     try {
       const response = await postApi(urls.Announcement.create, data);
-     
 
       if (response.success) {
         toast.success(t('announcementAdded')); // Success message
@@ -78,7 +77,7 @@ const AddAnnouncement = (props) => {
         id="scroll-dialog-title"
         sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
       >
-        <Typography variant="h6">{t('addNew')}</Typography>
+        <Typography variant="h6">{t('addNewAnnouncement')}</Typography>
         <ClearIcon onClick={handleClose} sx={{ cursor: 'pointer' }} />
       </DialogTitle>
       <form onSubmit={formik.handleSubmit}>

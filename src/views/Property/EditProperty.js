@@ -127,7 +127,7 @@ const EditProperty = ({ open, handleClose, data }) => {
                  <Grid container spacing={3}>
                    {/* Property Name */}
                    <Grid item xs={12} sm={6}>
-                     <FormLabel>Property Name</FormLabel>
+                     <FormLabel>{t('Property Name')}</FormLabel>
                      <TextField
                        id="propertyname"
                        name="propertyname"
@@ -142,7 +142,7 @@ const EditProperty = ({ open, handleClose, data }) => {
        
                    {/* Type */}
                    <Grid item xs={12} sm={6}>
-                     <FormLabel>Type</FormLabel>
+                     <FormLabel>{t('Type')}</FormLabel>
                      <Select
                        id="typeId"
                        name="typeId"
@@ -154,7 +154,7 @@ const EditProperty = ({ open, handleClose, data }) => {
                        displayEmpty
                      >
                        <MenuItem value="" disabled>
-                         Select Type
+                         {t('Select Type')}
                        </MenuItem>
                        {typeData.map((type) => (
                          <MenuItem key={type._id} value={type._id}>
@@ -172,7 +172,7 @@ const EditProperty = ({ open, handleClose, data }) => {
                    {/* Owner Name */}
            {/* Owner Name */}
 <Grid item xs={12} sm={6}>
-  <FormLabel>Owner Name</FormLabel>
+  <FormLabel>{t('Owner Name')}</FormLabel>
   <Autocomplete
     disablePortal
     size="small"
@@ -196,7 +196,7 @@ const EditProperty = ({ open, handleClose, data }) => {
 
                       {/* Rent */}
                       <Grid item xs={12} sm={6}>
-                     <FormLabel>Rent</FormLabel>
+                     <FormLabel>{t('Rent')}</FormLabel>
                      <TextField
                        id="rent"
                        name="rent"
@@ -243,7 +243,7 @@ const EditProperty = ({ open, handleClose, data }) => {
 
                    {/* Description */}
                    <Grid item xs={12}>
-                     <FormLabel>Description</FormLabel>
+                     <FormLabel>{t('Description')}</FormLabel>
                      <TextField
                        id="description"
                        name="description"
@@ -260,7 +260,7 @@ const EditProperty = ({ open, handleClose, data }) => {
 
                    {/* Address */}
                    <Grid item xs={12}>
-                     <FormLabel>Address</FormLabel>
+                     <FormLabel>{t('Address')}</FormLabel>
                      <TextField
                        id="address"
                        name="address"
@@ -275,7 +275,7 @@ const EditProperty = ({ open, handleClose, data }) => {
        
                    {/* Zip Code */}
                    <Grid item xs={12} sm={6}>
-                     <FormLabel>Zip Code</FormLabel>
+                     <FormLabel>{t('Zip Code')}</FormLabel>
                      <TextField
                        id="zipcode"
                        name="zipcode"
@@ -290,7 +290,7 @@ const EditProperty = ({ open, handleClose, data }) => {
        
                    {/* Google Map Link */}
                    <Grid item xs={12} sm={6}>
-                     <FormLabel>Google Map Link</FormLabel>
+                     <FormLabel>{t('Google Map Link')}</FormLabel>
                      <TextField
                        id="maplink"
                        name="maplink"

@@ -106,7 +106,7 @@ const EditTenant = ({ open, handleClose, data }) => {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">{t('Edit Tenant')}</Typography>
+        <Typography variant="h6">{t('EditTenant')}</Typography>
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
      <DialogContent dividers>

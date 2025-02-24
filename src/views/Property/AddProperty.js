@@ -71,15 +71,12 @@ const AddProperty = ({ open, handleClose }) => {
     attachments.forEach((files) => {
       formData.append('files', files);
     });
-    // for (let [key, value] of formData.entries()) {
-    //   console.log(`${key}:`, value);
-    // }
     formData.append('companyId', payload._id);
-  
+
     try {
-      const response = await postApi(urls.property.create, formData,{"Content-Type":"multipart/form-data"});
+      const response = await postApi(urls.property.create, formData, { 'Content-Type': 'multipart/form-data' });
       if (response.success) {
-        toast.success('Successfully registered property!');
+        toast.success(t('Successfully registered property!'));
         resetForm();
         setAttachments([]);
         handleClose();
@@ -87,10 +84,9 @@ const AddProperty = ({ open, handleClose }) => {
         throw new Error();
       }
     } catch {
-      toast.error('Failed to register property!');
+      toast.error(t('Failed to register property!'));
     }
   };
-  
 
   useEffect(() => {
     if (open) {
@@ -102,27 +98,27 @@ const AddProperty = ({ open, handleClose }) => {
   const validationSchema = yup.object({
     propertyname: yup
       .string()
-      .max(50, 'Property Name must be at most 50 characters')
-      .required('Property Name is required'),
-    typeId: yup.string().required('Type is required'),
+      .max(50, t('Property Name must be at most 50 characters'))
+      .required(t('Property Name is required')),
+    typeId: yup.string().required(t('Type is required')),
     description: yup
       .string()
-      .max(200, 'Description cannot exceed 200 characters')
-      .required('Description is required'),
-      rent: yup
+      .max(200, t('Description cannot exceed 200 characters'))
+      .required(t('Description is required')),
+    rent: yup
       .number()
-      .typeError('Rent must be a number')
-      .min(1, 'must be positive')
-      .max(999999, 'Rent cannot exceed 6 digits')
-      .test('is-positive', 'Rent must be greater than zero', (value) => value > 0)
-      .required('Rent is required'),
+      .typeError(t('Rent must be a number'))
+      .min(1, t('must be positive'))
+      .max(999999, t('Rent cannot exceed 6 digits'))
+      .test('is-positive', t('Rent must be greater than zero'), (value) => value > 0)
+      .required(t('Rent is required')),
     address: yup
       .string()
-      .max(100, 'Address cannot exceed 100 characters')
-      .required('Address is required'),
-    zipcode: yup.string().required('Zip Code is required'),
-    maplink: yup.string().url('Must be a valid URL').required('Google Map Link is required'),
-    ownerId: yup.string().required('Owner Name is required'),
+      .max(100, t('Address cannot exceed 100 characters'))
+      .required(t('Address is required')),
+    zipcode: yup.string().required(t('Zip Code is required')),
+    maplink: yup.string().url(t('Must be a valid URL')).required(t('Google Map Link is required')),
+    ownerId: yup.string().required(t('Owner Name is required')),
   });
 
   const formik = useFormik({
@@ -146,16 +142,15 @@ const AddProperty = ({ open, handleClose }) => {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">Add Property</Typography>
+        <Typography variant="h6">{t('Add Property')}</Typography>
         <ClearIcon onClick={handleClose} sx={{ cursor: 'pointer' }} />
       </DialogTitle>
 
       <DialogContent dividers>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={3}>
-            
             <Grid item xs={12} sm={6}>
-              <FormLabel>Property Name</FormLabel>
+              <FormLabel>{t('Property Name')}</FormLabel>
               <TextField
                 id="propertyname"
                 name="propertyname"
@@ -169,7 +164,7 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormLabel>Type</FormLabel>
+              <FormLabel>{t('Type')}</FormLabel>
               <Select
                 id="typeId"
                 name="typeId"
@@ -180,7 +175,7 @@ const AddProperty = ({ open, handleClose }) => {
                 error={formik.touched.typeId && Boolean(formik.errors.typeId)}
                 displayEmpty
               >
-                <MenuItem value="" disabled>Select Type</MenuItem>
+                <MenuItem value="" disabled>{t('Select Type')}</MenuItem>
                 {typeData.map((type) => (
                   <MenuItem key={type._id} value={type._id}>
                     {type.name}
@@ -195,7 +190,7 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormLabel>Owner Name</FormLabel>
+              <FormLabel>{t('Owner Name')}</FormLabel>
               <Autocomplete
                 disablePortal
                 size="small"
@@ -217,7 +212,7 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormLabel>Rent</FormLabel>
+              <FormLabel>{t('Rent')}</FormLabel>
               <TextField
                 id="rent"
                 name="rent"
@@ -263,7 +258,7 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>{t('Description')}</FormLabel>
               <TextField
                 id="description"
                 name="description"
@@ -279,7 +274,7 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormLabel>Address</FormLabel>
+              <FormLabel>{t('Address')}</FormLabel>
               <TextField
                 id="address"
                 name="address"
@@ -293,7 +288,7 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormLabel>Zip Code</FormLabel>
+              <FormLabel>{t('Zip Code')}</FormLabel>
               <TextField
                 id="zipcode"
                 name="zipcode"
@@ -307,7 +302,7 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormLabel>Google Map Link</FormLabel>
+              <FormLabel>{t('Google Map Link')}</FormLabel>
               <TextField
                 id="maplink"
                 name="maplink"
@@ -325,7 +320,7 @@ const AddProperty = ({ open, handleClose }) => {
 
       <DialogActions>
         <Button onClick={formik.handleSubmit} variant="contained" color="primary">
-          Save
+          {t('Save')}
         </Button>
         <Button
           onClick={() => {
@@ -335,7 +330,7 @@ const AddProperty = ({ open, handleClose }) => {
           variant="outlined"
           color="error"
         >
-          Cancel
+          {t('Cancel')}
         </Button>
       </DialogActions>
     </Dialog>

@@ -48,6 +48,7 @@ const MainDashboard = () => {
   const [vacantpropertyData,setVacantpropertyData] = useState([]);
   const [complainData,setComplainData] = useState([]);
   const [booking,setBooking] = useState([]);
+  
 
 
   const fetchAgentData = async () => {
@@ -252,6 +253,7 @@ const MainDashboard = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
             <Grid item xs={12} md={12}>
@@ -259,7 +261,7 @@ const MainDashboard = () => {
                 {t('Total Vacant Properties')} ({agent?.length || 0})
               </Typography>
               <hr />
-              {agent?.length > 0 ? (
+              {vacantpropertyData?.length > 0 ? (
                 <Grid container spacing={gridSpacing} sx={{ marginTop: '10px' }}>
                   {agent?.map((room) => (
                     <Grid

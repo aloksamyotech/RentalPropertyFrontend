@@ -13,7 +13,7 @@ import { patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 
 const DeleteAnnouncement = ({ open, handleClose, id }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(); 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false); 
 
@@ -38,13 +38,13 @@ const DeleteAnnouncement = ({ open, handleClose, id }) => {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{t('deleteCompany')}</DialogTitle>
+      <DialogTitle>{t('deleteAnnouncement')}</DialogTitle> 
       <DialogContent>
-        <p>{t('areYouSureDeleteCompany')}</p>
+        <p>{t('areYouSureDeleteAnnouncement')}</p> 
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary" disabled={loading}>
-          {t('cancel')}
+          {t('cancel')} 
         </Button>
         <Button
           onClick={handleDelete}
@@ -52,13 +52,12 @@ const DeleteAnnouncement = ({ open, handleClose, id }) => {
           variant="contained"
           disabled={loading}
         >
-          {loading ? t('deleting') : t('delete')}
+          {loading ? t('deleting') : t('delete')} 
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
-
 
 DeleteAnnouncement.propTypes = {
   open: PropTypes.bool.isRequired, 

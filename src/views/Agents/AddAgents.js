@@ -29,17 +29,12 @@ const AddAgents = (props) => {
   
   const payload = tokenPayload(); // Decoding token payload
 
-  // Add Agent API call
   const AddAgent = async (values, resetForm) => {
     values.companyId = payload._id;
-    console.log(values, "Agent values");
-
     try {
-      const response = await postApi(urls.agent.create, values); // API Call
-      console.log("Response:", response);
-
+      const response = await postApi(urls.agent.create, values);
       if (response.success === true) {
-        toast.success('Successfully registered');
+        toast.success(t('Successfully registered'));
         resetForm(); 
         setTimeout(() => {
           handleClose();
@@ -47,7 +42,7 @@ const AddAgents = (props) => {
       }
     } catch (err) {
       console.error(err);
-      toast.error('');
+      toast.error(t('Registration failed'));
     }
   };
 
@@ -74,7 +69,6 @@ const AddAgents = (props) => {
       .required(t('Password is required')),
   });
 
-  // Initial form values
   const initialValues = {
     agentName: '',
     email: '',
@@ -87,121 +81,94 @@ const AddAgents = (props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      console.log('Submitted Values:', values);
       AddAgent(values, resetForm);
     }
   });
 
   return (
-    <div>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title">
-        <DialogTitle
-          id="scroll-dialog-title"
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between'
-          }}
-        >
-          <Typography variant="h6">Create Agent</Typography>
-          <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
-        </DialogTitle>
+    <Dialog open={open} onClose={handleClose} aria-labelledby="scroll-dialog-title">
+      <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography variant="h6">{t('Create Agent')}</Typography>
+        <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
+      </DialogTitle>
 
-        <DialogContent dividers>
-          <form onSubmit={formik.handleSubmit}>
-            <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-              <Grid item xs={12} sm={6}>
-                <FormLabel>Agent Name</FormLabel>
-                <TextField
-                  id="agentName"
-                  name="agentName"
-                  size="small"
-                  fullWidth
-                  value={formik.values.agentName}
-                  onChange={formik.handleChange}
-                  error={formik.touched.agentName && Boolean(formik.errors.agentName)}
-                  helperText={formik.touched.agentName && formik.errors.agentName}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormLabel>Email</FormLabel>
-                <TextField
-                  id="email"
-                  name="email"
-                  size="small"
-                  fullWidth
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  error={formik.touched.email && Boolean(formik.errors.email)}
-                  helperText={formik.touched.email && formik.errors.email}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormLabel>Phone No</FormLabel>
-                <TextField
-                  id="phoneNo"
-                  name="phoneNo"
-                  size="small"
-                  fullWidth
-                  value={formik.values.phoneNo}
-                  onChange={formik.handleChange}
-                  error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
-                  helperText={formik.touched.phoneNo && formik.errors.phoneNo}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormLabel>Address</FormLabel>
-                <TextField
-                  id="address"
-                  name="address"
-                  size="small"
-                  fullWidth
-                  value={formik.values.address}
-                  onChange={formik.handleChange}
-                  error={formik.touched.address && Boolean(formik.errors.address)}
-                  helperText={formik.touched.address && formik.errors.address}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormLabel>Password</FormLabel>
-                <TextField
-                  id="password"
-                  name="password"
-                  type="password"
-                  size="small"
-                  fullWidth
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  error={formik.touched.password && Boolean(formik.errors.password)}
-                  helperText={formik.touched.password && formik.errors.password}
-                />
-              </Grid>
+      <DialogContent dividers>
+        <form onSubmit={formik.handleSubmit}>
+          <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Agent Name')}</FormLabel>
+              <TextField
+                id="agentName"
+                name="agentName"
+                size="small"
+                fullWidth
+                value={formik.values.agentName}
+                onChange={formik.handleChange}
+                error={formik.touched.agentName && Boolean(formik.errors.agentName)}
+                helperText={formik.touched.agentName && formik.errors.agentName}
+              />
             </Grid>
-            <DialogActions>
-              <Button
-                type="submit"
-                variant="contained"
-                style={{ textTransform: 'capitalize' }}
-                color="secondary"
-              >
-                Save
-              </Button>
-              <Button
-                type="button"
-                variant="outlined"
-                style={{ textTransform: 'capitalize' }}
-                onClick={() => {
-                  formik.resetForm();
-                  handleClose();
-                }}
-                color="error"
-              >
-                Cancel
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Email')}</FormLabel>
+              <TextField
+                id="email"
+                name="email"
+                size="small"
+                fullWidth
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Phone No')}</FormLabel>
+              <TextField
+                id="phoneNo"
+                name="phoneNo"
+                size="small"
+                fullWidth
+                value={formik.values.phoneNo}
+                onChange={formik.handleChange}
+                error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
+                helperText={formik.touched.phoneNo && formik.errors.phoneNo}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Address')}</FormLabel>
+              <TextField
+                id="address"
+                name="address"
+                size="small"
+                fullWidth
+                value={formik.values.address}
+                onChange={formik.handleChange}
+                error={formik.touched.address && Boolean(formik.errors.address)}
+                helperText={formik.touched.address && formik.errors.address}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Password')}</FormLabel>
+              <TextField
+                id="password"
+                name="password"
+                type="password"
+                size="small"
+                fullWidth
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                error={formik.touched.password && Boolean(formik.errors.password)}
+                helperText={formik.touched.password && formik.errors.password}
+              />
+            </Grid>
+          </Grid>
+          <DialogActions>
+            <Button type="submit" variant="contained" color="secondary">{t('Save')}</Button>
+            <Button type="button" variant="outlined" onClick={() => { formik.resetForm(); handleClose(); }} color="error">{t('Cancel')}</Button>
+          </DialogActions>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

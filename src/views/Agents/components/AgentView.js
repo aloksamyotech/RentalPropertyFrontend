@@ -50,25 +50,25 @@ const AgentView = () => {
 
       setTenantData(formattedTenant);
     } catch (error) {
-      console.error('Error fetching agent data:', error);
+      console.error(t('error_fetching_data'), error);
     }
   };
 
   const propertyColumns = [
-    { field: 'propertyName', headerName: 'Property Name', width: 150 },
-    { field: 'tenantName', headerName: 'Tenant Name', width: 150 },
-    { field: 'rent', headerName: 'Rent', width: 100 },
-    { field: 'bookingDate', headerName: 'Booking Date', width: 100 },
-    { field: 'startingDate', headerName: 'Starting Date', width: 100 },
-    { field: 'endingDate', headerName: 'Ending Date', width: 100 },
-    { field: 'advanceAmount', headerName: 'Advance Amount', width: 100 },
+    { field: 'propertyName', headerName: t('property_name'), width: 150 },
+    { field: 'tenantName', headerName: t('tenant_name'), width: 150 },
+    { field: 'rent', headerName: t('rent'), width: 100 },
+    { field: 'bookingDate', headerName: t('booking_date'), width: 100 },
+    { field: 'startingDate', headerName: t('starting_date'), width: 100 },
+    { field: 'endingDate', headerName: t('ending_date'), width: 100 },
+    { field: 'advanceAmount', headerName: t('advance_amount'), width: 100 },
   ];
 
   const tenantColumns = [
-    { field: 'tenantName', headerName: 'Tenant Name', width: 150 },
-    { field: 'email', headerName: 'Email', width: 250 },
-    { field: 'phoneno', headerName: 'Phone No', width: 150 },
-    { field: 'address', headerName: 'Address', width: 150 },
+    { field: 'tenantName', headerName: t('tenant_name'), width: 150 },
+    { field: 'email', headerName: t('email'), width: 250 },
+    { field: 'phoneno', headerName: t('phone_no'), width: 150 },
+    { field: 'address', headerName: t('address'), width: 150 },
   ];
 
   useEffect(() => {
@@ -80,11 +80,11 @@ const AgentView = () => {
       <IconHome />
     </Link>,
     <Link key="agents" to="/dashboard/agents" style={{ color: 'inherit' }}>
-      {t('Agent Management')}
+      {t('agent_management')}
     </Link>,
     <Typography key="view" color="text.primary">
-    {t('View')}
-  </Typography>,
+      {t('view')}
+    </Typography>,
   ];
 
   return (
@@ -92,29 +92,29 @@ const AgentView = () => {
       <Grid container spacing={3}>
         {/* Header Section */}
         <Grid item xs={12}>
-        <Card sx={{ p: 2, mb: 2 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {t('Agent Details')}
-            <Breadcrumbs separator="›" aria-label="breadcrumb">
-              {breadcrumbs}
-            </Breadcrumbs>
-          </Typography>
-        </Stack>
-      </Card>
-     
+          <Card sx={{ p: 2, mb: 2 }}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+              <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                {t('agent_details')}
+                <Breadcrumbs separator="›" aria-label="breadcrumb">
+                  {breadcrumbs}
+                </Breadcrumbs>
+              </Typography>
+            </Stack>
+          </Card>
         </Grid>
+
         {/* Agent Information Section */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3, borderRadius: 2, backgroundColor: '#fff', boxShadow: 1 }}>
-            <Typography variant="h4" gutterBottom>{t('Agent Information')}</Typography>
+            <Typography variant="h4" gutterBottom>{t('agent_information')}</Typography>
             <Divider sx={{ mb: 2 }} />
             <Grid container spacing={2}>
-              <Grid item xs={6}><Typography variant="h5">{t('Agent Name')}</Typography><Typography>{agentData.agentName || t('not_available')}</Typography></Grid>
-              <Grid item xs={6}><Typography variant="h5">{t('Email')}</Typography><Typography>{agentData.email || t('not_available')}</Typography></Grid>
-              <Grid item xs={6}><Typography variant="h5">{t('Phone Number')}</Typography><Typography>{agentData.phoneNo || t('not_available')}</Typography></Grid>
-              <Grid item xs={6}><Typography variant="h5">{t('Address')}</Typography><Typography>{agentData.address || t('not_available')}</Typography></Grid>
-              <Grid item xs={6}><Typography variant="h5">{t('Joining Date')}</Typography>
+              <Grid item xs={6}><Typography variant="h5">{t('agent_name')}</Typography><Typography>{agentData.agentName || t('not_available')}</Typography></Grid>
+              <Grid item xs={6}><Typography variant="h5">{t('email')}</Typography><Typography>{agentData.email || t('not_available')}</Typography></Grid>
+              <Grid item xs={6}><Typography variant="h5">{t('phone_number')}</Typography><Typography>{agentData.phoneNo || t('not_available')}</Typography></Grid>
+              <Grid item xs={6}><Typography variant="h5">{t('address')}</Typography><Typography>{agentData.address || t('not_available')}</Typography></Grid>
+              <Grid item xs={6}><Typography variant="h5">{t('joining_date')}</Typography>
                 <Typography>
                   {agentData.createdAt ? new Date(agentData.createdAt).toLocaleDateString() : t('not_available')}
                 </Typography>
@@ -126,21 +126,12 @@ const AgentView = () => {
         {/* Booking Information Section */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3, borderRadius: 2, backgroundColor: '#fff', boxShadow: 1 }}>
-            <Typography variant="h4" gutterBottom>{t('Booking Information')}</Typography>
+            <Typography variant="h4" gutterBottom>{t('booking_information')}</Typography>
             <Divider sx={{ mb: 2 }} />
             {bookingData.length ? (
-              <Paper sx={{ width: '100%' }}>
-                <DataGrid
-                  autoHeight
-                  rows={bookingData}
-                  columns={propertyColumns}
-                  pageSizeOptions={[5, 10]}
-                  checkboxSelection
-                  sx={{ border: 0 }}
-                />
-              </Paper>
+              <DataGrid autoHeight rows={bookingData} columns={propertyColumns} pageSizeOptions={[5, 10]} checkboxSelection sx={{ border: 0 }} />
             ) : (
-              <Typography variant="body2" color="textSecondary">{t('No booking details available.')}</Typography>
+              <Typography variant="body2" color="textSecondary">{t('no_booking_details')}</Typography>
             )}
           </Paper>
         </Grid>
@@ -148,21 +139,12 @@ const AgentView = () => {
         {/* Tenant Information Section */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3, borderRadius: 2, backgroundColor: '#fff', boxShadow: 1 }}>
-            <Typography variant="h4" gutterBottom>{t('Tenant Information')}</Typography>
+            <Typography variant="h4" gutterBottom>{t('tenant_information')}</Typography>
             <Divider sx={{ mb: 2 }} />
             {tenantData.length ? (
-              <Paper sx={{ width: '100%' }}>
-                <DataGrid
-                  autoHeight
-                  rows={tenantData}
-                  columns={tenantColumns}
-                  pageSizeOptions={[5, 10]}
-                  checkboxSelection
-                  sx={{ border: 0 }}
-                />
-              </Paper>
+              <DataGrid autoHeight rows={tenantData} columns={tenantColumns} pageSizeOptions={[5, 10]} checkboxSelection sx={{ border: 0 }} />
             ) : (
-              <Typography variant="body2" color="textSecondary">{t('No tenant details available.')}</Typography>
+              <Typography variant="body2" color="textSecondary">{t('no_tenant_details')}</Typography>
             )}
           </Paper>
         </Grid>

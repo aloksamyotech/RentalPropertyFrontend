@@ -60,9 +60,6 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 const TotalAgent = ({ isLoading, agent }) => {
   const {t} = useTranslation();
   const theme = useTheme();
-
-  console.log(agent,"agent alfmlas")
-
   return (
     <>
       {isLoading ? (
