@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import {
-  Box, Grid, Typography, Paper, Divider, Card, Breadcrumbs, Stack,
+  Box, Grid, Typography, Paper, Divider, Card, Breadcrumbs, Stack,Container
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate, useLocation } from 'react-router';
@@ -88,7 +88,8 @@ const AgentView = () => {
   ];
 
   return (
-    <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
+    // <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
+    <Container>
       <Grid container spacing={3}>
         {/* Header Section */}
         <Grid item xs={12}>
@@ -149,7 +150,8 @@ const AgentView = () => {
           </Paper>
         </Grid>
       </Grid>
-    </Box>
+      </Container>
+    // </Box>
   );
 };
 

@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
-import { Box, Grid, Typography, TextField, Paper, Button, Divider, Switch } from '@mui/material';
+import { Box, Grid,Stack, Typography, TextField, Paper, Button, Divider,Card, Switch ,Breadcrumbs, Container} from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useLocation } from 'react-router';
 import { getApi, patchApi } from 'core/apis/api';
@@ -10,6 +10,9 @@ import SendIcon from '@mui/icons-material/Send';
 import * as Yup from 'yup'; // Optional: For validation
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { IconHome } from '@tabler/icons';
+import { Link } from 'react-router-dom';
+
 
 const ComplainDetailsPage = () => {
   const { t } = useTranslation();
@@ -22,7 +25,7 @@ const ComplainDetailsPage = () => {
   const [complainData, setComplainData] = useState({});
   const [tenantData, setTenantData] = useState({});
   const [propertyData, setPropertyData] = useState({});
-  const [status, setStatus] = useState(false);  // To track status of complaint
+  const [status, setStatus] = useState(false);  
 
   const fetchComplainData = async () => {
     try {
@@ -30,7 +33,7 @@ const ComplainDetailsPage = () => {
       setComplainData(response.data[0]);
       setTenantData(response.data[0].tenantId);
       setPropertyData(response.data[0].propertyId);
-      setStatus(response.data[0].status); // Set the initial status
+      setStatus(response.data[0].status); 
     } catch (error) {
       console.error('Error fetching complain data:', error);
     }
@@ -69,12 +72,12 @@ const ComplainDetailsPage = () => {
   };
 
   const handleStatusChange = async (event) => {
-    setStatus(event.target.checked); // Update status when switch is toggled
+    setStatus(event.target.checked); 
 
     try {
       const response = await patchApi(
         urls.Complaints.resolveComplain,
-        { status: event.target.checked }, // Send the updated status
+        { status: event.target.checked }, 
         { id: complainId }
       );
 
@@ -97,10 +100,24 @@ const ComplainDetailsPage = () => {
     },
   });
 
+         const breadcrumbs = [
+            <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
+              <IconHome />
+            </Link>,
+            <Link underline="hover" key="property-management" to="/dashboard/companyComplaints" style={{ color: 'inherit' }}>
+              {t('Compalain Management')}
+            </Link>,
+            <Typography key="view" color="text.primary">
+              {t('View')}
+            </Typography>,
+          ];
+    
+
   return (
-    <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
+    // <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
+    <Container>
       <Grid container spacing={2}>
-        <Grid item xs={12} sx={{ mb: 2 }}>
+        {/* <Grid item xs={12} sx={{ mb: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button
               variant="outlined"
@@ -117,27 +134,25 @@ const ComplainDetailsPage = () => {
               {t('back')}
             </Button>
           </Box>
-        </Grid>
+        </Grid> */}
 
         {/* Complain Title Section */}
         <Grid item xs={12}>
-  <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'white',
-      // width: '200px', 
-      height: '50px',
-      borderRadius: '8px',
-      boxShadow: 3, 
-    }}
-  >
-    <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-      {t('complain_information')}
-    </Typography>
-  </Box>
-</Grid>
+        <Card sx={{ p: 2, mb: 2 }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {t('Complain Details')}
+            <Breadcrumbs separator="›" aria-label="breadcrumb">
+              {breadcrumbs}
+            </Breadcrumbs>
+          </Typography>
+          {/* <Button variant="outlined" sx={{ display: 'flex', alignItems: 'right', gap: 2 }}>
+            {t('Create Complain')}
+          </Button> */}
+        </Stack>
+      </Card>
+     
+        </Grid>
 
         {/* Tenant Info Section */}
         <Grid item xs={12} md={6}>
@@ -292,7 +307,8 @@ const ComplainDetailsPage = () => {
 </Grid>
 
       </Grid>
-    </Box>
+    {/* </Box> */}
+    </Container>
   );
 };
 

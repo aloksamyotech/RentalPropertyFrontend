@@ -41,7 +41,7 @@ const DeleteServiceProvider = ({ open, handleClose, id }) => {
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{t('Delete Service Provider')}</DialogTitle>
       <DialogContent>
-        <p>{t('Are you sure want to Delete ')}</p>
+        <p>{t('Are you sure want to Delete')}</p>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary" disabled={loading}>

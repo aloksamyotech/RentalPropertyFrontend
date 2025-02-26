@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Stack, Button, Container, Typography, Box, Link, Breadcrumbs, Card, Popover, MenuItem, IconButton } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { useNavigate , useLocation} from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
 // import AddProperty from './AddProperty';
@@ -23,14 +23,14 @@ import { tokenPayload } from 'helper';
 import EditServiceProvider from './EditSerivceProvider';
 import DeleteServiceProvider from './DeleteServiceProvider';
 
-const payload = tokenPayload();  
+const payload = tokenPayload();
 const userRole = payload?.role;
 
 const ServiceProvider = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation();  // This will enable the translation functionality
   const navigate = useNavigate();
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   const [openAdd, setOpenAdd] = useState(false);
   const [serviceData, setServiceData] = useState([]);
   const [openEdit, setOpenEdit] = useState(false);
@@ -38,7 +38,6 @@ const ServiceProvider = () => {
   const [rowData, setRowData] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState([]);
-  const payload = tokenPayload();
 
   const fetchServiceData = async () => {
     try {
@@ -56,7 +55,7 @@ const ServiceProvider = () => {
 
   useEffect(() => {
     fetchServiceData();
-  }, [openAdd,openDelete,openEdit]);
+  }, [openAdd, openDelete, openEdit]);
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
@@ -85,34 +84,36 @@ const ServiceProvider = () => {
   };
 
   const handleCloseEditProperty = () => setOpenEdit(false);
-  const handleCloseDeleteProperty = () => setOpenDelete(false);const columns = [
+  const handleCloseDeleteProperty = () => setOpenDelete(false);
+
+  const columns = [
     {
       field: 'name',
-      headerName: t('Service Provider Name'),
+      headerName: t('Service Provider Name'),  
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'phoneNo',
-      headerName: t('Phone No'),
+      headerName: t('Phone No'),  
       flex: 1
     },
     {
       field: 'workType',
-      headerName: t('Work Type'),
+      headerName: t('Work Type'), 
       flex: 1
     },
     {
       field: 'address',
-      headerName: t('Address'),
+      headerName: t('Address'), 
       flex: 1
     }
   ];
-  
+
   if (userRole !== 'tenant') {
     columns.push({
       field: 'action',
-      headerName: t('Action'),
+      headerName: t('Action'),  
       flex: 1,
       renderCell: (params) => (
         <>
@@ -131,29 +132,25 @@ const ServiceProvider = () => {
           >
             <MenuItem onClick={handleOpenEditProperty}>
               <EditIcon style={{ marginRight: '8px' }} />
-              {t('Edit')}
+              {t('Edit')} 
             </MenuItem>
             <MenuItem onClick={handleOpenDeleteProperty} sx={{ color: 'red' }}>
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
-              {t('Delete')}
+              {t('Delete')}  
             </MenuItem>
           </Popover>
         </>
       )
     });
   }
-  
 
   const breadcrumbs = [
-    <Link key="1" to="/" underline="hover"     color="inherit">
+    <Link key="1" to="/" underline="hover" color="inherit">
       <IconHome />
     </Link>,
-    <Link key="2" to="/dashboard/serviceprovider" underline="hover"     color="inherit">
-      {t('Service Providers')}
+    <Link key="2" to="/dashboard/serviceprovider" underline="hover" color="inherit">
+      {t('Service Providers')}  
     </Link>,
-    // <Link key="3" to={`/dashboard/property/view?id=${propertyId}`} underline="hover" color="primary">
-    //   {t('view')}
-    // </Link>,
   ];
 
   const handleOpenAdd = () => setOpenAdd(true);
@@ -163,19 +160,19 @@ const ServiceProvider = () => {
     <>
       <AddServiceProvider open={openAdd} handleClose={handleCloseAdd} />
       <EditServiceProvider open={openEdit} handleClose={handleCloseEditProperty} data={rowData} />
-      <DeleteServiceProvider open={openDelete} handleClose={handleCloseDeleteProperty} id={rowData?._id} /> 
+      <DeleteServiceProvider open={openDelete} handleClose={handleCloseDeleteProperty} id={rowData?._id} />
 
       <Container>
         <Card sx={{ p: 2, mb: 2 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               {t('Service Providers')}
-            <Breadcrumbs separator="›" aria-label="breadcrumb">
-              {breadcrumbs}
-            </Breadcrumbs>
+              <Breadcrumbs separator="›" aria-label="breadcrumb">
+                {breadcrumbs}
+              </Breadcrumbs>
             </Typography>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              {t('Add Service Provider')}
+              {t('Add Service Provider')}  
             </Button>
           </Stack>
         </Card>

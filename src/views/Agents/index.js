@@ -108,17 +108,26 @@ const Agents = () => {
     },
   ];
 
-  const breadcrumbs = [
-    <Link key="1" color="primary" href="/">
-      <IconHome />
-    </Link>,
-    <Link key="2" color="primary" href="/dashboard/agents">
-      {t('addAgents')}
-    </Link>,
-    // <Typography key="3" sx={{ color: 'text.primary' }}>
-    //   {t('items')}
-    // </Typography>,
-  ];
+  // const breadcrumbs = [
+  //   <Link key="1" color="primary" href="/">
+  //     <IconHome />
+  //   </Link>,
+  //   <Link key="2" color="primary" href="/dashboard/agents">
+  //     {t('addAgents')}
+  //   </Link>,
+  //   // <Typography key="3" sx={{ color: 'text.primary' }}>
+  //   //   {t('items')}
+  //   // </Typography>,
+  // ];
+
+    const breadcrumbs = [
+      <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+        <IconHome />
+      </Link>,
+      <Typography key="agent" color="text.primary">
+      {t('Agents Management')} 
+      </Typography>,
+    ];
 
 
 
@@ -132,7 +141,7 @@ const Agents = () => {
         <Card sx={{ p: 2, mb: 2 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
                <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-               {t('agents')} 
+               {t('Agents Management')} 
             <Breadcrumbs separator="›" aria-label="breadcrumb">
               {breadcrumbs}
             </Breadcrumbs>

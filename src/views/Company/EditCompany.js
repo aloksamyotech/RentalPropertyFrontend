@@ -79,10 +79,12 @@ const EditComplain = ({ open, handleClose, data }) => {
   });
 
   const formik = useFormik({
+
     initialValues: {
-      propertyId: data?.propertyId?._id || '',
-      concernTopic: data?.concernTopic || '',
-      description: data?.description || '',
+      companyName: data?.companyName || '',
+      email: data?.email || '',
+      phoneNo: data?.phoneNo || '',
+      address: data?.address || ''
     },
     enableReinitialize: true,
     validationSchema,
@@ -102,68 +104,61 @@ const EditComplain = ({ open, handleClose, data }) => {
       </DialogTitle>
       <DialogContent dividers>
         <form onSubmit={formik.handleSubmit}>
-          <Typography variant="h6" sx={{ marginBottom: 2 }}>
-            {t('Complaint Information')}
-          </Typography>
-          <Grid container spacing={2}>
-            {/* Property Selection */}
-            <Grid item xs={12}>
-              <FormLabel>{t('Property')}</FormLabel>
-              <Autocomplete
-                disablePortal
-                size="small"
-                options={complainData.map((property) => ({
-                  label: property.propertyName,
-                  value: property._id,
-                }))}
-                getOptionLabel={(option) => option?.label || ''}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    error={formik.touched.propertyId && Boolean(formik.errors.propertyId)}
-                    helperText={formik.touched.propertyId && formik.errors.propertyId}
-                  />
-                )}
-                onChange={(event, value) => {
-                  formik.setFieldValue('propertyId', value?.value || '');
-                }}
-              />
-            </Grid>
-
-            {/* Concern Topic */}
-            <Grid item xs={12}>
-              <FormLabel>{t('Topic')}</FormLabel>
-              <TextField
-                id="concernTopic"
-                name="concernTopic"
-                size="small"
-                fullWidth
-                value={formik.values.concernTopic}
-                onChange={formik.handleChange}
-                error={formik.touched.concernTopic && Boolean(formik.errors.concernTopic)}
-                helperText={formik.touched.concernTopic && formik.errors.concernTopic}
-              />
-            </Grid>
-
-            {/* Description */}
-            <Grid item xs={12}>
-              <FormLabel>{t('Description')}</FormLabel>
-              <TextField
-                id="description"
-                name="description"
-                size="small"
-                fullWidth
-                multiline
-                rows={4}
-                value={formik.values.description}
-                onChange={formik.handleChange}
-                error={formik.touched.description && Boolean(formik.errors.description)}
-                helperText={formik.touched.description && formik.errors.description}
-              />
-            </Grid>
-          </Grid>
-        </form>
+                  <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
+                    <Grid item xs={12} sm={6}>
+                      <FormLabel>{t('Company Name')}</FormLabel>
+                      <TextField
+                        id="companyName"
+                        name="companyName"
+                        size="small"
+                        fullWidth
+                        value={formik.values.companyName}
+                        onChange={formik.handleChange}
+                        error={formik.touched.companyName && Boolean(formik.errors.companyName)}
+                        helperText={formik.touched.companyName && formik.errors.companyName}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <FormLabel>{t('Email')}</FormLabel>
+                      <TextField
+                        id="email"
+                        name="email"
+                        size="small"
+                        fullWidth
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <FormLabel>{t('Phone No')}</FormLabel>
+                      <TextField
+                        id="phoneNo"
+                        name="phoneNo"
+                        size="small"
+                        fullWidth
+                        value={formik.values.phoneNo}
+                        onChange={formik.handleChange}
+                        error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
+                        helperText={formik.touched.phoneNo && formik.errors.phoneNo}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <FormLabel>{t('Address')}</FormLabel>
+                      <TextField
+                        id="address"
+                        name="address"
+                        size="small"
+                        fullWidth
+                        value={formik.values.address}
+                        onChange={formik.handleChange}
+                        error={formik.touched.address && Boolean(formik.errors.address)}
+                        helperText={formik.touched.address && formik.errors.address}
+                      />
+                    </Grid>
+                  </Grid>
+                </form>
       </DialogContent>
       <DialogActions>
         <Button onClick={formik.handleSubmit} variant="contained" color="primary">

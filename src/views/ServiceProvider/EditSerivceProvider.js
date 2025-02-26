@@ -102,7 +102,7 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormLabel>Work Type</FormLabel>
+              <FormLabel>{t('Work Type')}</FormLabel>
               <TextField
                 id="workType"
                 name="workType"
@@ -115,7 +115,7 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormLabel>Address</FormLabel>
+              <FormLabel>{t('Address')}</FormLabel>
               <TextField
                 id="address"
                 name="address"
@@ -132,7 +132,7 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
       </DialogContent>
       <DialogActions>
         <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
-          Save
+        {t('Save')}
         </Button>
         <Button
           type="button"
@@ -144,7 +144,7 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
           }}
           color="error"
         >
-          Cancel
+            {t('Cancel')}
         </Button>
       </DialogActions>
     </Dialog>

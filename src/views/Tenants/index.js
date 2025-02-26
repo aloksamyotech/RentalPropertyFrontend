@@ -197,18 +197,26 @@ const Tenants = () => {
     }
   ];
 
+  // const breadcrumbs = [
+  //   <Link underline="hover" key="home" color="primary" href="/">
+  //     <IconHome />
+  //   </Link>,
+  //   <Link underline="hover" key="add-tenants" color="primary">
+  //     {t('Add Tenants')}
+  //   </Link>,
+  //   <Typography key="items" sx={{ color: 'text.primary' }}>
+  //     {t('Items')}
+  //   </Typography>,
+  // ];
+
   const breadcrumbs = [
-    <Link underline="hover" key="home" color="primary" href="/">
+    <Link key="home" to="/" underline="hover" color="inherit">
       <IconHome />
     </Link>,
-    <Link underline="hover" key="add-tenants" color="primary">
-      {t('Add Tenants')}
+    <Link key="2" to="/dashboard/tenant" underline="hover" color="inherit">
+         {t('Add Tenants')}
     </Link>,
-    <Typography key="items" sx={{ color: 'text.primary' }}>
-      {t('Items')}
-    </Typography>,
   ];
-
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 

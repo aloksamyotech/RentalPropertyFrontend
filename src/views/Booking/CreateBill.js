@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react';
 import {
   Button,
@@ -26,6 +27,8 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
   const payload = tokenPayload();
   const [property, setProperty] = useState(null);
   const [tenant, setTenant] = useState(null);
+  console.log(data);
+  
 
   useEffect(() => {
     if (data?.propertyId) setProperty(data.propertyId);

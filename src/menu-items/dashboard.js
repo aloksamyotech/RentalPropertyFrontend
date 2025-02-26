@@ -55,7 +55,7 @@ const superAdminDashboard = {
       id: '1',
       title: 'Company Management',
       type: 'item',
-      url: '/company',
+      url: '/dashboard/company',
       icon: icons.IconFileInvoice,
       breadcrumbs: false
     }
