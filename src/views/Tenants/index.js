@@ -9,7 +9,6 @@ import {
   Typography,
   Box,
   Card,
-  Link,
   Breadcrumbs,
   Popover,
   MenuItem,
@@ -18,6 +17,7 @@ import {
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { IconHome } from '@tabler/icons';
+import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -207,16 +207,17 @@ const Tenants = () => {
   //   <Typography key="items" sx={{ color: 'text.primary' }}>
   //     {t('Items')}
   //   </Typography>,
-  // ];
+  // ]
 
-  const breadcrumbs = [
-    <Link key="home" to="/" underline="hover" color="inherit">
-      <IconHome />
-    </Link>,
-    <Link key="2" to="/dashboard/tenant" underline="hover" color="inherit">
-         {t('Add Tenants')}
-    </Link>,
-  ];
+  
+    const breadcrumbs = [
+      <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+        <IconHome />
+      </Link>,
+      <Typography key="tenant" color="text.primary">
+       {t('Tenant Management')}
+      </Typography>,
+    ];
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 

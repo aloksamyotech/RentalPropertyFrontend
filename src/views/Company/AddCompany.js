@@ -18,6 +18,9 @@ import { FormLabel } from '@mui/material';
 import { toast } from 'react-toastify';
 import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
+import { useCallback } from 'react';
+import { debounce, throttle } from 'lodash';
+
 
 const AddCompany = (props) => {
   const { t } = useTranslation();
@@ -76,6 +79,8 @@ const AddCompany = (props) => {
     },
   });
 
+  const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+
   return (
     <div>
       <Dialog open={open} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -91,7 +96,7 @@ const AddCompany = (props) => {
         </DialogTitle>
 
         <DialogContent dividers>
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={throttledSubmit}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
               <Grid item xs={12} sm={6}>
                 <FormLabel>{t('Company Name')}</FormLabel>
@@ -163,7 +168,7 @@ const AddCompany = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
+          <Button type="submit" variant="contained" onClick={throttledSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
             {t('Save')}
           </Button>
           <Button

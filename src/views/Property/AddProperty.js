@@ -27,6 +27,8 @@ import { postApi, getApi } from 'core/apis/api';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 import CloseIcon from '@mui/icons-material/Close';
+import { useCallback } from 'react';
+import { debounce, throttle } from 'lodash';
 
 const AddProperty = ({ open, handleClose }) => {
   const { t } = useTranslation();
@@ -139,6 +141,8 @@ const AddProperty = ({ open, handleClose }) => {
     },
   });
 
+    const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -147,7 +151,7 @@ const AddProperty = ({ open, handleClose }) => {
       </DialogTitle>
 
       <DialogContent dividers>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={throttledSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Name')}</FormLabel>
@@ -319,7 +323,7 @@ const AddProperty = ({ open, handleClose }) => {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={formik.handleSubmit} variant="contained" color="primary">
+        <Button onClick={throttledSubmit} variant="contained" color="primary">
           {t('Save')}
         </Button>
         <Button

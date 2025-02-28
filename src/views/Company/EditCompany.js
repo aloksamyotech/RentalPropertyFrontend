@@ -22,10 +22,13 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import { useCallback } from 'react';
+import { debounce, throttle } from 'lodash';
+
 
 const EditComplain = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
-  const [complainData, setComplainData] = useState([]);
+  const [companyData, setCompanyData] = useState([]);
   const payload = tokenPayload();
 
   useEffect(() => {
@@ -37,45 +40,47 @@ const EditComplain = ({ open, handleClose, data }) => {
   const fetchComplainData = async () => {
     try {
       const response = await getApi(urls.property.propertydata, { id: payload.companyId });
-      if (Array.isArray(response?.data)) {
-        setComplainData(response.data);
-      } else {
-        setComplainData([]);
-        toast.error(t('noPropertyDataAvailable'));
-      }
+        setCompanyData(response.data);
     } catch (err) {
       console.error('Error fetching property data:', err);
       toast.error(t('failedToFetchPropertyData'));
     }
   };
 
-  const editComplain = async (values, resetForm) => {
+  const editCompany = async (values, resetForm) => {
     try {
-      const response = await updateApi(urls.Complaints.edit, values, { id: data._id });
+      const response = await updateApi(urls?.company?.edit, values, { id: data._id });
 
       if (response.success) {
-        toast.success(t('complaintUpdatedSuccessfully'));
+        toast.success(t('companyUpdatedSuccessfully'));
         resetForm();
         handleClose();
       } else {
-        toast.error(t('failedToUpdateComplaint'));
+        toast.error(t('failedToUpdateCompany'));
       }
     } catch (err) {
-      console.error('Error updating complaint:', err);
+      console.error('Error updating company:', err);
       toast.error(t('somethingWentWrong'));
     }
   };
 
   const validationSchema = yup.object({
-    propertyId: yup.string().required(t('Property is required')),
-    concernTopic: yup
-      .string()
-      .max(30, t('Topic cannot exceed 30 characters'))
-      .required(t('Topic is required')),
-    description: yup
-      .string()
-      .max(200, t('Description cannot exceed 200 characters'))
-      .required(t('Description is required')),
+      companyName: yup
+          .string()
+          .max(50, t('Owner Name cannot exceed 50 characters'))
+          .required(t('Owner Name is required')),
+        email: yup
+          .string()
+          .email(t('Invalid email address'))
+          .required(t('Email is required')),
+        phoneNo: yup
+          .string()
+          .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
+          .required(t('Phone Number is required')),
+        address: yup
+          .string()
+          .max(80, t('Address cannot exceed 80 characters'))
+          .required(t('Address is required'))
   });
 
   const formik = useFormik({
@@ -90,9 +95,12 @@ const EditComplain = ({ open, handleClose, data }) => {
     validationSchema,
     onSubmit: (values, { resetForm }) => {
       console.log(values,"vlaues")
-      editComplain(values, resetForm);
+      editCompany(values, resetForm);
     },
   });
+
+    const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+  
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -103,7 +111,7 @@ const EditComplain = ({ open, handleClose, data }) => {
         </div>
       </DialogTitle>
       <DialogContent dividers>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={throttledSubmit}>
                   <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
                     <Grid item xs={12} sm={6}>
                       <FormLabel>{t('Company Name')}</FormLabel>
@@ -161,7 +169,7 @@ const EditComplain = ({ open, handleClose, data }) => {
                 </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={formik.handleSubmit} variant="contained" color="primary">
+        <Button onClick={throttledSubmit} variant="contained" color="primary">
           {t('save')}
         </Button>
         <Button

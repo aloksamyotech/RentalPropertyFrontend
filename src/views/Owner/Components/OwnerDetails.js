@@ -69,7 +69,7 @@ const OwnerDetails = () => {
       <IconHome />
     </Link>,
     <Link key="owner-management" to="/dashboard/owner" style={{ color: 'inherit', textDecoration: 'none' }}>
-      {t('Owner Management')}
+      {t('Landlord/Owner')}
     </Link>,
     <Typography key="view" color="text.primary">
       {t('View')}

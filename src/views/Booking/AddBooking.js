@@ -33,9 +33,18 @@ const AddBooking = (props) => {
     tenantId: yup.string().required(t('Tenant is required')),
     propertyId: yup.string().required(t('Property is required')),
     startingDate: yup.date().required(t('Starting Date is required')),
-    endingDate: yup.date().required(t('Ending Date is required')),
+    // endingDate: yup.date().required(t('Ending Date is required')),
+    endingDate: yup.date().required(t('Ending Date is required'))
+    .test('is-greater', t('Ending Date must be greater than Starting Date'), function(value) {
+      const { startingDate } = this.parent;
+      return new Date(startingDate) <= new Date(value);
+    }),
     rentAmount: yup.number().required(t('Rent Amount is required')),
-    advanceAmount: yup.number().required(t('Advance Amount is required')),
+    advanceAmount: yup.number()
+    .typeError(t('Rent must be a number'))
+    .min(1, t('must be positive'))
+    .max(100000, t('Advance amount shoud be smaller than 100000'))
+    .test('is-positive', t('Rent must be greater than zero'), (value) => value > 0)
   });
 
   const initialValues = {
@@ -86,19 +95,25 @@ const AddBooking = (props) => {
   }, [open]);
 
   const addBooking = async (values, resetForm) => {
+    setLoading(true);
+    const startTime = Date.now();
     values.companyId = payload.companyId;
     values.createdBy = payload._id;
     try {
       const response = await postApi(urls.booking.create, values);
       if (response.success) {
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 1000 - elapsedTime);
+        setTimeout(() => {
+          setLoading(false);
+          handleClose();
+        }, remainingTime);
         toast.success(t('Booking successfully created'));
         resetForm();
-        setTimeout(() => {
-          handleClose();
-        }, 200);
       }
     } catch (err) {
       console.error(err);
+      setLoading(false);
       toast.error(t('Something went wrong!'));
     }
   };
@@ -248,7 +263,7 @@ const AddBooking = (props) => {
           </Grid>
 
           <DialogActions>
-            <Button type="submit" variant="contained" color="secondary" style={{ textTransform: 'capitalize' }}>
+            <Button type="submit" variant="contained" disabled={loading} color="secondary" style={{ textTransform: 'capitalize' }}>
               {t('Save')}
             </Button>
             <Button

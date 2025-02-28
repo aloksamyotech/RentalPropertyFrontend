@@ -243,7 +243,7 @@ const ComplainDetailsPage = () => {
           <Typography variant="h5">{t('complain_date')}</Typography>
           <Typography>{new Date(complainData.createdAt).toLocaleDateString() || t('not_available')}</Typography>
           <br/>
-          <Typography variant="h5">{t('Previous Comment Added by you ')}</Typography>
+          <Typography variant="h5">{t('Previous Comment Added by you')}</Typography>
           <Typography>{(complainData.comment) || t('not_available')}</Typography>
         </Grid>
 

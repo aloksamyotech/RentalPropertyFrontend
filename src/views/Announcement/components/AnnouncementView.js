@@ -27,9 +27,33 @@ const AnnouncementViewPage = () => {
     fetchAnnouncement();
   }, [announcementId]);
 
+  // const breadcrumbs = [
+  //   <Link key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
+  //     <IconHome />
+  //   </Link>,
+  //   <Link key="agents" to="/dashboard/agents" style={{ color: 'inherit' }}>
+  //     {t('agent_management')}
+  //   </Link>,
+  //   <Typography key="view" color="text.primary">
+  //     {t('view')}
+  //   </Typography>,
+  // ];
+  const breadcrumbs = [
+    <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+      <IconHome />
+    </Link>,
+    <Link key="agents" to="/dashboard/announcement" style={{ color: 'inherit' }}>
+       {t('announcementManagement')}
+    </Link>,
+    <Typography key="announcement" color="text.primary">
+      {t('view')}
+    </Typography>,
+  ];
+
+
   return (
     <Container>
-      <Card sx={{ p: 2, mb: 2 }}>
+      {/* <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
           <Typography variant="h4">{t('announcement_details')}</Typography>
           <Breadcrumbs separator="›" aria-label="breadcrumb">
@@ -42,7 +66,17 @@ const AnnouncementViewPage = () => {
             <Typography color="text.primary">{t('View')}</Typography>
           </Breadcrumbs>
         </Stack>
-      </Card>
+      </Card> */}
+        <Card sx={{ p: 2, mb: 2 }}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+              <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {t('announcement_details')}
+                <Breadcrumbs separator="›" aria-label="breadcrumb">
+                  {breadcrumbs}
+                </Breadcrumbs>
+              </Typography>
+            </Stack>
+          </Card>
 
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={3}>

@@ -3,11 +3,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import {
-  FormLabel,
-  Grid,
-  TextField
-} from '@mui/material';
+import { FormLabel, Grid, TextField } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import { postApi } from 'core/apis/api';
 import { useState } from 'react';
@@ -22,51 +18,48 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { urls } from 'core/Constant/urls';
+import { useCallback } from 'react';
+import { debounce } from 'lodash';
 
 const AddAgents = (props) => {
   const { t } = useTranslation();
+  const [loading, setIsLoading] = useState(false);
   const { open, handleClose } = props;
-  
-  const payload = tokenPayload(); // Decoding token payload
+
+  const payload = tokenPayload();
 
   const AddAgent = async (values, resetForm) => {
+    setIsLoading(true);
+    const startTime = Date.now();
     values.companyId = payload._id;
     try {
       const response = await postApi(urls.agent.create, values);
-      if (response.success === true) {
-        toast.success(t('Successfully registered'));
-        resetForm(); 
+      if (response.data.success === true) {
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 500 - elapsedTime);
         setTimeout(() => {
+          setIsLoading(false);
           handleClose();
-        }, 200);
+        }, remainingTime);
+        toast.success(t('Successfully registered Agent'));
+        resetForm();
       }
     } catch (err) {
       console.error(err);
+      setIsLoading(false);
       toast.error(t('Registration failed'));
     }
   };
 
   const validationSchema = yup.object({
-    agentName: yup
-      .string()
-      .max(50, t('Owner Name cannot exceed 50 characters'))
-      .required(t('Owner Name is required')),
-    email: yup
-      .string()
-      .email(t('Invalid email address'))
-      .required(t('Email is required')),
+    agentName: yup.string().max(50, t('Agent Name cannot exceed 50 characters')).required(t('Agent Name is required')),
+    email: yup.string().email(t('Invalid email address')).required(t('Email is required')),
     phoneNo: yup
       .string()
       .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
       .required(t('Phone Number is required')),
-    address: yup
-      .string()
-      .max(80, t('Address cannot exceed 80 characters'))
-      .required(t('Address is required')),
-    password: yup
-      .string()
-      .max(6, t('Password cannot exceed 6 characters'))
-      .required(t('Password is required')),
+    address: yup.string().max(80, t('Address cannot exceed 80 characters')).required(t('Address is required')),
+    password: yup.string().max(6, t('Password cannot exceed 6 characters')).required(t('Password is required'))
   });
 
   const initialValues = {
@@ -163,8 +156,20 @@ const AddAgents = (props) => {
             </Grid>
           </Grid>
           <DialogActions>
-            <Button type="submit" variant="contained" color="secondary">{t('Save')}</Button>
-            <Button type="button" variant="outlined" onClick={() => { formik.resetForm(); handleClose(); }} color="error">{t('Cancel')}</Button>
+            <Button type="submit" variant="contained" disabled={loading} color="secondary">
+              {t('Save')}
+            </Button>
+            <Button
+              type="button"
+              variant="outlined"
+              onClick={() => {
+                formik.resetForm();
+                handleClose();
+              }}
+              color="error"
+            >
+              {t('Cancel')}
+            </Button>
           </DialogActions>
         </form>
       </DialogContent>

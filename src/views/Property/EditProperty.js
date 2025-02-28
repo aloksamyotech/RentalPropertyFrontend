@@ -28,6 +28,8 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import { useCallback } from 'react';
+import { debounce, throttle } from 'lodash';
 
 const EditProperty = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
@@ -137,13 +139,16 @@ const EditProperty = ({ open, handleClose, data }) => {
       zipcode: data?.zipcode || '',
       maplink: data?.maplink || '',
       ownerId: data?.ownerId || '',
-      files: [], 
+      files: data?.attachments || [], 
     },
     enableReinitialize: true,
     validationSchema,
     onSubmit: (values, { resetForm }) => editProperty(values, resetForm),
   });
 
+      // const throttledSubmit = useCallback(throttle(formik.handleSubmit, 10000), [formik.handleSubmit]);
+        
+      const throttledSubmit =  useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -154,7 +159,7 @@ const EditProperty = ({ open, handleClose, data }) => {
         </div>
       </DialogTitle>
       <DialogContent dividers>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={throttledSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Name')}</FormLabel>
@@ -329,7 +334,7 @@ const EditProperty = ({ open, handleClose, data }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={formik.handleSubmit}
+          onClick={throttledSubmit}
           variant="contained"
           color="primary"
           type="submit"

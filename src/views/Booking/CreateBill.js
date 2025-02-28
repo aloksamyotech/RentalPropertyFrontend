@@ -21,14 +21,13 @@ import { postApi } from 'core/apis/api';
 import { tokenPayload } from 'helper';
 import { urls } from 'core/Constant/urls';
 import AddIcon from '@mui/icons-material/Add';
+import { useCallback } from 'react';
 
 const GenerateMonthlyBill = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const payload = tokenPayload();
   const [property, setProperty] = useState(null);
   const [tenant, setTenant] = useState(null);
-  console.log(data);
-  
 
   useEffect(() => {
     if (data?.propertyId) setProperty(data.propertyId);
@@ -65,14 +64,17 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     tenantId: tenant?._id || '',
     propertyId: property?._id || '',
     billingMonth: data?.billingMonth ? new Date(data.billingMonth).toISOString().split('T')[0] : '',
-    rentAmount: data?.rentAmount || 0,
+    rentAmount: data?.rentAmount,
     extraCharges: Array.isArray(data?.extraCharges) ? data.extraCharges : [],
-    electricityUnit: data?.electricityUnit || 0,
+    electricityUnit: data?.electricityUnit || 0, 
     electricityRate: data?.electricityRate || 0,
     electricityBillAmount: 0,
     totalBillAmount: 0,
     note: data?.note || '',
   };
+
+    // const debounceSubmit = useCallback(debounce(formik.onSubmit, 500), [formik.handleSubmit]);
+  
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -140,6 +142,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                       name="tenantId"
                       size="small"
                       fullWidth
+                      value = {tenant.tenantName}
                       error={touched.tenantId && errors.tenantId}
                       helperText={touched.tenantId && errors.tenantId}
                       required
@@ -153,6 +156,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                       name="propertyId"
                       size="small"
                       fullWidth
+                      value = {property.propertyname}
                       error={touched.propertyId && errors.propertyId}
                       helperText={touched.propertyId && errors.propertyId}
                       required

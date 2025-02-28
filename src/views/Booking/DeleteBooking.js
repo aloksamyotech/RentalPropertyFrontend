@@ -13,21 +13,32 @@ import { patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 
 const DeleteBooking = ({ open, handleClose, id }) => {
-  const { t } = useTranslation(); 
-  const navigate = useNavigate(); 
-  const [loading, setLoading] = useState(false); 
-  const handleDelete = async () => {
-    setLoading(true); 
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleDeleteSubmit = async () => {
+    setLoading(true);
+    const startTime = Date.now();
     try {
-      const result = await patchApi(urls.booking.breakTheBooking,{}, { id });
-      if (result?.status === 200 || result?.success) {
-        toast.success(t('companyDeletedSuccessfully')); 
-        handleClose(); 
+      const result = await patchApi(urls.booking.breakTheBooking, {}, { id });
+
+      if (result?.success) {
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 1000 - elapsedTime);
+        
+        setTimeout(() => {
+          setLoading(false);
+          handleClose();
+        }, remainingTime);
+
+        toast.success(t('companyDeletedSuccessfully'));
       } else {
-        toast.error(t('cannotDeletecompany')); 
+        setLoading(false);
+        toast.error(t('cannotDeletecompany'));
       }
     } catch (error) {
-      toast.error(t('cannotDeleteCompany')); 
+      toast.error(t('cannotDeleteCompany'));
     } finally {
       setLoading(false);
     }
@@ -44,7 +55,7 @@ const DeleteBooking = ({ open, handleClose, id }) => {
           {t('cancel')}
         </Button>
         <Button
-          onClick={handleDelete}
+          onClick={handleDeleteSubmit}
           color="error"
           variant="contained"
           disabled={loading}
@@ -56,11 +67,10 @@ const DeleteBooking = ({ open, handleClose, id }) => {
   );
 };
 
-
 DeleteBooking.propTypes = {
-  open: PropTypes.bool.isRequired, 
+  open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired, 
+  id: PropTypes.string.isRequired,
 };
 
 export default DeleteBooking;

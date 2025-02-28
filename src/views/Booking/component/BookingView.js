@@ -67,7 +67,9 @@ const BookingDetailsPage = () => {
     <>
       <CreateBill open={openCreate} handleClose={handleCloseCreate} data={rowData} />
       
-    <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
+    {/* <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}> */}
+    
+<Container>
       <Grid container spacing={3}>
     
 
@@ -81,9 +83,9 @@ const BookingDetailsPage = () => {
               {breadcrumbs}
             </Breadcrumbs>
           </Typography>
-          <Button variant="outlined" sx={{ display: 'flex', alignItems: 'right', gap: 2 }}>
+          {/* <Button variant="outlined" sx={{ display: 'flex', alignItems: 'right', gap: 2 }}>
             {t('Create Booking')}
-          </Button>
+          </Button> */}
         </Stack>
       </Card>
      
@@ -256,69 +258,10 @@ const BookingDetailsPage = () => {
   </Paper>
 </Grid>
 
-{/* create bill section  */}
-
-<Grid item xs={12}>
-  <Paper
-    sx={{
-      padding: 3,
-      border: '1px solid #333',
-      borderRadius: '8px',
-      backgroundColor: '#fff',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    }}
-  >
-    <Typography variant="h4" gutterBottom>
-      {t('Create Monthly Bill')}
-    </Typography>
-    <Divider sx={{ marginBottom: 2 }} />
-    <Grid container spacing={2}>
-      {/* Booking Date */}
-      <Grid item xs={12} sm={6}>
-        <Typography variant="h5" gutterBottom>
-          {t('booking_date')}
-        </Typography>
-        <Typography variant="body1">
-          {new Date(bookingData.bookingDate).toLocaleDateString() || t('not_available')}
-        </Typography>
-      </Grid>
-
-      {/* Advance Amount */}
-      <Grid item xs={12} sm={6}>
-        <Typography variant="h5" gutterBottom>
-          {t('advance_amount')}
-        </Typography>
-        <Typography variant="body1">
-          {bookingData.advanceAmount || t('not_available')}
-        </Typography>
-      </Grid>
-
-      {/* Starting Date */}
-      <Grid item xs={12} sm={6}>
-        <Typography variant="h5" gutterBottom>
-          {t('starting_date')}
-        </Typography>
-        <Typography variant="body1">
-          {new Date(bookingData.startingDate).toLocaleDateString() || t('not_available')}
-        </Typography>
-      </Grid>
-
-      {/* Ending Date */}
-      <Grid item xs={12} sm={6}>
-        <Typography variant="h5" gutterBottom>
-          {t('ending_date')}
-        </Typography>
-        <Typography variant="body1">
-          {new Date(bookingData.endingDate).toLocaleDateString() || t('not_available')}
-        </Typography>
-      </Grid>
-    </Grid>
-  </Paper>
-</Grid>
-
 
       </Grid>
-    </Box>
+    {/* </Box> */}
+    </Container>
     </>
   );
 };

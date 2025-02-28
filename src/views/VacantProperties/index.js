@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
@@ -25,10 +26,10 @@ const VacantProperties = () => {
       try {
         const response = await getApi(urls.property.getVacantProperty, { id: Payload.companyId }); 
         setPropertyData(response.data);
-        console.log(response.data,"sadaskd")
+
       } catch (error) {
-        console.error('Error fetching owner data:', error);
-        toast.error('Failed to fetch owner data!');
+        console.error('Error fetching Vacant Property:', error);
+        toast.error('Failed to fetch Vacant Property');
       }
     };
 

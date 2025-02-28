@@ -21,6 +21,8 @@ import { toast } from 'react-toastify';
 import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
+import { useCallback } from 'react';
+import { debounce } from 'lodash';
 
 const AddServiceProvider = (props) => {
   const { t } = useTranslation(); // Use translation hook
@@ -79,6 +81,9 @@ const AddServiceProvider = (props) => {
     }
   });
 
+  const debounceSubmit =  useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+  
+
   return (
     <div>
       <Dialog open={open} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -94,7 +99,7 @@ const AddServiceProvider = (props) => {
         </DialogTitle>
 
         <DialogContent dividers>
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={debounceSubmit}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
               <Grid item xs={12} sm={6}>
                 <FormLabel>{t('Service Provider Name')}</FormLabel>
@@ -164,7 +169,7 @@ const AddServiceProvider = (props) => {
           <Button
             type="submit"
             variant="contained"
-            onClick={formik.handleSubmit}
+            onClick={debounceSubmit}
             style={{ textTransform: 'capitalize' }}
             color="secondary"
           >

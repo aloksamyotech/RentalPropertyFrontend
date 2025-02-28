@@ -12,30 +12,43 @@ import { useTranslation } from 'react-i18next';
 import { patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import { useCallback } from 'react';
+import { debounce } from 'lodash';
 
 const DeleteOwner = ({ open, handleClose, id }) => {
   const { t } = useTranslation(); 
   const navigate = useNavigate(); 
+
   const [loading, setLoading] = useState(false); 
 
-  const handleDelete = async () => {
-    setLoading(true); 
+  // Handler to delete the owner with debouncing to avoid multiple submissions
+  const handleDeleteRequest = async () => {
+    setLoading(true);
+    const startTime = Date.now();
+
     try {
       const result = await patchApi(urls.owner.delete, { isDeleted: true }, { id });
 
-      if (result?.status === 200 || result?.success) {
-        toast.success(t('customerDeletedSuccessfully')); 
-        handleClose(); 
+      if (result?.success) {
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 500 - elapsedTime);
+        setTimeout(() => {
+          setLoading(false);
+          handleClose();
+        }, remainingTime);
+
+        toast.success(t('Owner Deleted Successfully')); 
       } else {
-        toast.error(t('cannotDeleteTenant')); 
+        toast.error(t('cannot delete owner')); 
+        setLoading(false);
       }
     } catch (error) {
-      console.error('Error deleting tenant:', error);
-      toast.error(t('cannotDeleteTenant')); 
-    } finally {
-      setLoading(false); 
+      console.error('Error deleting owner:', error);
+      toast.error(t('cannot delete owner')); 
+      setLoading(false);
     }
   };
+
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -48,22 +61,21 @@ const DeleteOwner = ({ open, handleClose, id }) => {
           {t('cancel')}
         </Button>
         <Button
-          onClick={handleDelete}
+          onClick={handleDeleteRequest}
           color="error"
           variant="contained"
-          disabled={loading} // Disable while loading
+          disabled={loading}
         >
-          {loading ? t('deleting') : t('delete')} {/* Show 'Deleting...' while loading */}
+          {loading ? t('deleting') : t('delete')}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-// Define PropTypes for better type-checking
 DeleteOwner.propTypes = {
   open: PropTypes.bool.isRequired, 
-  handleClose: PropTypes.func.isRequired, 
+  handleClose: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired, 
 };
 
