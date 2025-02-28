@@ -19,12 +19,14 @@ import { toast } from 'react-toastify';
 import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
+import { useCallback } from 'react';
+import { debounce } from 'lodash';
 
 const EditServiceProvider = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
 
   const validationSchema = yup.object({
-    name: yup.string().max(50, t('Owner Name cannot exceed 50 characters')).required(t('Owner Name is required')),
+    name: yup.string().max(50, t('Service Provider Name cannot exceed 50 characters')).required(t('Service Provider Name is required')),
     phoneNo: yup.string().matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits')).required(t('Phone Number is required')),
     workType: yup.string().max(80, t('Work Type cannot exceed 80 characters')).required(t('Work Type is required')),
     address: yup.string().max(80, t('Address cannot exceed 80 characters')).required(t('Address is required')),
@@ -63,18 +65,20 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
     enableReinitialize: true
   });
 
+  const debounceSubmit =  useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+  
   return (
     <Dialog open={open} aria-labelledby="scroll-dialog-title">
       <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">Edit Service Provider</Typography>
+        <Typography variant="h6">{t('Edit Service Provider')}</Typography>
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
 
       <DialogContent dividers>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={debounceSubmit}>
           <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
             <Grid item xs={12} sm={6}>
-              <FormLabel>Service Provider Name</FormLabel>
+              <FormLabel>{t('Service Provider Name')}</FormLabel>
               <TextField
                 id="name"
                 name="name"
@@ -102,7 +106,7 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormLabel>Work Type</FormLabel>
+              <FormLabel>{t('Work Type')}</FormLabel>
               <TextField
                 id="workType"
                 name="workType"
@@ -115,7 +119,7 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormLabel>Address</FormLabel>
+              <FormLabel>{t('Address')}</FormLabel>
               <TextField
                 id="address"
                 name="address"
@@ -131,8 +135,8 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
-          Save
+        <Button type="submit" variant="contained" onClick={debounceSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
+        {t('Save')}
         </Button>
         <Button
           type="button"
@@ -144,7 +148,7 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
           }}
           color="error"
         >
-          Cancel
+            {t('Cancel')}
         </Button>
       </DialogActions>
     </Dialog>

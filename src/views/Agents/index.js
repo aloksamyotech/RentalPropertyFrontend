@@ -1,76 +1,65 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from 'react';
-// @mui
-
-import { Stack, Button, Container, Typography, Box, Card,Link ,Breadcrumbs,   IconButton,
-  Popover, MenuItem} from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Stack, Button, Container, Typography, Box, Card, Breadcrumbs, IconButton, Popover, MenuItem } from '@mui/material';
 import { IconHome } from '@tabler/icons';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
-// import AddLead from './AddLead.js';
 import AddAgents from './AddAgents';
 import { useTranslation } from 'react-i18next';
 import { getApi } from 'core/apis/api';
-import i18n from 'i18n';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { urls } from 'core/Constant/urls';
 import EditAgent from './EditAgent';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { useEffect } from 'react';
 import DeleteAgent from './DeleteAgent';
 import { tokenPayload } from 'helper';
-// ----------------------------------------------------------------------
+import { Link } from 'react-router-dom';
 
 const Agents = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [agentData, setagentData] = useState([]);
+  const [agentData, setAgentData] = useState([]);
   const [openDelete, setOpenDelete] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [companyData, setCompanyData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
   const [rowData, setRowData] = useState([]);
-  // const company = JSON.parse(localStorage.getItem('companyData'));
-  const payload =  tokenPayload();
+  const payload = tokenPayload();
 
-
-  const fetchAgentData= async()=>{
+  const fetchAgentData = async () => {
     try {
       const response = await getApi(urls.agent.agentdata, { id: payload._id });
-        const data = Array.isArray(response.data) ? response.data : [response.data];
-        setagentData(data);
+      const data = Array.isArray(response.data) ? response.data : [response.data];
+      setAgentData(data);
     } catch (error) {
-      console.error("Error fetching company data:", error);
-      setagentData([]);
+      console.error(t('errorFetchingData'), error);
+      setAgentData([]);
     }
-  }
-
-  
-  const handleCloseDeleteAgent = () => {
-    setOpenDelete(false);
   };
 
-  
+  useEffect(() => {
+    fetchAgentData();
+  }, [openAdd, openEdit, openDelete]);
+
   const handleOpenView = () => {
     navigate(`/dashboard/agent/view?id=${currentRow._id}`);
   };
 
-  
   const handleOpenEditAgent = () => {
-    setRowData(currentRow); 
+    setRowData(currentRow);
     setOpenEdit(true);
-    handleClose(); 
+    handleClose();
   };
+
   const handleOpenDeleteAgent = () => {
-    setRowData(currentRow); 
+    setRowData(currentRow);
     setOpenDelete(true);
     handleClose();
   };
@@ -80,74 +69,39 @@ const Agents = () => {
     setCurrentRow(row);
   };
 
-  const handleCloseEditAgent = () => {
-    setOpenEdit(false);
-  };
   const handleClose = () => {
     setAnchorEl(null);
     setCurrentRow(null);
   };
 
-    useEffect(() => {
-        fetchAgentData();
-    }, [openAdd, openEdit, openDelete]);
-
   const columns = [
-    {
-      field: 'agentName',
-      headerName: 'Agent Name',
-      flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize',
-    },
-    {
-      field: 'email',
-      headerName: 'Email',
-      flex: 1,
-    },
-    {
-      field: 'phoneNo',
-      headerName: 'Phone No',
-      flex: 1,
-    },
-    {
-      field: 'address',
-      headerName: 'Address',
-      flex: 1,
-      cellClassName: 'name-column--cell--capitalize',
-    },
+    { field: 'agentName', headerName: t('agentName'), flex: 1 },
+    { field: 'email', headerName: t('email'), flex: 1 },
+    { field: 'phoneNo', headerName: t('phoneNo'), flex: 1 },
+    { field: 'address', headerName: t('address'), flex: 1 },
     {
       field: 'action',
-      headerName: 'Action',
+      headerName: t('action'),
       flex: 1,
       renderCell: (params) => (
         <>
-          <IconButton
-            aria-describedby={params?.row._id}
-            onClick={(event) => handleClick(event, params?.row)}
-          >
+          <IconButton onClick={(event) => handleClick(event, params.row)}>
             <MoreVertIcon />
           </IconButton>
           <Popover
-            id={params?.row._id}
-            open={Boolean(anchorEl) && currentRow?._id === params?.row._id}
+            open={Boolean(anchorEl) && currentRow?._id === params.row._id}
             anchorEl={anchorEl}
             onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
           >
-            <MenuItem onClick={handleOpenEditAgent} disableRipple>
-              <EditIcon style={{ marginRight: '8px' }} />
-              Edit
+            <MenuItem onClick={handleOpenEditAgent}>
+              <EditIcon style={{ marginRight: '8px' }} /> {t('edit')}
             </MenuItem>
-            <MenuItem onClick={handleOpenView} disableRipple>
-              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
-              {t('view')}  
-              </MenuItem>
-            <MenuItem onClick={handleOpenDeleteAgent} sx={{ color: 'red' }} disableRipple>
-              <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
-              Delete
+            <MenuItem onClick={handleOpenView}>
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} /> {t('view')}
+            </MenuItem>
+            <MenuItem onClick={handleOpenDeleteAgent} sx={{ color: 'red' }}>
+              <DeleteIcon style={{ marginRight: '8px', color: 'red' }} /> {t('delete')}
             </MenuItem>
           </Popover>
         </>
@@ -155,59 +109,51 @@ const Agents = () => {
     },
   ];
 
-  const breadcrumbs = [
-    <Link underline="hover" key="1" color="primary" href="/" >
-      <IconHome />
-    </Link>,
-    <Link
-      underline="hover"
-      key="2"
-      color="primary"
-      href="/material-ui/getting-started/installation/"
-    >
-      Add Agents
-    </Link>,
-    <Typography key="3" sx={{ color: 'text.primary' }}>
-      Items
-    </Typography>,
-  ];
+  // const breadcrumbs = [
+  //   <Link key="1" color="primary" href="/">
+  //     <IconHome />
+  //   </Link>,
+  //   <Link key="2" color="primary" href="/dashboard/agents">
+  //     {t('addAgents')}
+  //   </Link>,
+  //   // <Typography key="3" sx={{ color: 'text.primary' }}>
+  //   //   {t('items')}
+  //   // </Typography>,
+  // ];
 
-  const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
+    const breadcrumbs = [
+      <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+        <IconHome />
+      </Link>,
+      <Typography key="agent" color="text.primary">
+      {t('Agents Management')} 
+      </Typography>,
+    ];
 
   return (
     <>
-      <AddAgents open={openAdd} handleClose={handleCloseAdd} />
-      <EditAgent open={openEdit} handleClose={handleCloseEditAgent} data={rowData} />
-      <DeleteAgent open={openDelete} handleClose={handleCloseDeleteAgent} id={rowData?._id}/>
+      <AddAgents open={openAdd} handleClose={() => setOpenAdd(false)} />
+      <EditAgent open={openEdit} handleClose={() => setOpenEdit(false)} data={rowData} />
+      <DeleteAgent open={openDelete} handleClose={() => setOpenDelete(false)} id={rowData?._id} />
       
       <Container>
-      <Card sx={{ p: 2, mb: 2 }}>
+        <Card sx={{ p: 2, mb: 2 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-            <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }} >
-            {t('agents')} <Breadcrumbs separator="›" aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
+               <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+               {t('Agents Management')} 
+            <Breadcrumbs separator="›" aria-label="breadcrumb">
+              {breadcrumbs}
+            </Breadcrumbs>
             </Typography>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-            {t('addNewAgent')}
-            </Button>
-          </Stack>
-        </Card>
-        {/* <Stack direction="row" alignItems="center" mb={5} justifyContent={'space-between'}>
-          <Typography variant="h4">{t('agents')}</Typography>
-          <Stack direction="row" alignItems="center" justifyContent={'flex-end'} spacing={2}>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={handleOpenAdd}
-            >
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenAdd(true)}>
               {t('addNewAgent')}
             </Button>
           </Stack>
-        </Stack> */}
+        </Card>
         <TableStyle>
           <Box width="100%">
             <Card style={{ height: '600px', paddingTop: '15px' }}>
-            <DataGrid
+              <DataGrid
                 rows={agentData}
                 columns={columns}
                 checkboxSelection

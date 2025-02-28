@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 // import Iconify from '../../ui-component/iconify';
 
-import { Box,  Stack, Grid, Typography, TextField, Paper,Card, Button, Divider, Switch } from '@mui/material';
+import { Box,  Stack, Grid, Typography, TextField, Paper,Card,Container, Button, Divider, Breadcrumbs,Switch } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useLocation } from 'react-router';
 import { getApi, patchApi } from 'core/apis/api';
@@ -12,6 +12,9 @@ import SendIcon from '@mui/icons-material/Send';
 import * as Yup from 'yup'; // Optional: For validation
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { IconHome } from '@tabler/icons';
+import { Link } from 'react-router-dom';
+
 
 const ComplainDetailsPageForTenant = () => {
   const { t } = useTranslation();
@@ -99,10 +102,24 @@ const ComplainDetailsPageForTenant = () => {
     },
   });
 
+       const breadcrumbs = [
+          <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
+            <IconHome />
+          </Link>,
+          <Link underline="hover" key="property-management" to="/dashboard/complaints" style={{ color: 'inherit' }}>
+            {t('Compalain Management')}
+          </Link>,
+          <Typography key="view" color="text.primary">
+            {t('View')}
+          </Typography>,
+        ];
+  
+
   return (
-    <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
+    // <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
+    <Container>
       <Grid container spacing={2}>
-        <Grid item xs={12} sx={{ mb: 2 }}>
+        {/* <Grid item xs={12} sx={{ mb: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button
               variant="outlined"
@@ -119,12 +136,29 @@ const ComplainDetailsPageForTenant = () => {
               {t('back')}
             </Button>
           </Box>
+        </Grid> */}
+
+<Grid item xs={12}>
+        <Card sx={{ p: 2, mb: 2 }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {t('Complain Details')}
+            <Breadcrumbs separator="›" aria-label="breadcrumb">
+              {breadcrumbs}
+            </Breadcrumbs>
+          </Typography>
+          {/* <Button variant="outlined" sx={{ display: 'flex', alignItems: 'right', gap: 2 }}>
+            {t('Create Complain')}
+          </Button> */}
+        </Stack>
+      </Card>
+     
         </Grid>
   
 
 
         {/* Complain Title Section */}
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
   <Box
     sx={{
       display: 'flex',
@@ -141,7 +175,7 @@ const ComplainDetailsPageForTenant = () => {
       {t('complain_information')}
     </Typography>
   </Box>
-</Grid>
+</Grid> */}
 
 
         {/* Tenant Info Section */}
@@ -296,7 +330,8 @@ const ComplainDetailsPageForTenant = () => {
 </Grid>
 
       </Grid>
-    </Box>
+    {/* </Box> */}
+    </Container>
   );
 };
 

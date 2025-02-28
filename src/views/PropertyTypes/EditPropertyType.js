@@ -21,6 +21,8 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import { useCallback } from 'react';
+import { throttle } from 'lodash';
 
 const EditPropertyTypes = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
@@ -31,10 +33,9 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
 
     try {
       const response = await updateApi(urls.propertyTypes.edit, updatedValues, { id: data._id });
-      console.log('API Response:', response);
 
       if (response.success) {
-        toast.success(t('Property updated successfully!'));
+        toast.success(t('Property type updated successfully!'));
         resetForm();
         handleClose();
       } else {
@@ -54,7 +55,6 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
     description: yup
       .string()
       .max(200, t('Description cannot exceed 200 characters'))
-      .required(t('Description is required')),
   });
 
   const formik = useFormik({
@@ -69,6 +69,8 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
     },
   });
 
+  const throttledSubmit = useCallback(throttle(formik.handleSubmit, 4000), [formik.handleSubmit]);
+  
   return (
     <Dialog
       open={open}
@@ -85,7 +87,7 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
         </div>
       </DialogTitle>
       <DialogContent dividers id="edit-property-dialog-description">
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={throttledSubmit}>
           <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Type Name')}</FormLabel>
@@ -118,7 +120,7 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={formik.handleSubmit}
+          onClick={throttledSubmit}
           variant="contained"
           color="primary"
           type="submit"

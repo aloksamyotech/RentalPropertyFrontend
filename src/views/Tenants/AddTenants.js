@@ -32,10 +32,16 @@ import CloseIcon from '@mui/icons-material/Close';
 const AddTenants = ({ open, handleClose }) => {
   const { t } = useTranslation();
   const [attachments, setAttachments] = useState([]);
+  const [loading, setLoading] = useState(false); 
+  
 
   const payload = tokenPayload();
 
   const AddTenants = async (values, resetForm) => {
+
+    setLoading(true);
+    const startTime = Date.now();
+
     const formData = new FormData();
     formData.append('tenantName', values.tenantName);
     formData.append('email', values.email);
@@ -57,14 +63,21 @@ const AddTenants = ({ open, handleClose }) => {
       });
 
       if (response.success) {
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 500 - elapsedTime);
+        setTimeout(() => {
+          setLoading(false);
+          setAttachments([]);
+          handleClose();
+        }, remainingTime);
         toast.success(t('Successfully registered tenant!'));
         resetForm();
-        setAttachments([]);
-        handleClose();
+       
       } else {
         throw new Error();
       }
     } catch (err) {
+      setLoading(false);
       console.error('Error adding tenant:', err);
       toast.error(t('Something went wrong!'));
     }
@@ -287,7 +300,7 @@ const AddTenants = ({ open, handleClose }) => {
       </DialogContent>
 
       <DialogActions>
-        <Button variant="contained" color="primary" type="submit" onClick={formik.handleSubmit}>
+        <Button variant="contained" color="primary" type="submit" onClick={formik.handleSubmit}     disabled={loading}>
           {t('Save')}
         </Button>
         <Button

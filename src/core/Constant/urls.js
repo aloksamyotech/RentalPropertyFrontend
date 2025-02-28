@@ -104,6 +104,7 @@ export const urls = Object.freeze({
     create : base + '/announcement/create',
     getAllAnnouncement : base + '/announcement/getAllAnnouncement',
     editAnnouncement: base + '/announcement/editAnnouncement',
-    delete: base + '/announcement/delete'
+    delete: base + '/announcement/delete',
+    getAnnouncementById: base +'/announcement/getAnnouncementById'
   }
 })

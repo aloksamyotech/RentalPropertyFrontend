@@ -9,54 +9,68 @@ import {
   FormControl,
   FormLabel,
   Grid,
+  Chip,
   TextField,
   Typography,
+  Box,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormHelperText
 } from '@mui/material';
 
 import ClearIcon from '@mui/icons-material/Clear';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-
+import CloseIcon from '@mui/icons-material/Close';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { updateApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
+import { useState } from 'react';
+import { useCallback } from 'react';
+import { throttle } from 'lodash';
 import { tokenPayload } from 'helper';
-
 
 
 
 const EditTenant = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const payload = tokenPayload();
+    const [attachments, setAttachments] = useState([]);
+        const [loading , setIsLoading] = useState(false);
+      
+  
   // const company = JSON.parse(localStorage.getItem('companyData'));
 
   const updateTenant = async (values, resetForm) => {
+    setIsLoading(true);
+    const startTime = Date.now();
     const updatedValues = {
       ...values,
       companyId: payload?.companyId,
       reporterId: payload?._id,
     };
-
     try {
       const queryParams = { id: data?._id };
       const response = await updateApi(urls.tenant.editdata, updatedValues, queryParams);
 
       if (response.success) {
+        const elapsedTime = Date.now() - startTime;
+                        const remainingTime = Math.max(0, 1000 - elapsedTime);
+                        setTimeout(() => {
+                          setIsLoading(false);
+                          handleClose();
+                        }, remainingTime);
         toast.success(t('Tenant updated successfully!'));
         resetForm();
-        setTimeout(() => {
-          handleClose();
-        }, 200);
       } else {
         toast.error(t('Failed to update tenant!'));
       }
     } catch (err) {
       console.error('Error updating tenant:', err);
+      setIsLoading(false);
       toast.error(t('Something went wrong!'));
     }
   };
@@ -75,10 +89,10 @@ const EditTenant = ({ open, handleClose, data }) => {
       identityCardType: yup.string().required(t('Identity Card Type is required')),
       identityNo: yup.string() .max(12, t('Identity No. should be smaller than 12 characters')).required(t('Identity Number is required')),
       identityImage: yup.mixed().nullable(),
-      emergencyNo: yup
-        .string()
-        .matches(/^[0-9]{10}$/, t('Emergency number must be 10 digits'))
-        .required(t('Emergency number is required')),
+      // emergencyNo: yup
+      //   .string()
+      //   .matches(/^[0-9]{10}$/, t('Emergency number must be 10 digits'))
+      //   .required(t('Emergency number is required')),
       address: yup
         .string()
         .max(100, t('Address must be at most 100 characters'))
@@ -93,7 +107,7 @@ const EditTenant = ({ open, handleClose, data }) => {
       identityCardType: data?.identityCardType || '',
       identityNo: data?.identityNo || '',
       identityImage: null,
-      emergencyNo: data?.emergencyNo || '',
+      // emergencyNo: data?.emergencyNo || '',
       address: data?.address || '',
     },
     enableReinitialize: true,
@@ -103,14 +117,28 @@ const EditTenant = ({ open, handleClose, data }) => {
     },
   });
 
+  
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length) {
+      setAttachments((prev) => [...prev, ...files]);
+    }
+  };
+
+  const handleFileRemove = (fileName) => {
+    setAttachments((prev) => prev.filter((file) => file.name !== fileName));
+  };
+  // const throttledSubmit = useCallback(throttle(formik.handleSubmit, 4000), [formik.handleSubmit]);
+  
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">{t('Edit Tenant')}</Typography>
+        <Typography variant="h6">{t('EditTenant')}</Typography>
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
      <DialogContent dividers>
-        <form onSubmit={formik.handleSubmit}>
+     <form onSubmit={formik.handleSubmit}>
           <Typography variant="h6" style={{ marginBottom: '15px' }}>
             {t('Tenant Information')}
           </Typography>
@@ -127,6 +155,7 @@ const EditTenant = ({ open, handleClose, data }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.tenantName && Boolean(formik.errors.tenantName)}
                 helperText={formik.touched.tenantName && formik.errors.tenantName}
+                required
               />
             </Grid>
 
@@ -143,6 +172,7 @@ const EditTenant = ({ open, handleClose, data }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
+                required
               />
             </Grid>
 
@@ -159,46 +189,32 @@ const EditTenant = ({ open, handleClose, data }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.phoneno && Boolean(formik.errors.phoneno)}
                 helperText={formik.touched.phoneno && formik.errors.phoneno}
-              />
-            </Grid>
-
-            {/* Emergency Number */}
-            <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Emergency Number')}</FormLabel>
-              <TextField
-                id="emergencyNo"
-                name="emergencyNo"
-                type="tel"
-                size="small"
-                fullWidth
-                value={formik.values.emergencyNo}
-                onChange={formik.handleChange}
-                error={formik.touched.emergencyNo && Boolean(formik.errors.emergencyNo)}
-                helperText={formik.touched.emergencyNo && formik.errors.emergencyNo}
+                required
               />
             </Grid>
 
             {/* Identity Card Type */}
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Identity Card Type')}</FormLabel>
-              <Select
-                id="identityCardType"
-                name="identityCardType"
-                size="small"
-                fullWidth
-                value={formik.values.identityCardType}
-                onChange={formik.handleChange}
-              >
-                <MenuItem value="" disabled>
-                  {t('Select Identity Card Type')}
-                </MenuItem>
-                <MenuItem value="Aadhar">{t('Aadhar')}</MenuItem>
-                <MenuItem value="Passport">{t('Passport')}</MenuItem>
-                <MenuItem value="DriverLicense">{t('Driver License')}</MenuItem>
-              </Select>
-              {formik.touched.identityCardType && formik.errors.identityCardType && (
-                <Typography color="error">{formik.errors.identityCardType}</Typography>
-              )}
+              <FormControl fullWidth size="small" error={formik.touched.identityCardType && Boolean(formik.errors.identityCardType)}>
+                <Select
+                  id="identityCardType"
+                  name="identityCardType"
+                  value={formik.values.identityCardType}
+                  onChange={formik.handleChange}
+                  required
+                >
+                  <MenuItem value="" disabled>
+                    {t('Select Identity Card Type')}
+                  </MenuItem>
+                  <MenuItem value="Aadhar">{t('Aadhar')}</MenuItem>
+                  <MenuItem value="Passport">{t('Passport')}</MenuItem>
+                  <MenuItem value="DriverLicense">{t('Driver License')}</MenuItem>
+                </Select>
+                {formik.touched.identityCardType && formik.errors.identityCardType && (
+                  <FormHelperText>{formik.errors.identityCardType}</FormHelperText>
+                )}
+              </FormControl>
             </Grid>
 
             {/* Identity Number */}
@@ -213,23 +229,40 @@ const EditTenant = ({ open, handleClose, data }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.identityNo && Boolean(formik.errors.identityNo)}
                 helperText={formik.touched.identityNo && formik.errors.identityNo}
+                required
               />
             </Grid>
 
-            {/* Identity Image */}
-            <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Identity Image')}</FormLabel>
-              <input
-                id="identityImage"
-                name="identityImage"
-                type="file"
-                onChange={(event) => {
-                  formik.setFieldValue('identityImage', event.currentTarget.files[0]);
+            {/* Documents */}
+            <Grid item xs={12}>
+              <Box mb={1}>
+                <FormLabel>{t('Documents')}</FormLabel>
+              </Box>
+              <Button variant="contained" component="label">
+                {t('Upload Files')}
+                <input type="file" multiple hidden onChange={handleFileChange} />
+              </Button>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: 1,
+                  flexWrap: 'wrap',
+                  maxHeight: '100px',
+                  overflowY: 'auto',
+                  marginTop: 1
                 }}
-              />
-              {formik.touched.identityImage && formik.errors.identityImage && (
-                <Typography color="error">{formik.errors.identityImage}</Typography>
-              )}
+              >
+                {attachments.map((file, index) => (
+                  <Chip
+                    key={index}
+                    sx={{ background: 'green', color: 'white' }}
+                    label={file.name}
+                    onDelete={() => handleFileRemove(file.name)}
+                    deleteIcon={<CloseIcon />}
+                  />
+                ))}
+              </Box>
             </Grid>
 
             {/* Address */}
@@ -246,13 +279,14 @@ const EditTenant = ({ open, handleClose, data }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.address && Boolean(formik.errors.address)}
                 helperText={formik.touched.address && formik.errors.address}
+                required
               />
             </Grid>
           </Grid>
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={formik.handleSubmit} variant="contained" color="primary">
+        <Button onClick={formik.handleSubmit} variant="contained" color="primary"  type="submit"  disabled={loading}>
           {t('Save')}
         </Button>
         <Button

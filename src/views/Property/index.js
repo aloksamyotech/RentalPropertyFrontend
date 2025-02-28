@@ -2,9 +2,9 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
-import { Stack, Button, Container, Typography, Box, Link, Breadcrumbs, Card, Popover, MenuItem, IconButton } from '@mui/material';
+import { Stack, Button, Container, Typography, Box, Breadcrumbs, Card, Popover, MenuItem, IconButton } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { useNavigate , useLocation} from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
 import AddProperty from './AddProperty';
@@ -19,13 +19,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { tokenPayload } from 'helper';
-
+import { Link } from 'react-router-dom';
 
 const Property = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   const [openAdd, setOpenAdd] = useState(false);
   const [propertyData, setPropertyData] = useState([]);
   const [openEdit, setOpenEdit] = useState(false);
@@ -50,7 +50,7 @@ const Property = () => {
 
   useEffect(() => {
     fetchPropertyData();
-  }, [openAdd,openDelete,openEdit]);
+  }, [openAdd, openDelete, openEdit]);
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
@@ -146,7 +146,7 @@ const Property = () => {
               <EditIcon style={{ marginRight: '8px' }} />
               {t('Edit')}
             </MenuItem>
-            <MenuItem onClick={handleOpenView} >
+            <MenuItem onClick={handleOpenView}>
               <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
               {t('view')}
             </MenuItem>
@@ -160,16 +160,25 @@ const Property = () => {
     }
   ];
 
+  // const breadcrumbs = [
+  //   <Link key="1" to="/" underline="hover"     color="inherit">
+  //     <IconHome />
+  //   </Link>,
+  //   <Link key="2" to="/dashboard/property" underline="hover"     color="inherit">
+  //     {t('property management')}
+  //   </Link>,
+  //   // <Link key="3" to={`/dashboard/property/view?id=${propertyId}`} underline="hover" color="primary">
+  //   //   {t('view')}
+  //   // </Link>,
+  // ];
+
   const breadcrumbs = [
-    <Link key="1" to="/" underline="hover"     color="inherit">
+    <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
       <IconHome />
     </Link>,
-    <Link key="2" to="/dashboard/property" underline="hover"     color="inherit">
+    <Typography key="owners" color="text.primary">
       {t('property management')}
-    </Link>,
-    // <Link key="3" to={`/dashboard/property/view?id=${propertyId}`} underline="hover" color="primary">
-    //   {t('view')}
-    // </Link>,
+    </Typography>
   ];
 
   const handleOpenAdd = () => setOpenAdd(true);
@@ -186,9 +195,9 @@ const Property = () => {
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               {t('Property Management')}
-            <Breadcrumbs separator="›" aria-label="breadcrumb">
-              {breadcrumbs}
-            </Breadcrumbs>
+              <Breadcrumbs separator="›" aria-label="breadcrumb">
+                {breadcrumbs}
+              </Breadcrumbs>
             </Typography>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
               {t('Add Property')}

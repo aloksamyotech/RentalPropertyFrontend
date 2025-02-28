@@ -24,9 +24,14 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import { useCallback } from 'react';
+import { debounce, throttle } from 'lodash';
+
 const EditOwner = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const [ownerName, setOwnerData] = useState([]);
+    const [loading , setIsLoading] = useState(false);
+  
 
   // const company = JSON.parse(localStorage.getItem('companyData')); 
   const payload = tokenPayload();
@@ -49,20 +54,28 @@ const EditOwner = ({ open, handleClose, data }) => {
   };
 
   const editProperty = async (values, resetForm) => {
+    setIsLoading(true);
+    const startTime = Date.now();
     const updatedValues = { ...values, companyId: payload._id };
 
     try {
       const response = await updateApi(urls.owner.edit, updatedValues, { id: data._id });
 
       if (response.success) {
-        toast.success(t('Owner updated successfully!'));
-        resetForm();
-        setTimeout(handleClose, 200);
+          const elapsedTime = Date.now() - startTime;
+                        const remainingTime = Math.max(0, 500 - elapsedTime);
+                        setTimeout(() => {
+                          setIsLoading(false);
+                          handleClose();
+                        }, remainingTime);
+                        toast.success(t('Owner updated successfully!'));
+                        resetForm();
       } else {
         toast.error(t('Failed to update property!'));
       }
     } catch (err) {
       console.error('Error updating property:', err);
+      setIsLoading(false);
       toast.error(t('Something went wrong!'));
     }
   };
@@ -100,11 +113,15 @@ const EditOwner = ({ open, handleClose, data }) => {
     },
   });
 
+  // const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+    
+  
+
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
       <DialogTitle>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h6">{t('Edit Property')}</Typography>
+          <Typography variant="h6">{t('Edit Owner')}</Typography>
           <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
         </div>
       </DialogTitle>
@@ -112,7 +129,7 @@ const EditOwner = ({ open, handleClose, data }) => {
         <form onSubmit={formik.handleSubmit}>
           <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
             <Grid item xs={12} sm={6}>
-              <FormLabel>Owner Name</FormLabel>
+              <FormLabel>{t('Owner Name')}</FormLabel>
               <TextField
                 id="ownerName"
                 name="ownerName"
@@ -125,7 +142,7 @@ const EditOwner = ({ open, handleClose, data }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t('Email')}</FormLabel>
               <TextField
                 id="email"
                 name="email"
@@ -138,7 +155,7 @@ const EditOwner = ({ open, handleClose, data }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormLabel>Phone No</FormLabel>
+              <FormLabel>{t('Phone No')}</FormLabel>
               <TextField
                 id="phoneNo"
                 name="phoneNo"
@@ -152,7 +169,7 @@ const EditOwner = ({ open, handleClose, data }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormLabel>Address</FormLabel>
+              <FormLabel>{t('Address')}</FormLabel>
               <TextField
                 id="address"
                 name="address"
@@ -173,6 +190,7 @@ const EditOwner = ({ open, handleClose, data }) => {
           variant="contained"
           color="primary"
           type="submit"
+          disabled={loading}
         >
           {t('Save')}
         </Button>

@@ -12,7 +12,6 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import ClearIcon from '@mui/icons-material/Clear';
 import { postApi } from 'core/apis/api';
-// import { postApi } from 'views/Services/api';
 import { useFormik } from 'formik';
 import PropTypes from 'prop-types';
 import * as yup from 'yup';
@@ -20,36 +19,37 @@ import { FormControl, FormHelperText, FormLabel } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import { toast } from 'react-toastify';
 import { urls } from 'core/Constant/urls';
-// import { postApi } from 'core/apis/api';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
+import { useState } from 'react';
+import { useCallback } from 'react';
+import { debounce, throttle } from 'lodash';
 
 const AddOwner = (props) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation(); // Initialize useTranslation hook
   const { open, handleClose } = props;
-
+    const [loading , setIsLoading] = useState(false);
+  
 
   const validationSchema = yup.object({
-     ownerName: yup
-         .string()
-         .max(50, t('Owner Name cannot exceed 50 characters'))
-         .required(t('Owner Name is required')),
-       email: yup
-         .string()
-         .email(t('Invalid email address'))
-         .required(t('Email is required')),
-       phoneNo: yup
-         .string()
-         .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
-         .required(t('Phone Number is required')),
-       address: yup
-         .string()
-         .max(80, t('Address cannot exceed 80 characters'))
-         .required(t('Address is required')),
-    // password: yup.string().required('Password is required')
+    ownerName: yup
+      .string()
+      .max(50, t('Owner Name cannot exceed 50 characters'))
+      .required(t('Owner Name is required')),
+    email: yup
+      .string()
+      .email(t('Invalid email address'))
+      .required(t('Email is required')),
+    phoneNo: yup
+      .string()
+      .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
+      .required(t('Phone Number is required')),
+    address: yup
+      .string()
+      .max(80, t('Address cannot exceed 80 characters'))
+      .required(t('Address is required')),
   });
 
-  // const company = JSON.parse(localStorage.getItem('companyData'));
   const payload = tokenPayload();
 
   const initialValues = {
@@ -57,27 +57,30 @@ const AddOwner = (props) => {
     email: '',
     phoneNo: '',
     address: '',
-    // password: ''
   };
 
   const AddOwner = async (values, resetForm) => {
+    setIsLoading(true);
+    const startTime = Date.now();
     values.companyId = payload.companyId;
-    console.log(values,"valusesvalusesvalusesvaluses.")
 
-    // console.log(companyId,"companyIdcompanyIdcompanyIdcompanyIdcompanyId")
     try {
-      const response = await postApi( urls.owner.create , values);
-      console.log("response", response)
-
-      if (response.success === true) 
-      toast.success('Successfully registered');
-      resetForm();
-      setTimeout(() => {
-        handleClose();
-      }, 200);
+      const response = await postApi(urls.owner.create, values);
+      if (response.success) {
+       const elapsedTime = Date.now() - startTime;
+                       const remainingTime = Math.max(0, 500 - elapsedTime);
+                       setTimeout(() => {
+                         setIsLoading(false);
+                         handleClose();
+                       }, remainingTime);
+                       toast.success(t('Owner added successfully!'));
+                       resetForm();
+                            } else {
+                               toast.error(t('Failed to add owner!'));
+                             }
     } catch (err) {
-      console.error(err);
-      toast.error('Something went wrong!');
+      setIsLoading(false);
+      toast.error(t('Something went wrong!'));
     }
   };
 
@@ -86,10 +89,12 @@ const AddOwner = (props) => {
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       values.email = values.email.toLowerCase();
-      console.log(values);
       AddOwner(values, resetForm);
-    }
+    },
   });
+
+    // const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+  
 
   return (
     <div>
@@ -101,16 +106,15 @@ const AddOwner = (props) => {
             justifyContent: 'space-between'
           }}
         >
-          <Typography variant="h6">Create Owner</Typography>
+          <Typography variant="h6">{t('Create Owner')}</Typography>
           <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
         </DialogTitle>
 
         <DialogContent dividers>
-       
           <form onSubmit={formik.handleSubmit}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
               <Grid item xs={12} sm={6}>
-                <FormLabel>Owner Name</FormLabel>
+                <FormLabel>{t('Owner Name')}</FormLabel>
                 <TextField
                   id="ownerName"
                   name="ownerName"
@@ -123,7 +127,7 @@ const AddOwner = (props) => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t('Email')}</FormLabel>
                 <TextField
                   id="email"
                   name="email"
@@ -136,28 +140,27 @@ const AddOwner = (props) => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-  <FormLabel>{t('Phone No')}</FormLabel>
-  <TextField
-    id="phoneNo"
-    name="phoneNo"
-    size="small"
-     type="number"
-    fullWidth
-    value={formik.values.phoneNo}
-    onChange={formik.handleChange}
-    error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
-    helperText={formik.touched.phoneNo && formik.errors.phoneNo}
-    inputProps={{ maxLength: 10 }} 
-    onKeyPress={(event) => {
-      if (!/[0-9]/.test(event.key)) {
-        event.preventDefault();
-      }
-    }}
-  />
-</Grid>
-
+                <FormLabel>{t('Phone No')}</FormLabel>
+                <TextField
+                  id="phoneNo"
+                  name="phoneNo"
+                  size="small"
+                  type="number"
+                  fullWidth
+                  value={formik.values.phoneNo}
+                  onChange={formik.handleChange}
+                  error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
+                  helperText={formik.touched.phoneNo && formik.errors.phoneNo}
+                  inputProps={{ maxLength: 10 }} 
+                  onKeyPress={(event) => {
+                    if (!/[0-9]/.test(event.key)) {
+                      event.preventDefault();
+                    }
+                  }}
+                />
+              </Grid>
               <Grid item xs={12} sm={6}>
-                <FormLabel>Address</FormLabel>
+                <FormLabel>{t('Address')}</FormLabel>
                 <TextField
                   id="address"
                   name="address"
@@ -169,26 +172,12 @@ const AddOwner = (props) => {
                   helperText={formik.touched.address && formik.errors.address}
                 />
               </Grid>
-              {/* <Grid item xs={12} sm={6}>
-                <FormLabel>Password</FormLabel>
-                <TextField
-                  id="password"
-                  name="password"
-                  type="password"
-                  size="small"
-                  fullWidth
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  error={formik.touched.password && Boolean(formik.errors.password)}
-                  helperText={formik.touched.password && formik.errors.password}
-                />
-              </Grid> */}
             </Grid>
           </form>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
-            Save
+          <Button type="submit" variant="contained"   disabled={loading} onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
+            {t('Save')}
           </Button>
           <Button
             type="button"
@@ -200,7 +189,7 @@ const AddOwner = (props) => {
             }}
             color="error"
           >
-            Cancel
+            {t('Cancel')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -210,7 +199,7 @@ const AddOwner = (props) => {
 
 AddOwner.propTypes = {
   open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired
+  handleClose: PropTypes.func.isRequired,
 };
 
 export default AddOwner;

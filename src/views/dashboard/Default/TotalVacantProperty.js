@@ -57,9 +57,10 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ==============================|| DASHBOARD - TOTAL leads CARD ||============================== //
 
-const TotalAgent = ({ isLoading, agent }) => {
+const TotalVacantProperties = ({ isLoading, vacantPropertyData }) => {
   const {t} = useTranslation();
   const theme = useTheme();
+
   return (
     <>
       {isLoading ? (
@@ -76,7 +77,7 @@ const TotalAgent = ({ isLoading, agent }) => {
               <Grid item>
                 <Grid container alignItems="center" justifyContent="center" position="top">
                   <Grid item>
-                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{agent?.length}</Typography>
+                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{vacantPropertyData?.length}</Typography>
                   </Grid>
                   <Grid item>
                     <Avatar
@@ -101,7 +102,7 @@ const TotalAgent = ({ isLoading, agent }) => {
                     textAlign: 'center'
                   }}
                 >
-                  {t('Total Agents')}
+                  {t('Total Vacant Property')}
                 </Typography>
               </Grid>
             </Grid>
@@ -112,12 +113,12 @@ const TotalAgent = ({ isLoading, agent }) => {
   );
 };
 
-TotalAgent.propTypes = {
+TotalVacantProperties.propTypes = {
   isLoading: PropTypes.bool
 };
-TotalAgent.propTypes = {
+TotalVacantProperties.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  agent: PropTypes.array
+  roomData: PropTypes.array
 };
 
-export default TotalAgent;
+export default TotalVacantProperties;

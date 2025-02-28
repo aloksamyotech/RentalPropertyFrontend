@@ -39,7 +39,7 @@ const Announcement = () => {
   };
 
   const handleOpenView = () => {
-    navigate(`/dashboard/agent/view?id=${currentRow._id}`);
+    navigate(`/dashboard/announcement/view?id=${currentRow._id}`);
   };
   const handleCloseEditAgent = () => {
     setOpenEdit(false);

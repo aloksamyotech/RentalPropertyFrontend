@@ -17,6 +17,9 @@ import KingBedIcon from '@mui/icons-material/KingBed';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
+import TotalVacantProperties from './TotalVacantProperty';
+import TotalComplains from './TotalComplains';
+import TotalBooking from './TotalBooking';
 
 const RoomTypeIcons = {
   single: <SingleBedIcon sx={{ fontSize: '2.5rem' }} />,
@@ -42,17 +45,39 @@ const MainDashboard = () => {
   const [tenant, setTenant] = useState([]);
   const [customerData, setcustomerData] = useState([]);
   const [property, setProperty] = useState([]);
+  const [vacantpropertyData,setVacantpropertyData] = useState([]);
+  const [complainData,setComplainData] = useState([]);
+  const [booking,setBooking] = useState([]);
+  
 
 
   const fetchAgentData = async () => {
     try {
       const response = await getApi( urls.agent.agentdata, { id: payload.companyId });
-      console.log(response.data,"response data");
       setAgent(response?.data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  const fetchBookingData = async () => {
+    try {
+      const response = await getApi( urls.booking.allbooking, { id: payload.companyId });
+      setBooking(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchVacantPropertyData = async () => {
+    try {
+      const response = await getApi( urls.property.getVacantProperty, { id: payload.companyId });
+      setVacantpropertyData(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   const fetchPropertyData = async () => {
     try {
@@ -81,11 +106,23 @@ const MainDashboard = () => {
     }
   };
 
+  const fetchComplainData = async () => {
+    try {
+      const response = await getApi(urls.Complaints.allComplainForCompany,{id: payload.companyId});
+      setComplainData(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchAgentData();
     fetchPropertyData();
     fetchcustomerData();
     fetchTenantData();
+    fetchVacantPropertyData();
+    fetchComplainData();
+    fetchBookingData();
   }, [openReserveRoom]);
 
   // Function to handle dialog closing
@@ -149,6 +186,19 @@ const MainDashboard = () => {
             </Grid>
             <Grid
               item
+              lg={3}
+              md={6}
+              sm={6}
+              xs={12}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                navigate('/dashboard/property');
+              }}
+            >
+              <TotalVacantProperties isLoading={isLoading} vacantPropertyData={vacantpropertyData} />
+            </Grid>
+            <Grid
+              item
               sm={6}
               xs={12}
               md={6}
@@ -169,6 +219,33 @@ const MainDashboard = () => {
               lg={3}
               sx={{ cursor: 'pointer' }}
               onClick={() => {
+                navigate('/dashboard/companyComplaints');
+              }}
+            >
+              <TotalComplains isLoading={isLoading} complainData={complainData} />
+            </Grid>
+
+            <Grid
+              item
+              sm={6}
+              xs={12}
+              md={6}
+              lg={3}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                navigate('/dashboard/booking');
+              }}
+            >
+              <TotalBooking isLoading={isLoading} booking={booking} />
+            </Grid>
+            <Grid
+              item
+              sm={6}
+              xs={12}
+              md={6}
+              lg={3}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
                 navigate('/dashboard/tenents');
               }}
             >
@@ -176,6 +253,7 @@ const MainDashboard = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
             <Grid item xs={12} md={12}>
@@ -183,7 +261,7 @@ const MainDashboard = () => {
                 {t('Total Vacant Properties')} ({agent?.length || 0})
               </Typography>
               <hr />
-              {agent?.length > 0 ? (
+              {vacantpropertyData?.length > 0 ? (
                 <Grid container spacing={gridSpacing} sx={{ marginTop: '10px' }}>
                   {agent?.map((room) => (
                     <Grid

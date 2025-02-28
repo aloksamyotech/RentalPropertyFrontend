@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -12,31 +12,32 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { deleteApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
+import { throttle } from 'lodash';  
 
 const DeletePropertyType = ({ open, handleClose, data }) => {
-  const { t } = useTranslation(); // For translations
-  const [loading, setLoading] = useState(false); 
-
+  const { t } = useTranslation(); 
+  const [loading, setLoading] = useState(false);
+console.log(data,"data");
   const handleDelete = async () => {
     setLoading(true);
     try {
+      const result = await deleteApi(urls.propertyTypes.delete, { id: data._id });
 
-      const result = await deleteApi(urls.propertyTypes.delete, { id: data._id});
-
-      // Check response status
       if (result?.status === 200 || result?.success) {
-        toast.success(t('propertyDeletedSuccessfully')); 
-        handleClose(); 
+        toast.success(t('propertyDeletedSuccessfully'));
+        handleClose();
       } else {
-        toast.error(t('cannotDeleteProperty')); // Show error toast
+        toast.error(t('cannotDeleteProperty'));
       }
     } catch (error) {
       console.error('Error deleting property type:', error);
-      toast.error(t('cannotDeleteProperty')); // Generic error message
+      toast.error(t('cannotDeleteProperty'));
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false);
     }
   };
+
+  // const handleDelete = useCallback(throttle(handleDeleteRequest, 4000, { leading: true, trailing: false }),[]);
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -62,9 +63,9 @@ const DeletePropertyType = ({ open, handleClose, data }) => {
 };
 
 DeletePropertyType.propTypes = {
-  open: PropTypes.bool.isRequired, 
-  handleClose: PropTypes.func.isRequired, 
-  id: PropTypes.string.isRequired, 
+  open: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 export default DeletePropertyType;

@@ -23,6 +23,9 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import { useCallback } from 'react';
+import { throttle } from 'lodash';
+
 
 const AddPropertyTypes = ({ open, handleClose }) => {
   const { t } = useTranslation();
@@ -82,6 +85,9 @@ const AddPropertyTypes = ({ open, handleClose }) => {
     },
   });
 
+      const throttledSubmit = useCallback(throttle(formik.handleSubmit, 4000), [formik.handleSubmit]);
+    
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle
@@ -95,7 +101,7 @@ const AddPropertyTypes = ({ open, handleClose }) => {
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
       <DialogContent dividers>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={throttledSubmit}>
           <Typography variant="h6" style={{ marginBottom: '15px' }}>
             {t('Property Types')}
           </Typography>
@@ -134,7 +140,7 @@ const AddPropertyTypes = ({ open, handleClose }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={formik.handleSubmit} 
+          onClick={throttledSubmit} 
           variant="contained"
           color="primary"
         >

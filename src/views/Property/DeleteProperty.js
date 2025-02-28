@@ -12,6 +12,8 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
+import { debounce, throttle } from 'lodash';
+import { useCallback } from 'react';
 
 const DeleteProperty = ({ open, handleClose, id }) => {
   const { t } = useTranslation();
@@ -28,7 +30,7 @@ const DeleteProperty = ({ open, handleClose, id }) => {
         // navigate('/dashboard/property');
         handleClose();
       } else {
-        toast.error(t('cannotDeleteProperty'));
+        toast.error(t('cannot delete property'));
       }
     } catch (error) {
       console.error('Error deleting property:', error);
@@ -38,11 +40,14 @@ const DeleteProperty = ({ open, handleClose, id }) => {
     }
   };
 
+  // const handleDelete = useCallback(debounce(handleDeleteRequest, 500),[]);
+  
+
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{t('deleteCustomer')}</DialogTitle>
+      <DialogTitle>{t('delete property')}</DialogTitle>
       <DialogContent>
-        <p>{t('areYouSureDeleteCustomer')}</p>
+        <p>{t('are you sure you want to delete property?')}</p>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary" disabled={loading}>

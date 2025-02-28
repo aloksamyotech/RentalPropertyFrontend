@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 // @mui
 import {
   Stack,
-  Link,
   Button,
   Container,
   Typography,
@@ -17,7 +16,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-
+import { Link } from 'react-router-dom';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Iconify from '../../ui-component/iconify';
 import TableStyle from '../../ui-component/TableStyle';
@@ -36,6 +35,7 @@ import DeleteComplain from './DeleteCompalain';
 
 const Complaints = () => {
   const { t } = useTranslation();
+ 
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -45,6 +45,7 @@ const Complaints = () => {
   const [currentRow, setCurrentRow] = useState(null);
   const payload = tokenPayload();
   const navigate = useNavigate();
+
 
   const fetchComplaintData = async () => {
     try {
@@ -166,17 +167,31 @@ const Complaints = () => {
     },
   ];
 
-  const breadcrumbs = [
-    <Link underline="hover" key="1" color="primary" href="/" onClick={(e) => e.preventDefault()}>
-      <IconHome />
-    </Link>,
-    <Link underline="hover" key="2" color="primary" href="/add-complaints" onClick={(e) => e.preventDefault()}>
-      {t('Add Complaints')}
-    </Link>,
-    <Typography key="3" sx={{ color: 'text.primary' }}>
-      {t('Items')}
-    </Typography>,
-  ];
+  // const breadcrumbs = [
+  //   <Link underline="hover" key="1" color="primary" href="/" onClick={(e) => e.preventDefault()}>
+  //     <IconHome />
+  //   </Link>,
+  //   <Link underline="hover" key="2" color="primary" href="/add-complaints" onClick={(e) => e.preventDefault()}>
+  //     {t('Add Complaints')}
+  //   </Link>,
+  //   <Typography key="3" sx={{ color: 'text.primary' }}>
+  //     {t('Items')}
+  //   </Typography>,
+  // ];
+
+         const breadcrumbs = [
+              <Link underline="hover" key="home" to="/" style={{ color: 'inherit' }}>
+                <IconHome />
+              </Link>,
+              <Link underline="hover" key="property-management" to="/dashboard/companyComplaints" style={{ color: 'inherit' }}>
+                {t('Compalain Management')}
+              </Link>,
+              // <Typography key="view" color="text.primary">
+              //   {t('View')}
+              // </Typography>,
+            ];
+
+  
 
   return (
     <>
@@ -195,9 +210,11 @@ const Complaints = () => {
                 {breadcrumbs}
               </Breadcrumbs>
             </Typography>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              {t('Add New Complaint')}
-            </Button>
+           
+              <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenAdd(true)}>
+                {t('Add New Complaint')}
+              </Button>
+    
           </Stack>
         </Card>
 

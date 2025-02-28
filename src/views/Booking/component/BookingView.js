@@ -67,7 +67,9 @@ const BookingDetailsPage = () => {
     <>
       <CreateBill open={openCreate} handleClose={handleCloseCreate} data={rowData} />
       
-    <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
+    {/* <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}> */}
+    
+<Container>
       <Grid container spacing={3}>
     
 
@@ -81,9 +83,9 @@ const BookingDetailsPage = () => {
               {breadcrumbs}
             </Breadcrumbs>
           </Typography>
-          <Button variant="outlined" sx={{ display: 'flex', alignItems: 'right', gap: 2 }}>
+          {/* <Button variant="outlined" sx={{ display: 'flex', alignItems: 'right', gap: 2 }}>
             {t('Create Booking')}
-          </Button>
+          </Button> */}
         </Stack>
       </Card>
      
@@ -256,8 +258,10 @@ const BookingDetailsPage = () => {
   </Paper>
 </Grid>
 
+
       </Grid>
-    </Box>
+    {/* </Box> */}
+    </Container>
     </>
   );
 };

@@ -12,10 +12,10 @@ import { useTranslation } from 'react-i18next';
 import { patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 
+
 const DeleteCompany = ({ open, handleClose, id }) => {
-  const { t } = useTranslation(); // For translations
-  const navigate = useNavigate(); // To navigate between routes
-  const [loading, setLoading] = useState(false); // Track the loading state
+  const { t } = useTranslation(); 
+  const [loading, setLoading] = useState(false); 
 
   const handleDelete = async () => {
     setLoading(true); 
@@ -35,6 +35,9 @@ const DeleteCompany = ({ open, handleClose, id }) => {
       setLoading(false);
     }
   };
+
+    // const handleDelete = useCallback(debounce(handleDeleteRequest, 500),[]);
+    
 
   return (
     <Dialog open={open} onClose={handleClose}>

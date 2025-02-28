@@ -17,6 +17,8 @@ import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 import { postApi } from 'core/apis/api'; // Import postApi
 import { urls } from 'core/Constant/urls';
+import { useCallback } from 'react';
+import { debounce } from 'lodash';
 
 const AddAnnouncement = (props) => {
   const { t } = useTranslation();
@@ -29,7 +31,6 @@ const AddAnnouncement = (props) => {
 
     try {
       const response = await postApi(urls.Announcement.create, data);
-     
 
       if (response.success) {
         toast.success(t('announcementAdded')); // Success message
@@ -46,19 +47,16 @@ const AddAnnouncement = (props) => {
     }
   };
 
-  // Validation Schema
   const validationSchema = yup.object({
     topic: yup.string().required(t('topicRequired')),
     details: yup.string().required(t('detailsRequired')),
   });
 
-  // Initial Form Values
   const initialValues = {
     topic: '',
     details: '',
   };
 
-  // Formik
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -78,7 +76,7 @@ const AddAnnouncement = (props) => {
         id="scroll-dialog-title"
         sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
       >
-        <Typography variant="h6">{t('addNew')}</Typography>
+        <Typography variant="h6">{t('addNewAnnouncement')}</Typography>
         <ClearIcon onClick={handleClose} sx={{ cursor: 'pointer' }} />
       </DialogTitle>
       <form onSubmit={formik.handleSubmit}>
