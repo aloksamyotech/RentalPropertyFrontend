@@ -21,27 +21,39 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
+import { useState } from 'react';
 import { tokenPayload } from 'helper';
 
 const EditAnnouncement = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const payload = tokenPayload();
+    const [loading, setLoading] = useState(false);
+  
 
   const handleEditAnnouncement = async (values, resetForm) => {
+    setLoading(true);
+    const startTime = Date.now();
     const updatedValues = { ...values, companyId: payload._id, id: data._id };
+    
 
     try {
       const response = await updateApi(urls.Announcement.editAnnouncement, updatedValues, { id: data._id });
 
       if (response.success) {
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 1000 - elapsedTime);
+        setTimeout(() => {
+          setLoading(false);
+          handleClose();
+        }, remainingTime);
         toast.success(t('Announcement updated successfully!'));
         resetForm();
-        setTimeout(handleClose, 200);
       } else {
         toast.error(response.message || t('Failed to update announcement!'));
       }
     } catch (err) {
       console.error('Error updating announcement:', err);
+      setLoading(false);
       toast.error(err.message || t('Something went wrong!'));
     }
   };
@@ -116,7 +128,7 @@ const EditAnnouncement = ({ open, handleClose, data }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="primary" disabled={loading}>
             {t('save')}
           </Button>
           <Button

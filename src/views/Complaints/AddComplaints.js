@@ -74,16 +74,23 @@ const AddComplaints = ({ open, handleClose }) => {
       };
 
       try {
+        setLoading(true);
+        const startTime = Date.now();
         const response = await postApi(urls.Complaints.create, complaintData);
         if (response.success) {
-          toast.success(t('Complaint successfully registered!'));
-          resetForm();
-          setTimeout(() => {
-            handleClose();
-          }, 200);
+
+           const elapsedTime = Date.now() - startTime;
+                  const remainingTime = Math.max(0, 1000 - elapsedTime);
+                  setTimeout(() => {
+                    setLoading(false);
+                    handleClose();
+                  }, remainingTime);
+                  toast.success(t('Complaint successfully registered!'));
+                  resetForm();
         }
       } catch (err) {
         console.error(err);
+        setLoading(false);
         toast.error(t('Something went wrong!'));
       }
     },
@@ -167,8 +174,9 @@ const AddComplaints = ({ open, handleClose }) => {
           onClick={formik.handleSubmit}
           variant="contained"
           color="primary"
+          disabled={loading} 
         >
-          {t('Save')}
+          {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {

@@ -301,7 +301,7 @@ const AddTenants = ({ open, handleClose }) => {
 
       <DialogActions>
         <Button variant="contained" color="primary" type="submit" onClick={formik.handleSubmit}     disabled={loading}>
-          {t('Save')}
+        {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {

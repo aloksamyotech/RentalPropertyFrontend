@@ -30,10 +30,8 @@ import { debounce, throttle } from 'lodash';
 const EditOwner = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const [ownerName, setOwnerData] = useState([]);
-    const [loading , setIsLoading] = useState(false);
+  const [loading , setIsLoading] = useState(false);
   
-
-  // const company = JSON.parse(localStorage.getItem('companyData')); 
   const payload = tokenPayload();
 
   useEffect(() => {
@@ -45,7 +43,6 @@ const EditOwner = ({ open, handleClose, data }) => {
   const fetchOwnerData = async () => {
     try {
       const response = await getApi(urls.owner.ownerdata, { id: payload.companyId });
-      console.log('Fetched Owner Data:', response.data);
       setOwnerData(response.data);
     } catch (err) {
       console.error('Error fetching owner data:', err);
@@ -192,7 +189,7 @@ const EditOwner = ({ open, handleClose, data }) => {
           type="submit"
           disabled={loading}
         >
-          {t('Save')}
+               {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {

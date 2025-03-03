@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -23,16 +23,14 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
-import { useCallback } from 'react';
-import { throttle } from 'lodash';
-
 
 const AddPropertyTypes = ({ open, handleClose }) => {
   const { t } = useTranslation();
-
   const payload = tokenPayload();
-
+  const [loading, setIsLoading] = useState(false); // Corrected: Loading state initialization
+  
   const AddPropertyTypes = async (values, resetForm) => {
+    setIsLoading(true); // Set loading state to true when submitting form
     try {
       values.companyId = payload._id;
 
@@ -41,25 +39,19 @@ const AddPropertyTypes = ({ open, handleClose }) => {
 
       if (response.success) {
         toast.success(t('Successfully registered property type!'));
-        resetForm();
-  
         setTimeout(() => {
+          setIsLoading(false); // Stop loading after 500ms to give a smooth transition
           handleClose();
-        }, 200);
+        }, 500);
+        resetForm(); // Reset the form fields after successful submission
       }
     } catch (error) {
       console.error('Error in AddPropertyTypes:', error);
-
-      if (error.status === 409) {
-        toast.error(t('Property type already exists!'));
-      } else {
-        toast.error(t('Failed to register property type!'));
-      }
+      toast.error(t('Failed to register property type!'));
+      setIsLoading(false); // Stop loading on error
     }
   };
   
-  
-
   const validationSchema = yup.object({
     name: yup
       .string()
@@ -67,8 +59,7 @@ const AddPropertyTypes = ({ open, handleClose }) => {
       .required(t('Property Name is required')),
     description: yup
       .string()
-      .max(200, t('Property Name must be at most 200 characters'))
-      // .required(t('Description is required')),
+      .max(200, t('Description must be at most 200 characters'))
   });
 
   const initialValues = {
@@ -85,9 +76,6 @@ const AddPropertyTypes = ({ open, handleClose }) => {
     },
   });
 
-      const throttledSubmit = useCallback(throttle(formik.handleSubmit, 4000), [formik.handleSubmit]);
-    
-
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle
@@ -101,12 +89,11 @@ const AddPropertyTypes = ({ open, handleClose }) => {
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
       <DialogContent dividers>
-        <form onSubmit={throttledSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <Typography variant="h6" style={{ marginBottom: '15px' }}>
             {t('Property Types')}
           </Typography>
           <Grid container spacing={3}>
-            {/* Property Name */}
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Type Name')}</FormLabel>
               <TextField
@@ -121,7 +108,6 @@ const AddPropertyTypes = ({ open, handleClose }) => {
               />
             </Grid>
 
-            {/* Description */}
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Description')}</FormLabel>
               <TextField
@@ -140,11 +126,12 @@ const AddPropertyTypes = ({ open, handleClose }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={throttledSubmit} 
+          onClick={formik.handleSubmit}
           variant="contained"
           color="primary"
+          disabled={loading} 
         >
-          {t('Save')}
+          {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {

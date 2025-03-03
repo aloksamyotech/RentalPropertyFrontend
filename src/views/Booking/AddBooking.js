@@ -58,7 +58,6 @@ const AddBooking = (props) => {
 
   const payload = tokenPayload();
 
-  // Fetch tenant data
   const fetchTenantData = async () => {
     setLoading(true);
     try {
@@ -73,7 +72,6 @@ const AddBooking = (props) => {
   };
   
 
-  // Fetch property data
   const fetchPropertyData = async () => {
     setLoading(true);
     try {
@@ -264,7 +262,7 @@ const AddBooking = (props) => {
 
           <DialogActions>
             <Button type="submit" variant="contained" disabled={loading} color="secondary" style={{ textTransform: 'capitalize' }}>
-              {t('Save')}
+            {loading ? t('Saving...') : t('Save')} 
             </Button>
             <Button
               type="button"

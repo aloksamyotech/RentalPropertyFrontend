@@ -28,6 +28,8 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
   const payload = tokenPayload();
   const [property, setProperty] = useState(null);
   const [tenant, setTenant] = useState(null);
+  const [loading, setLoading] = useState(false);
+  
 
   useEffect(() => {
     if (data?.propertyId) setProperty(data.propertyId);
@@ -85,10 +87,13 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
         </div>
       </DialogTitle>
       <DialogContent dividers>
-        <Formik
+      <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={async (values, { resetForm }) => {
+            setLoading(true);
+            const startTime = Date.now(); // Added startTime for setTimeout logic
+            
             const updatedValues = {
               ...values,
               companyId: payload.companyId,
@@ -108,13 +113,17 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
             try {
               const response = await postApi(urls.bill.createBill, updatedValues);
               if (response.success) {
+                const elapsedTime = Date.now() - startTime;
+                const remainingTime = Math.max(0, 1000 - elapsedTime);
+                setTimeout(() => {
+                  setLoading(false);
+                  handleClose();
+                }, remainingTime);
                 toast.success(t('billGeneratedSuccessfully'));
                 resetForm();
-                handleClose();
-              } else {
-                toast.error(t('failedToGenerateBill'));
               }
             } catch (error) {
+              setLoading(false);
               toast.error(t('failedToGenerateBill'));
             }
           }}
@@ -164,7 +173,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="h6">{t('Extra Charges')}</Typography>
+                    <Typography >{t('Extra Charges')}</Typography>
                     <FieldArray name="extraCharges">
                       {({ push, remove }) => (
                         <div>
@@ -320,7 +329,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                 </Grid>
 
                 <DialogActions>
-                  <Button type="submit" variant="contained" color="secondary">
+                  <Button type="submit" variant="contained" color="secondary" disabled={loading}>
                     {t('Generate Bill')}
                   </Button>
                   <Button

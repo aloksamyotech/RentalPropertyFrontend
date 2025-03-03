@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
-import { Stack, Button, Container, Typography, Box, Link, Breadcrumbs, Card, Popover, MenuItem, IconButton } from '@mui/material';
+import { Stack, Button, Container, Typography, Box, Breadcrumbs, Card, Popover, MenuItem, IconButton } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useNavigate, useLocation } from 'react-router';
 import Iconify from '../../ui-component/iconify';
@@ -22,6 +22,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { tokenPayload } from 'helper';
 import EditServiceProvider from './EditSerivceProvider';
 import DeleteServiceProvider from './DeleteServiceProvider';
+import { Link } from 'react-router-dom';
 
 const payload = tokenPayload();
 const userRole = payload?.role;
@@ -145,12 +146,12 @@ const ServiceProvider = () => {
   }
 
   const breadcrumbs = [
-    <Link key="1" to="/" underline="hover" color="inherit">
+    <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
       <IconHome />
     </Link>,
-    <Link key="2" to="/dashboard/serviceprovider" underline="hover" color="inherit">
-      {t('Service Providers')}  
-    </Link>,
+    <Typography key="serviceprovider" to="/dashboard/serviceprovider" color="text.primary">
+      {t('Service Providers')}
+    </Typography>
   ];
 
   const handleOpenAdd = () => setOpenAdd(true);

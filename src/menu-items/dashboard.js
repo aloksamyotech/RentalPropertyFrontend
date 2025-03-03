@@ -15,12 +15,17 @@ import {
 import AdUnitsIcon from '@mui/icons-material/AdUnits';
 import PersonIcon from '@mui/icons-material/Person';
 import AddHomeWorkIcon from '@mui/icons-material/AddHomeWork';
-import PaymentIcon from '@mui/icons-material/Payment';
 import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
 import Person2Icon from '@mui/icons-material/Person2';
 import TaskIcon from '@mui/icons-material/Task';
 import { tokenPayload } from 'helper';
-
+import AddHomeIcon from '@mui/icons-material/AddHome';
+import BookIcon from '@mui/icons-material/Book';
+import CommentBankIcon from '@mui/icons-material/CommentBank';
+import PaymentIcon from '@mui/icons-material/Payment';
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
+import AnnouncementIcon from '@mui/icons-material/Announcement';
+import HomeIcon from '@mui/icons-material/Home';
 // constant
 const icons = {
   IconHome,
@@ -48,7 +53,7 @@ const superAdminDashboard = {
       title: 'Dashboard',
       type: 'item',
       url: '/dashboard/default',
-      icon: icons.IconHome,
+      icon: HomeIcon,
       breadcrumbs: false
     },
     {
@@ -72,7 +77,7 @@ const companyAdminDashboard = {
       title: 'Dashboard',
       type: 'item',
       url: '/dashboard/default',
-      icon: icons.IconHome,
+      icon: HomeIcon,
       breadcrumbs: false
     },
     {
@@ -80,7 +85,7 @@ const companyAdminDashboard = {
       title: 'Property Types',
       type: 'item',
       url: '/dashboard/propertyTypes',
-      icon: icons.IconHome,
+      icon: AddHomeIcon,
       breadcrumbs: false
     },
     {
@@ -120,7 +125,7 @@ const companyAdminDashboard = {
       title: 'Booking Management',
       type: 'item',
       url: '/dashboard/booking',
-      icon: Person2Icon,
+      icon: BookIcon,
       breadcrumbs: false
     },
     {
@@ -128,7 +133,7 @@ const companyAdminDashboard = {
       title: 'Complaint Management',
       type: 'item',
       url: '/dashboard/companyComplaints',
-      icon: Person2Icon,
+      icon: CommentBankIcon,
       breadcrumbs: false
     },
     {
@@ -136,7 +141,7 @@ const companyAdminDashboard = {
       title: 'Bill Management',
       type: 'item',
       url: '/dashboard/billC',
-      icon: AddHomeWorkIcon,
+      icon: PaymentIcon,
       breadcrumbs: false
     },
     {
@@ -144,7 +149,7 @@ const companyAdminDashboard = {
       title: 'Service Provider',
       type: 'item',
       url: '/dashboard/serviceprovider',
-      icon: AddHomeWorkIcon,
+      icon: HomeRepairServiceIcon,
       breadcrumbs: false
     },
     {
@@ -152,7 +157,7 @@ const companyAdminDashboard = {
       title: 'Announcements',
       type: 'item',
       url: '/dashboard/announcement',
-      icon: AddHomeWorkIcon,
+      icon: AnnouncementIcon,
       breadcrumbs: false
     },
   ]
@@ -168,7 +173,7 @@ const agentDashboard = {
       title: 'Dashboard',
       type: 'item',
       url: '/dashboard/default',
-      icon: icons.IconHome,
+      icon: HomeIcon,
       breadcrumbs: false
     },
     {
@@ -192,7 +197,7 @@ const agentDashboard = {
       title: 'Complaints',
       type: 'item',
       url: '/dashboard/complaints',
-      icon: TaskIcon,
+      icon: CommentBankIcon,
       breadcrumbs: false
     },
     {
@@ -208,7 +213,7 @@ const agentDashboard = {
       title: 'Bill Management',
       type: 'item',
       url: '/dashboard/bill',
-      icon: AddHomeWorkIcon,
+      icon: PaymentIcon,
       breadcrumbs: false
     },
     {
@@ -224,7 +229,7 @@ const agentDashboard = {
       title: 'Service Provider',
       type: 'item',
       url: '/dashboard/serviceprovider',
-      icon: AddHomeWorkIcon,
+      icon: HomeRepairServiceIcon,
       breadcrumbs: false
     },
     {
@@ -232,7 +237,7 @@ const agentDashboard = {
       title: 'Announcements',
       type: 'item',
       url: '/dashboard/announcement',
-      icon: AddHomeWorkIcon,
+      icon: AnnouncementIcon,
       breadcrumbs: false
     },
   ]
@@ -248,7 +253,7 @@ const tenantDashboard = {
       title: 'Dashboard',
       type: 'item',
       url: '/dashboard/default',
-      icon: icons.IconHome,
+      icon: HomeIcon,
       breadcrumbs: false
     },
     {
@@ -264,7 +269,7 @@ const tenantDashboard = {
       title: 'Announcements',
       type: 'item',
       url: '/dashboard/announcement',
-      icon: icons.IconMail,
+      icon:AnnouncementIcon,
       breadcrumbs: false
     },
     // {
@@ -296,7 +301,7 @@ const tenantDashboard = {
       title: 'Complaints',
       type: 'item',
       url: '/dashboard/complaints',
-      icon: icons.IconFileUpload,
+      icon: CommentBankIcon,
       breadcrumbs: false
     },
     {
@@ -304,7 +309,7 @@ const tenantDashboard = {
       title: 'Bill Management',
       type: 'item',
       url: '/dashboard/billT',
-      icon: AddHomeWorkIcon,
+      icon: PaymentIcon,
       breadcrumbs: false
     },
     {
@@ -312,7 +317,7 @@ const tenantDashboard = {
       title: 'Service Provider',
       type: 'item',
       url: '/dashboard/serviceprovider',
-      icon: AddHomeWorkIcon,
+      icon: HomeRepairServiceIcon,
       breadcrumbs: false
     },
     {
@@ -320,7 +325,7 @@ const tenantDashboard = {
       title: 'Announcements',
       type: 'item',
       url: '/dashboard/announcement',
-      icon: AddHomeWorkIcon,
+      icon: AnnouncementIcon,
       breadcrumbs: false
     },
   ]

@@ -287,7 +287,7 @@ const EditTenant = ({ open, handleClose, data }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={formik.handleSubmit} variant="contained" color="primary"  type="submit"  disabled={loading}>
-          {t('Save')}
+        {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {

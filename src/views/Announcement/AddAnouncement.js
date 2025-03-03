@@ -15,33 +15,40 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
-import { postApi } from 'core/apis/api'; // Import postApi
+import { postApi } from 'core/apis/api'; 
+import { useState } from 'react';
 import { urls } from 'core/Constant/urls';
-import { useCallback } from 'react';
-import { debounce } from 'lodash';
 
 const AddAnnouncement = (props) => {
   const { t } = useTranslation();
   const { open, handleClose } = props;
+  const [loading, setLoading] = useState(false);
+  
   const payload = tokenPayload();
 
-  // API call function
   const AddAnnouncement = async (values, resetForm) => {
+    setLoading(true);
+    const startTime = Date.now();
     const data = { ...values, companyId: payload.companyId };
 
     try {
       const response = await postApi(urls.Announcement.create, data);
 
       if (response.success) {
-        toast.success(t('announcementAdded')); // Success message
-        resetForm(); // Reset the form
-        setTimeout(() => {
-          handleClose(); // Close the dialog
-        }, 200);
+         const elapsedTime = Date.now() - startTime;
+               const remainingTime = Math.max(0, 1000 - elapsedTime);
+               setTimeout(() => {
+                 setLoading(false);
+                 handleClose();
+               }, remainingTime);
+               toast.success(t('announcementAdded'));
+               resetForm();
       } else {
+        setLoading(false);
         toast.error(response.message || t('errorOccurred'));
       }
     } catch (err) {
+      setLoading(false);
       console.error("Error:", err);
       toast.error(err.message || t('errorOccurred'));
     }
@@ -118,7 +125,7 @@ const AddAnnouncement = (props) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="primary"  disabled={loading}>
             {t('save')}
           </Button>
           <Button

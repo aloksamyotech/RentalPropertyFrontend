@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -17,27 +17,27 @@ import { throttle } from 'lodash';
 const DeletePropertyType = ({ open, handleClose, data }) => {
   const { t } = useTranslation(); 
   const [loading, setLoading] = useState(false);
-console.log(data,"data");
-  const handleDelete = async () => {
+
+  // Throttle the delete action to prevent multiple clicks
+  const handleDelete = throttle(async () => {
     setLoading(true);
     try {
       const result = await deleteApi(urls.propertyTypes.delete, { id: data._id });
 
-      if (result?.status === 200 || result?.success) {
+      if (result?.success) {
         toast.success(t('propertyDeletedSuccessfully'));
+        setLoading(false);
         handleClose();
       } else {
         toast.error(t('cannotDeleteProperty'));
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error deleting property type:', error);
       toast.error(t('cannotDeleteProperty'));
-    } finally {
       setLoading(false);
     }
-  };
-
-  // const handleDelete = useCallback(throttle(handleDeleteRequest, 4000, { leading: true, trailing: false }),[]);
+  }, 2000); 
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -65,7 +65,7 @@ console.log(data,"data");
 DeletePropertyType.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired, 
 };
 
 export default DeletePropertyType;

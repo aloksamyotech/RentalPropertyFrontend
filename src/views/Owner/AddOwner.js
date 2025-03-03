@@ -26,9 +26,9 @@ import { useCallback } from 'react';
 import { debounce, throttle } from 'lodash';
 
 const AddOwner = (props) => {
-  const { t } = useTranslation(); // Initialize useTranslation hook
+  const { t } = useTranslation(); 
   const { open, handleClose } = props;
-    const [loading , setIsLoading] = useState(false);
+  const [loading , setIsLoading] = useState(false);
   
 
   const validationSchema = yup.object({
@@ -177,7 +177,7 @@ const AddOwner = (props) => {
         </DialogContent>
         <DialogActions>
           <Button type="submit" variant="contained"   disabled={loading} onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
-            {t('Save')}
+          {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
             type="button"

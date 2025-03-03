@@ -23,9 +23,12 @@ import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 import { useCallback } from 'react';
 import { debounce } from 'lodash';
+import { useState } from 'react';
 
 const AddServiceProvider = (props) => {
-  const { t } = useTranslation(); // Use translation hook
+  const { t } = useTranslation(); 
+  const [loading, setLoading] = useState(false);
+  
   const { open, handleClose } = props;
 
   const validationSchema = yup.object({
@@ -57,18 +60,23 @@ const AddServiceProvider = (props) => {
   };
 
   const AddServiceProvider = async (values, resetForm) => {
+    setLoading(true);
+    const startTime = Date.now();
     values.companyId = payload.companyId;
     try {
       const response = await postApi(urls.serviceProvider.create, values);
       if (response.success === true) {
         toast.success(t('Successfully registered'));
-        resetForm();
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 1000 - elapsedTime);
         setTimeout(() => {
+          setLoading(false);
           handleClose();
-        }, 200);
+        }, remainingTime);
       }
     } catch (err) {
       console.error(err);
+      setLoading(false);
       toast.error(t('Something went wrong!'));
     }
   };
@@ -172,8 +180,9 @@ const AddServiceProvider = (props) => {
             onClick={debounceSubmit}
             style={{ textTransform: 'capitalize' }}
             color="secondary"
+            disabled={loading}
           >
-            {t('Save')}
+         {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
             type="button"

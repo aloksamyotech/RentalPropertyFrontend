@@ -26,7 +26,6 @@ import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
 
-
 const BillC = () => {
   const { t } = useTranslation();
   const [openDelete, setOpenDelete] = useState(false);
@@ -35,18 +34,25 @@ const BillC = () => {
   const [billData, setBillData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
-  const [rowData, setRowData] = useState([]);
-   const payload = tokenPayload();
+  const payload = tokenPayload();
 
-   const fetchBillData = async () => {
-      const response = await getApi(urls.bill.getAllBill,  { id: payload._id });
-        const formattedData = response.data.map((item) => ({
-          ...item,
-          tenantName: item.tenantId?.tenantName,
-          propertyName: item.propertyId?.propertyname
-        }));
-        setBillData(formattedData);
-    };
+  const fetchBillData = async () => {
+    const response = await getApi(urls.bill.getAllBill, { id: payload._id });
+
+    const formattedData = response.data.map((item) => {
+      const billingDate = new Date(item.billingMonth);
+      const formattedBillingMonth = `${billingDate.toLocaleString('default', { month: 'long' })} ${billingDate.getFullYear()}`; // Format as "Month Year"
+
+      return {
+        ...item,
+        tenantName: item.tenantId?.tenantName,
+        propertyName: item.propertyId?.propertyname,
+        billingMonth: formattedBillingMonth,
+      };
+    });
+
+    setBillData(formattedData);
+  };
 
   useEffect(() => {
     fetchBillData();
@@ -63,17 +69,13 @@ const BillC = () => {
   };
 
   const handleCloseDeleteCompany = () => setOpenDelete(false);
-
   const handleOpenDeleteCompany = () => {
-    setRowData(currentRow);
     setOpenDelete(true);
     handleClose();
   };
 
   const handleCloseEditCompany = () => setOpenEdit(false);
-
   const handleOpenEditCompany = () => {
-    setRowData(currentRow);
     setOpenEdit(true);
     handleClose();
   };
@@ -119,10 +121,10 @@ const BillC = () => {
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
       renderCell: (params) => (
-        <Typography 
-          style={{ 
-            color: params.row.status ? 'green' : 'red', 
-            fontWeight: 'bold' 
+        <Typography
+          style={{
+            color: params.row.status ? 'green' : 'red',
+            fontWeight: 'bold',
           }}
         >
           {params.row.status ? t('Resolved') : t('Pending')}
@@ -179,13 +181,6 @@ const BillC = () => {
           <Breadcrumbs separator="›" aria-label="breadcrumb">
             {breadcrumbs}
           </Breadcrumbs>
-          {/* <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={handleOpenAdd}
-          >
-            {t('Add Company')}
-          </Button> */}
         </Stack>
       </Card>
       <TableStyle>

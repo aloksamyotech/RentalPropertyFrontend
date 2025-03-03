@@ -4,7 +4,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Stack, Button, Container, Typography, Box, Card, Link, Breadcrumbs, Popover, MenuItem,IconButton } from '@mui/material';
+import { Stack, Button, Container, Typography, Box, Card, Breadcrumbs, Popover, MenuItem,IconButton } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { IconHome } from '@tabler/icons';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -20,6 +20,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditAnnouncement from './EditAnnouncement';
 import DeleteAnnouncement from './DeleteAnnouncement';
+import { Link } from 'react-router-dom';
 
 const Announcement = () => {
   const payload = tokenPayload()
@@ -130,11 +131,11 @@ const Announcement = () => {
               <>
                 <MenuItem onClick={handleOpenEditAgent} disableRipple>
                   <EditIcon style={{ marginRight: '8px' }} />
-                  Edit
+                  {t('Edit')}
                 </MenuItem>
                 <MenuItem onClick={handleOpenDeleteAgent} sx={{ color: 'red' }} disableRipple>
                   <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
-                  Delete
+                  {t('Delete')}
                 </MenuItem>
               </>
             )}

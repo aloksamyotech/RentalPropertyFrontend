@@ -21,23 +21,31 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import { useState } from 'react';
 import { useCallback } from 'react';
 import { throttle } from 'lodash';
 
 const EditPropertyTypes = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const payload = tokenPayload();
-
+  const [loading, setLoading] = useState(false);
+  
   const EditPropertyType = async (values, resetForm) => {
     const updatedValues = { ...values, companyId: payload._id };
-
+    setLoading(true);
+    const startTime = Date.now();
     try {
       const response = await updateApi(urls.propertyTypes.edit, updatedValues, { id: data._id });
 
       if (response.success) {
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 1000 - elapsedTime);
+        setTimeout(() => {
+          setLoading(false);
+          handleClose();
+        }, remainingTime);
         toast.success(t('Property type updated successfully!'));
         resetForm();
-        handleClose();
       } else {
         toast.error(t('Failed to update property!'));
       }
@@ -69,7 +77,7 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
     },
   });
 
-  const throttledSubmit = useCallback(throttle(formik.handleSubmit, 4000), [formik.handleSubmit]);
+  // const throttledSubmit = useCallback(throttle(formik.handleSubmit, 4000), [formik.handleSubmit]);
   
   return (
     <Dialog
@@ -87,7 +95,7 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
         </div>
       </DialogTitle>
       <DialogContent dividers id="edit-property-dialog-description">
-        <form onSubmit={throttledSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Type Name')}</FormLabel>
@@ -120,12 +128,13 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={throttledSubmit}
+          onClick={formik.handleSubmit}
           variant="contained"
           color="primary"
           type="submit"
+          disabled={loading}
         >
-          {t('Save')}
+        {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {

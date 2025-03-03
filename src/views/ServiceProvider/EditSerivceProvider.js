@@ -21,9 +21,11 @@ import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 import { useCallback } from 'react';
 import { debounce } from 'lodash';
+import { useState } from 'react';
 
 const EditServiceProvider = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
 
   const validationSchema = yup.object({
     name: yup.string().max(50, t('Service Provider Name cannot exceed 50 characters')).required(t('Service Provider Name is required')),
@@ -42,13 +44,20 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
   };
 
   const editServiceProvider = async (values, resetForm) => {
+    setLoading(true);
+    const startTime = Date.now();
     values.companyId = payload.companyId;
     try {
       const response = await updateApi(urls.serviceProvider.updateServiceProvider, values,{ id: data._id },);
       if (response.success) {
-        toast.success('Successfully updated');
-        resetForm();
-        setTimeout(handleClose, 200);
+          const elapsedTime = Date.now() - startTime;
+                const remainingTime = Math.max(0, 1000 - elapsedTime);
+                setTimeout(() => {
+                  setLoading(false);
+                  handleClose();
+                }, remainingTime);
+                toast.success(t('Service provider updated Successfully'));
+                resetForm();
       }
     } catch (err) {
       console.error(err);
@@ -65,8 +74,7 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
     enableReinitialize: true
   });
 
-  const debounceSubmit =  useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
-  
+
   return (
     <Dialog open={open} aria-labelledby="scroll-dialog-title">
       <DialogTitle id="scroll-dialog-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -75,7 +83,7 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
       </DialogTitle>
 
       <DialogContent dividers>
-        <form onSubmit={debounceSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Service Provider Name')}</FormLabel>
@@ -135,8 +143,8 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button type="submit" variant="contained" onClick={debounceSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
-        {t('Save')}
+        <Button type="submit" variant="contained" disabled={loading} onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
+        {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           type="button"

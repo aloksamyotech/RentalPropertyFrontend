@@ -26,7 +26,6 @@ const EditAgent = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const [loading , setIsLoading] = useState(false);
 
-  // const company = JSON.parse(localStorage.getItem('companyData'));
   const payload = tokenPayload();
 
   useEffect(() => {
