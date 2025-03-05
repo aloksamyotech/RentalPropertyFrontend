@@ -17,30 +17,17 @@ const DeleteBooking = ({ open, handleClose, id }) => {
 
   const handleDeleteSubmit = async () => {
     setLoading(true); 
-    const startTime = Date.now();
-
-   
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
     try {
       const result = await patchApi(urls.booking.breakTheBooking, {}, { id });
 
       if (result?.success) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 1000 - elapsedTime);
-
-        setTimeout(() => {
-          handleClose();
-        }, remainingTime);
-
         toast.success(t('bookingDeletedSuccessfully'));
-      } else {
-        toast.error(t('cannotDeleteBooking'));
+        handleClose();
       }
     } catch (error) {
       toast.error(t('cannotDeleteBooking'));
+    } finally {
+      setLoading(false); 
     }
   };
 

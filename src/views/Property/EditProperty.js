@@ -36,6 +36,7 @@ const EditProperty = ({ open, handleClose, data }) => {
   const [ownerData, setOwnerData] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [typeData, setTypeData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const payload = tokenPayload();
 
   useEffect(() => {
@@ -44,7 +45,6 @@ const EditProperty = ({ open, handleClose, data }) => {
       fetchTypeData();
     }
   }, [open]);
-  console.log(ownerData,"ownerData");
 
   const fetchOwnerData = async () => {
       const response = await getApi(urls.owner.ownerdata, { id: payload._id });
@@ -88,6 +88,7 @@ const EditProperty = ({ open, handleClose, data }) => {
   //   }
   // };
    const editProperty = async (values, resetForm) => {
+    setLoading(true);
       const formData = new FormData();
   
       formData.append('propertyname', values.propertyname);
@@ -109,12 +110,12 @@ const EditProperty = ({ open, handleClose, data }) => {
             if (response.success) {
               toast.success(t('Property updated successfully!'));
               resetForm();
-              setTimeout(handleClose, 200);
-            } else {
-              toast.error(t('Failed to update property!'));
+              handleClose();
             }
           } catch (err) {
             toast.error(t('Something went wrong!'));
+          } finally {
+            setLoading(false);
           }
     };
 
@@ -148,7 +149,7 @@ const EditProperty = ({ open, handleClose, data }) => {
 
       // const throttledSubmit = useCallback(throttle(formik.handleSubmit, 10000), [formik.handleSubmit]);
         
-      const throttledSubmit =  useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+      // const throttledSubmit =  useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -159,7 +160,7 @@ const EditProperty = ({ open, handleClose, data }) => {
         </div>
       </DialogTitle>
       <DialogContent dividers>
-      <form onSubmit={throttledSubmit}>
+      <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Name')}</FormLabel>
@@ -334,12 +335,13 @@ const EditProperty = ({ open, handleClose, data }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={throttledSubmit}
+          onClick={formik.handleSubmit}
           variant="contained"
           color="primary"
           type="submit"
+          disabled={loading}
         >
-          {t('Save')}
+        {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {

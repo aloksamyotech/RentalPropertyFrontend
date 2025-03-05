@@ -61,26 +61,22 @@ const AddOwner = (props) => {
 
   const AddOwner = async (values, resetForm) => {
     setIsLoading(true);
-    const startTime = Date.now();
     values.companyId = payload.companyId;
 
     try {
       const response = await postApi(urls.owner.create, values);
       if (response.success) {
-       const elapsedTime = Date.now() - startTime;
-                       const remainingTime = Math.max(0, 500 - elapsedTime);
-                       setTimeout(() => {
-                         setIsLoading(false);
-                         handleClose();
-                       }, remainingTime);
-                       toast.success(t('Owner added successfully!'));
-                       resetForm();
-                            } else {
-                               toast.error(t('Failed to add owner!'));
-                             }
+          toast.success(t('Owner added successfully!'));
+          handleClose();
+          resetForm();
+      }
     } catch (err) {
       setIsLoading(false);
       toast.error(t('Something went wrong!'));
+    } finally {
+      handleClose();
+      resetForm()
+      setIsLoading(false); 
     }
   };
 

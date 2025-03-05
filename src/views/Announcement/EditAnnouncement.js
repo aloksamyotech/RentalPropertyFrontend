@@ -32,29 +32,24 @@ const EditAnnouncement = ({ open, handleClose, data }) => {
 
   const handleEditAnnouncement = async (values, resetForm) => {
     setLoading(true);
-    const startTime = Date.now();
     const updatedValues = { ...values, companyId: payload._id, id: data._id };
-    
 
     try {
       const response = await updateApi(urls.Announcement.editAnnouncement, updatedValues, { id: data._id });
 
       if (response.success) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 1000 - elapsedTime);
-        setTimeout(() => {
-          setLoading(false);
-          handleClose();
-        }, remainingTime);
         toast.success(t('Announcement updated successfully!'));
         resetForm();
-      } else {
-        toast.error(response.message || t('Failed to update announcement!'));
+        handleClose();
       }
     } catch (err) {
       console.error('Error updating announcement:', err);
       setLoading(false);
       toast.error(err.message || t('Something went wrong!'));
+    } finally {
+      handleClose();
+      resetForm()
+      setLoading(false); 
     }
   };
 
@@ -129,7 +124,7 @@ const EditAnnouncement = ({ open, handleClose, data }) => {
         </DialogContent>
         <DialogActions>
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {t('save')}
+          {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
             onClick={() => {

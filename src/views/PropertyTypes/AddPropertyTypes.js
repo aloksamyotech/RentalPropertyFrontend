@@ -38,15 +38,15 @@ const AddPropertyTypes = async (values, resetForm) => {
 
     if (response.success) {
       toast.success(t('Successfully registered property type!'));
-      handleClose()
-      resetForm()
+      handleClose();
+      resetForm();
     }
   } catch (error) {
     console.error('Error in AddPropertyTypes:', error);
     toast.error(t('Failed to register property type!'));
   } finally {
     handleClose();
-    resetForm()
+    resetForm();
     setIsLoading(false); 
   }
 };

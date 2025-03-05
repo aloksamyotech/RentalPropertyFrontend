@@ -16,29 +16,21 @@ const DeleteServiceProvider = ({ open, handleClose, id }) => {
   const [loading, setLoading] = useState(false);
 
   const handleDeleteSubmit = async () => {
-    setLoading(true); // Disable button immediately when the delete action starts
+    setLoading(true);
 
     try {
       const result = await patchApi(urls.serviceProvider.delete, { isDeleted: true }, { id });
 
       if (result?.success) {
         toast.success(t('Service Provider Deleted Successfully'));
-
-        // Close the dialog after 1 second
-        setTimeout(() => {
-          handleClose();
-        }, 1000);
-      } else {
-        toast.error(t('Cannot Delete Service Provider'));
+        handleClose();
       }
     } catch (error) {
       console.error('Error deleting service provider:', error);
       toast.error(t('Error deleting Service Provider'));
+      setLoading(false);
     } finally {
-      // Re-enable the button after 1 second
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      setLoading(false); 
     }
   };
 

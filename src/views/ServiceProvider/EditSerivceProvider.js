@@ -45,23 +45,21 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
 
   const editServiceProvider = async (values, resetForm) => {
     setLoading(true);
-    const startTime = Date.now();
     values.companyId = payload.companyId;
     try {
       const response = await updateApi(urls.serviceProvider.updateServiceProvider, values,{ id: data._id },);
       if (response.success) {
-          const elapsedTime = Date.now() - startTime;
-                const remainingTime = Math.max(0, 1000 - elapsedTime);
-                setTimeout(() => {
-                  setLoading(false);
-                  handleClose();
-                }, remainingTime);
                 toast.success(t('Service provider updated Successfully'));
                 resetForm();
+                handleClose();
       }
     } catch (err) {
       console.error(err);
       toast.error('Something went wrong!');
+      setLoading(false);
+    } finally {
+      handleClose();
+      setLoading(false); 
     }
   };
 

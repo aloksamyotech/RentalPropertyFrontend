@@ -16,29 +16,20 @@ const DeleteProperty = ({ open, handleClose, id }) => {
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
-    setLoading(true); // Disable the button immediately when the delete action starts
-
+    setLoading(true);
     try {
       const result = await patchApi(urls.property.delete, { isDeleted: true }, { id });
 
       if (result?.success) {
         toast.success(t('Property Deleted Successfully'));
-
-        // Close the dialog after 1 second
-        setTimeout(() => {
-          handleClose();
-        }, 1000);
-      } else {
-        toast.error(t('cannot delete property'));
+        handleClose();
       }
     } catch (error) {
       console.error('Error deleting property:', error);
       toast.error(t('cannotDeleteProperty'));
+      setLoading(false);
     } finally {
-      // Re-enable the button after 1 second
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      setLoading(false);
     }
   };
 

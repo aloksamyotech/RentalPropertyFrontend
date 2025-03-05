@@ -52,28 +52,24 @@ const EditOwner = ({ open, handleClose, data }) => {
 
   const editProperty = async (values, resetForm) => {
     setIsLoading(true);
-    const startTime = Date.now();
+    // const startTime = Date.now();
     const updatedValues = { ...values, companyId: payload._id };
 
     try {
       const response = await updateApi(urls.owner.edit, updatedValues, { id: data._id });
 
       if (response.success) {
-          const elapsedTime = Date.now() - startTime;
-                        const remainingTime = Math.max(0, 500 - elapsedTime);
-                        setTimeout(() => {
-                          setIsLoading(false);
-                          handleClose();
-                        }, remainingTime);
                         toast.success(t('Owner updated successfully!'));
+                        handleClose();
                         resetForm();
-      } else {
-        toast.error(t('Failed to update property!'));
       }
     } catch (err) {
       console.error('Error updating property:', err);
-      setIsLoading(false);
       toast.error(t('Something went wrong!'));
+    } finally {
+      handleClose();
+      resetForm();
+      setIsLoading(false); 
     }
   };
 

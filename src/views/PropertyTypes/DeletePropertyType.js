@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Typography,
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
@@ -14,32 +15,31 @@ import { deleteApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 
 const DeletePropertyType = ({ open, handleClose, data }) => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
     setLoading(true);
     try {
-    const result = await deleteApi(urls.propertyTypes.delete, { id: data._id });
+      const result = await deleteApi(urls.propertyTypes.delete, { id: data._id });
+
       if (result.success) {
         toast.success(t('propertyDeletedSuccessfully'));
-        handleClose()
+        handleClose();
       }
     } catch (error) {
       console.error('Error deleting property type:', error);
-          toast.error(t('cannotDeleteProperty'));
-          setLoading(false);
+      toast.error(t('cannotDeleteProperty'));
     } finally {
-      handleClose();
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose} >
       <DialogTitle>{t('deletePropertyType')}</DialogTitle>
       <DialogContent>
-        <p>{t('areYouSureDeletePropertyType')}</p>
+        <Typography>{t('areYouSureDeletePropertyType')}</Typography>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary" disabled={loading}>
@@ -61,7 +61,7 @@ const DeletePropertyType = ({ open, handleClose, data }) => {
 DeletePropertyType.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired, 
+  data: PropTypes.object.isRequired,
 };
 
 export default DeletePropertyType;

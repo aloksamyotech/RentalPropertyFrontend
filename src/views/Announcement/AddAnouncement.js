@@ -28,29 +28,23 @@ const AddAnnouncement = (props) => {
 
   const AddAnnouncement = async (values, resetForm) => {
     setLoading(true);
-    const startTime = Date.now();
     const data = { ...values, companyId: payload.companyId };
 
     try {
       const response = await postApi(urls.Announcement.create, data);
 
       if (response.success) {
-         const elapsedTime = Date.now() - startTime;
-               const remainingTime = Math.max(0, 1000 - elapsedTime);
-               setTimeout(() => {
-                 setLoading(false);
-                 handleClose();
-               }, remainingTime);
                toast.success(t('announcementAdded'));
                resetForm();
-      } else {
-        setLoading(false);
-        toast.error(response.message || t('errorOccurred'));
+               handleClose();
+              
       }
     } catch (err) {
-      setLoading(false);
-      console.error("Error:", err);
       toast.error(err.message || t('errorOccurred'));
+    } finally {
+      handleClose();
+      resetForm()
+      setLoading(false); 
     }
   };
 
@@ -126,7 +120,7 @@ const AddAnnouncement = (props) => {
         </DialogContent>
         <DialogActions>
           <Button type="submit" variant="contained" color="primary"  disabled={loading}>
-            {t('save')}
+          {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
             onClick={() => {

@@ -75,8 +75,6 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     note: data?.note || '',
   };
 
-    // const debounceSubmit = useCallback(debounce(formik.onSubmit, 500), [formik.handleSubmit]);
-  
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
