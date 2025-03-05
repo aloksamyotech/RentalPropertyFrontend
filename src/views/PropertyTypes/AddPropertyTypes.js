@@ -27,30 +27,29 @@ import { tokenPayload } from 'helper';
 const AddPropertyTypes = ({ open, handleClose }) => {
   const { t } = useTranslation();
   const payload = tokenPayload();
-  const [loading, setIsLoading] = useState(false); // Corrected: Loading state initialization
-  
-  const AddPropertyTypes = async (values, resetForm) => {
-    setIsLoading(true); // Set loading state to true when submitting form
-    try {
-      values.companyId = payload._id;
+  const [loading, setIsLoading] = useState(false); 
 
-      const response = await postApi(urls.propertyTypes.create, values);
-      console.log(response, "Response received");
+const AddPropertyTypes = async (values, resetForm) => {
+  setIsLoading(true);
+  try {
+    values.companyId = payload._id;
+    const response = await postApi(urls.propertyTypes.create, values);
+    console.log(response, "Response received");
 
-      if (response.success) {
-        toast.success(t('Successfully registered property type!'));
-        setTimeout(() => {
-          setIsLoading(false); // Stop loading after 500ms to give a smooth transition
-          handleClose();
-        }, 500);
-        resetForm(); // Reset the form fields after successful submission
-      }
-    } catch (error) {
-      console.error('Error in AddPropertyTypes:', error);
-      toast.error(t('Failed to register property type!'));
-      setIsLoading(false); // Stop loading on error
+    if (response.success) {
+      toast.success(t('Successfully registered property type!'));
+      handleClose()
+      resetForm()
     }
-  };
+  } catch (error) {
+    console.error('Error in AddPropertyTypes:', error);
+    toast.error(t('Failed to register property type!'));
+  } finally {
+    handleClose();
+    resetForm()
+    setIsLoading(false); 
+  }
+};
   
   const validationSchema = yup.object({
     name: yup
@@ -71,7 +70,6 @@ const AddPropertyTypes = ({ open, handleClose }) => {
     initialValues,
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log('Submitted Values:', values);
       AddPropertyTypes(values, resetForm);
     },
   });

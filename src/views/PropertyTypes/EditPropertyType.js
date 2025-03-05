@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -21,37 +21,28 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
-import { useState } from 'react';
-import { useCallback } from 'react';
-import { throttle } from 'lodash';
 
 const EditPropertyTypes = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const payload = tokenPayload();
   const [loading, setLoading] = useState(false);
-  
+
   const EditPropertyType = async (values, resetForm) => {
-    const updatedValues = { ...values, companyId: payload._id };
     setLoading(true);
-    const startTime = Date.now();
     try {
+      const updatedValues = { ...values, companyId: payload._id };
       const response = await updateApi(urls.propertyTypes.edit, updatedValues, { id: data._id });
 
       if (response.success) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 1000 - elapsedTime);
-        setTimeout(() => {
-          setLoading(false);
-          handleClose();
-        }, remainingTime);
         toast.success(t('Property type updated successfully!'));
         resetForm();
-      } else {
-        toast.error(t('Failed to update property!'));
+        handleClose();
       }
     } catch (error) {
       console.error('Error updating property:', error);
       toast.error(t('An unexpected error occurred!'));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,7 +53,7 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
       .required(t('Property Type Name is required')),
     description: yup
       .string()
-      .max(200, t('Description cannot exceed 200 characters'))
+      .max(200, t('Description cannot exceed 200 characters')),
   });
 
   const formik = useFormik({
@@ -72,13 +63,11 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
     },
     enableReinitialize: true,
     validationSchema,
-    onSubmit: (values, { resetForm }) => {
-      EditPropertyType(values, resetForm);
+    onSubmit: async (values, { resetForm }) => {
+      await EditPropertyType(values, resetForm);
     },
   });
 
-  // const throttledSubmit = useCallback(throttle(formik.handleSubmit, 4000), [formik.handleSubmit]);
-  
   return (
     <Dialog
       open={open}
@@ -134,7 +123,7 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
           type="submit"
           disabled={loading}
         >
-        {loading ? t('Saving...') : t('Save')}
+          {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {
