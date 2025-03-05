@@ -7,7 +7,7 @@ import { getApi, patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { useFormik } from 'formik';
 import SendIcon from '@mui/icons-material/Send';
-import * as Yup from 'yup'; // Optional: For validation
+import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { IconHome } from '@tabler/icons';

@@ -19,7 +19,6 @@ import { toast } from 'react-toastify';
 import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { useCallback } from 'react';
-import { debounce, throttle } from 'lodash';
 
 
 const AddCompany = (props) => {
@@ -58,15 +57,16 @@ const AddCompany = (props) => {
     try {
       const response = await postApi(urls.company.create, values);
 
-      if (response.success === true) toast.success(t('Successfully registered'));
+      if (response.success) toast.success(t(' Company Successfully registered'));
       resetForm();
-      setTimeout(() => {
-        handleClose();
-      }, 200);
-    } catch (err) {
-      console.error(err);
-      toast.error(t('Something went wrong!'));
-    }
+      handleClose();
+       } catch {
+         toast.error(t('Failed to register Company!'));
+       } finally {
+         handleClose();
+         resetForm()
+         setIsLoading(false); 
+       }
   };
 
   const formik = useFormik({
@@ -79,7 +79,7 @@ const AddCompany = (props) => {
     },
   });
 
-  const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+  // const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
 
   return (
     <div>
@@ -96,7 +96,7 @@ const AddCompany = (props) => {
         </DialogTitle>
 
         <DialogContent dividers>
-          <form onSubmit={throttledSubmit}>
+          <form onSubmit={formik.handleSubmit}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
               <Grid item xs={12} sm={6}>
                 <FormLabel>{t('Company Name')}</FormLabel>
@@ -168,8 +168,8 @@ const AddCompany = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" onClick={throttledSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
-            {t('Save')}
+          <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
+          {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
             type="button"

@@ -15,17 +15,19 @@ import { postApi } from 'core/apis/api';
 import { useFormik } from 'formik';
 import PropTypes from 'prop-types';
 import * as yup from 'yup';
-import { FormControl, FormHelperText, FormLabel } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
+import { FormLabel } from '@mui/material';
 import { toast } from 'react-toastify';
 import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 import { useCallback } from 'react';
 import { debounce } from 'lodash';
+import { useState } from 'react';
 
 const AddServiceProvider = (props) => {
-  const { t } = useTranslation(); // Use translation hook
+  const { t } = useTranslation(); 
+  const [loading, setLoading] = useState(false);
+  
   const { open, handleClose } = props;
 
   const validationSchema = yup.object({
@@ -57,19 +59,22 @@ const AddServiceProvider = (props) => {
   };
 
   const AddServiceProvider = async (values, resetForm) => {
+    setLoading(true);
     values.companyId = payload.companyId;
     try {
       const response = await postApi(urls.serviceProvider.create, values);
-      if (response.success === true) {
+      if (response.success) {
         toast.success(t('Successfully registered'));
         resetForm();
-        setTimeout(() => {
-          handleClose();
-        }, 200);
+        handleClose();
       }
     } catch (err) {
       console.error(err);
+      setLoading(false);
       toast.error(t('Something went wrong!'));
+    } finally {
+      handleClose();
+      setLoading(false); 
     }
   };
 
@@ -81,7 +86,7 @@ const AddServiceProvider = (props) => {
     }
   });
 
-  const debounceSubmit =  useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+  // const debounceSubmit =  useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
   
 
   return (
@@ -99,7 +104,7 @@ const AddServiceProvider = (props) => {
         </DialogTitle>
 
         <DialogContent dividers>
-          <form onSubmit={debounceSubmit}>
+          <form onSubmit={formik.handleSubmit}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
               <Grid item xs={12} sm={6}>
                 <FormLabel>{t('Service Provider Name')}</FormLabel>
@@ -169,11 +174,12 @@ const AddServiceProvider = (props) => {
           <Button
             type="submit"
             variant="contained"
-            onClick={debounceSubmit}
+            onClick={formik.handleSubmit}
             style={{ textTransform: 'capitalize' }}
             color="secondary"
+            disabled={loading}
           >
-            {t('Save')}
+         {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
             type="button"

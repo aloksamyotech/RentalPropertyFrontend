@@ -14,25 +14,24 @@ import { urls } from 'core/Constant/urls';
 
 const DeleteAnnouncement = ({ open, handleClose, id }) => {
   const { t } = useTranslation(); 
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false); 
 
   const handleDelete = async () => {
     setLoading(true); 
+
     try {
       const result = await patchApi(urls.Announcement.delete, { isDeleted: true }, { id });
 
       if (result?.success) {
         toast.success(t('Announcement Deleted Successfully')); 
-        handleClose(); 
-      } else {
-        toast.error(t('Cannot Delete Announcement')); 
+        handleClose();
       }
     } catch (error) {
-      console.error('Error deleting Company:', error);
-      toast.error(t('Cannot Delete Announcement')); 
+      console.error('Error deleting Announcement:', error);
+      toast.error(t('Cannot Delete Announcement'));
     } finally {
-      setLoading(false);
+      handleClose();
+      setLoading(false); 
     }
   };
 

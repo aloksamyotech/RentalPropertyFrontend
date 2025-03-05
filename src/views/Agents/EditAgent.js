@@ -26,7 +26,6 @@ const EditAgent = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const [loading , setIsLoading] = useState(false);
 
-  // const company = JSON.parse(localStorage.getItem('companyData'));
   const payload = tokenPayload();
 
   useEffect(() => {
@@ -47,28 +46,24 @@ const EditAgent = ({ open, handleClose, data }) => {
 
   const editAgent = async (values, resetForm) => {
     setIsLoading(true);
-    const startTime = Date.now();
     const updatedValues = { ...values, companyId: payload._id };
 
     try {
       const response = await updateApi(urls.agent.edit, updatedValues, { id: data._id });
 
       if (response.success) {
-         const elapsedTime = Date.now() - startTime;
-                const remainingTime = Math.max(0, 500 - elapsedTime);
-                setTimeout(() => {
-                  setIsLoading(false);
-                  handleClose();
-                }, remainingTime);
-                toast.success(t('Agent updated successfully!'));
-                resetForm();
-      } else {
-        toast.error(t('Failed to update agent!'));
+    
+        toast.success(t('Agent updated successfully!'));
+        handleClose();
+        resetForm();
       }
-    } catch (err) {
-      console.error('Error updating agent:', err);
-      setIsLoading(false);
-      toast.error(t('Something went wrong!'));
+    } catch (error) {
+      console.error('Error in AddPropertyTypes:', error);
+      toast.error(t('Failed to update agent!'));
+    } finally {
+      handleClose();
+      resetForm();
+      setIsLoading(false); 
     }
   };
 
@@ -178,8 +173,8 @@ const EditAgent = ({ open, handleClose, data }) => {
           color="primary"
           disabled={loading}
         >
-          {t('Save')}
-        </Button>
+          {loading ? t('Saving...') : t('Save')} 
+          </Button>
         <Button
           onClick={() => {
             formik.resetForm();

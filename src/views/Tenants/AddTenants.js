@@ -40,7 +40,7 @@ const AddTenants = ({ open, handleClose }) => {
   const AddTenants = async (values, resetForm) => {
 
     setLoading(true);
-    const startTime = Date.now();
+    // const startTime = Date.now();
 
     const formData = new FormData();
     formData.append('tenantName', values.tenantName);
@@ -63,24 +63,15 @@ const AddTenants = ({ open, handleClose }) => {
       });
 
       if (response.success) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 500 - elapsedTime);
-        setTimeout(() => {
-          setLoading(false);
-          setAttachments([]);
-          handleClose();
-        }, remainingTime);
         toast.success(t('Successfully registered tenant!'));
+        handleClose();
         resetForm();
-       
-      } else {
-        throw new Error();
+       }
+      } finally {
+        handleClose();
+        resetForm()
+        setLoading(false);
       }
-    } catch (err) {
-      setLoading(false);
-      console.error('Error adding tenant:', err);
-      toast.error(t('Something went wrong!'));
-    }
   };
 
   const handleFileChange = (event) => {
@@ -103,7 +94,7 @@ const AddTenants = ({ open, handleClose }) => {
       .matches(/^[0-9]{10}$/, t('Phone number must be 10 digits'))
       .required(t('Phone number is required')),
     identityCardType: yup.string().required(t('Identity Card Type is required')),
-    identityNo: yup.string().required(t('Identity Number is required')),
+    identityNo: yup.string() .max(12, t('Identity No. should be smaller than 12 characters')).required(t('Identity Number is required')),
     address: yup.string().max(100, t('Address must be at most 100 characters')).required(t('Address is required'))
   });
 
@@ -301,7 +292,7 @@ const AddTenants = ({ open, handleClose }) => {
 
       <DialogActions>
         <Button variant="contained" color="primary" type="submit" onClick={formik.handleSubmit}     disabled={loading}>
-          {t('Save')}
+        {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {

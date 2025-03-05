@@ -13,7 +13,6 @@ import AddDocuments from './AddDocuments';
 import { getApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
-// ----------------------------------------------------------------------//
 
 const VacantProperties = () => {
   const [openAdd, setOpenAdd] = useState(false);

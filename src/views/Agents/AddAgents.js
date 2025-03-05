@@ -30,24 +30,23 @@ const AddAgents = (props) => {
 
   const AddAgent = async (values, resetForm) => {
     setIsLoading(true);
-    const startTime = Date.now();
+    // const startTime = Date.now();
     values.companyId = payload._id;
     try {
       const response = await postApi(urls.agent.create, values);
-      if (response.data.success === true) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 500 - elapsedTime);
-        setTimeout(() => {
-          setIsLoading(false);
-          handleClose();
-        }, remainingTime);
+      if (response.data.success) {
         toast.success(t('Successfully registered Agent'));
+        handleClose();
         resetForm();
       }
     } catch (err) {
       console.error(err);
       setIsLoading(false);
       toast.error(t('Registration failed'));
+    } finally {
+      handleClose();
+      resetForm();
+      setIsLoading(false); 
     }
   };
 
@@ -157,7 +156,7 @@ const AddAgents = (props) => {
           </Grid>
           <DialogActions>
             <Button type="submit" variant="contained" disabled={loading} color="secondary">
-              {t('Save')}
+            {loading ? t('Saving...') : t('Save')} 
             </Button>
             <Button
               type="button"

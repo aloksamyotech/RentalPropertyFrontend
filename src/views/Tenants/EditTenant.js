@@ -39,39 +39,35 @@ const EditTenant = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const payload = tokenPayload();
     const [attachments, setAttachments] = useState([]);
-        const [loading , setIsLoading] = useState(false);
+    const [loading , setIsLoading] = useState(false);
       
   
   // const company = JSON.parse(localStorage.getItem('companyData'));
 
   const updateTenant = async (values, resetForm) => {
     setIsLoading(true);
-    const startTime = Date.now();
     const updatedValues = {
       ...values,
       companyId: payload?.companyId,
       reporterId: payload?._id,
     };
     try {
-      const queryParams = { id: data?._id };
-      const response = await updateApi(urls.tenant.editdata, updatedValues, queryParams);
+      // const queryParams = { id: data?._id };
+      const response = await updateApi(urls.tenant.editdata, updatedValues, {id: data?._id });
 
       if (response.success) {
-        const elapsedTime = Date.now() - startTime;
-                        const remainingTime = Math.max(0, 1000 - elapsedTime);
-                        setTimeout(() => {
-                          setIsLoading(false);
-                          handleClose();
-                        }, remainingTime);
+  
         toast.success(t('Tenant updated successfully!'));
-        resetForm();
-      } else {
-        toast.error(t('Failed to update tenant!'));
+        handleClose()
+        resetForm()
       }
     } catch (err) {
       console.error('Error updating tenant:', err);
-      setIsLoading(false);
       toast.error(t('Something went wrong!'));
+    } finally {
+      handleClose();
+      resetForm()
+      setIsLoading(false); 
     }
   };
 
@@ -287,7 +283,7 @@ const EditTenant = ({ open, handleClose, data }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={formik.handleSubmit} variant="contained" color="primary"  type="submit"  disabled={loading}>
-          {t('Save')}
+        {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {

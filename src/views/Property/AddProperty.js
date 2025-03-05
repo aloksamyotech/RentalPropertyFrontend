@@ -35,6 +35,8 @@ const AddProperty = ({ open, handleClose }) => {
   const [ownerName, setOwnerData] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [typeData, setTypeData] = useState([]);
+  const [loading, setIsLoading] = useState(false); 
+  
 
   const payload = tokenPayload();
 
@@ -60,6 +62,8 @@ const AddProperty = ({ open, handleClose }) => {
   };
 
   const addProperty = async (values, resetForm) => {
+    setIsLoading(true);
+
     const formData = new FormData();
 
     formData.append('propertyname', values.propertyname);
@@ -79,14 +83,18 @@ const AddProperty = ({ open, handleClose }) => {
       const response = await postApi(urls.property.create, formData, { 'Content-Type': 'multipart/form-data' });
       if (response.success) {
         toast.success(t('Successfully registered property!'));
-        resetForm();
         setAttachments([]);
+        resetForm();
         handleClose();
       } else {
-        throw new Error();
+        toast.error(t('Failed to register property !'));
       }
     } catch {
       toast.error(t('Failed to register property!'));
+    } finally {
+      handleClose();
+      resetForm()
+      setIsLoading(false); 
     }
   };
 
@@ -141,7 +149,7 @@ const AddProperty = ({ open, handleClose }) => {
     },
   });
 
-    const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+    // const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -151,7 +159,7 @@ const AddProperty = ({ open, handleClose }) => {
       </DialogTitle>
 
       <DialogContent dividers>
-        <form onSubmit={throttledSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Name')}</FormLabel>
@@ -323,8 +331,8 @@ const AddProperty = ({ open, handleClose }) => {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={throttledSubmit} variant="contained" color="primary">
-          {t('Save')}
+        <Button onClick={formik.handleSubmit} variant="contained" color="primary"   disabled={loading} >
+        {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {

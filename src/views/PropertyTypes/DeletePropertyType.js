@@ -1,33 +1,31 @@
 /* eslint-disable prettier/prettier */
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Button,
+  Typography,
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { deleteApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
-import { throttle } from 'lodash';  
 
 const DeletePropertyType = ({ open, handleClose, data }) => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
-console.log(data,"data");
+
   const handleDelete = async () => {
     setLoading(true);
     try {
       const result = await deleteApi(urls.propertyTypes.delete, { id: data._id });
 
-      if (result?.status === 200 || result?.success) {
+      if (result.success) {
         toast.success(t('propertyDeletedSuccessfully'));
         handleClose();
-      } else {
-        toast.error(t('cannotDeleteProperty'));
       }
     } catch (error) {
       console.error('Error deleting property type:', error);
@@ -37,13 +35,11 @@ console.log(data,"data");
     }
   };
 
-  // const handleDelete = useCallback(throttle(handleDeleteRequest, 4000, { leading: true, trailing: false }),[]);
-
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose} >
       <DialogTitle>{t('deletePropertyType')}</DialogTitle>
       <DialogContent>
-        <p>{t('areYouSureDeletePropertyType')}</p>
+        <Typography>{t('areYouSureDeletePropertyType')}</Typography>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary" disabled={loading}>
@@ -65,7 +61,7 @@ console.log(data,"data");
 DeletePropertyType.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired,
 };
 
 export default DeletePropertyType;

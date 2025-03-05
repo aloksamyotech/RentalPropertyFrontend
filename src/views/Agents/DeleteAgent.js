@@ -17,7 +17,7 @@ const DeleteAgent = ({ open, handleClose, id }) => {
 
   const handleDelete = async () => {
     setLoading(true);
-    const startTime = Date.now(); // Ensure startTime is defined
+    const startTime = Date.now();
     try {
       const result = await patchApi(urls.agent.delete, { isDeleted: true }, { id });
 
@@ -31,7 +31,7 @@ const DeleteAgent = ({ open, handleClose, id }) => {
         }, remainingTime);
       } else {
         toast.error(t('cannot delete agent'));
-        setLoading(false); // Ensure loading is set to false in case of failure
+        setLoading(false); 
       }
     } catch (error) {
       console.error('Error deleting Agent:', error);

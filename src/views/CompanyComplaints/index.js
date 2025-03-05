@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 // @mui
 import {
   Stack,
-  Link,
   Button,
   Container,
   Typography,
@@ -30,6 +29,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate } from 'react-router';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteComplain from './DeleteCompalainByCompany';
+import { Link } from 'react-router-dom';
 // import EditComplain from './EditComplain';
 // import DeleteComplain from './DeleteCompalain';
 
@@ -75,16 +76,6 @@ const CompanyComplaints = () => {
     fetchComplaintData();
   }, [openAdd, openEdit, openDelete]);
 
-  const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
-
-  const handleCloseEditComplain = () => setOpenEdit(false);
-  // const handleOpenEditComplain = () => {
-  //   setRowData(currentRow);
-  //   setOpenEdit(true);
-  //   handleClose();
-  // };
-
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
     setCurrentRow(row);
@@ -95,19 +86,6 @@ const CompanyComplaints = () => {
     setCurrentRow(null);
   };
 
-  const handleEditComplaint = () => {
-    setRowData(currentRow);
-    setOpenEdit(true);
-    handleClose();
-  };
-
-  // const handleOpenDeleteCompany = () => {
-  //   setRowData(currentRow);
-  //   setOpenDelete(true);
-  //   handleClose();
-  // };
-
-
   const handleDeleteComplaint = () => {
     console.log('Delete complaint:', currentRow);
     setRowData(currentRow);
@@ -115,7 +93,6 @@ const CompanyComplaints = () => {
     handleClose();
   };
 
-  // Define table columns
   const columns = [
 
     {
@@ -228,9 +205,9 @@ const CompanyComplaints = () => {
   return (
     <>
  
-      {/* <AddComplaints open={openAdd} handleClose={handleCloseAdd} />
-      <EditComplain open={openEdit} handleClose={handleCloseEditComplain} data={rowData} />
-      <DeleteComplain open={openDelete} handleClose={handleCloseDeleteComplain} id={rowData?._id}/> */}
+     {/* <AddComplaints open={openAdd} handleClose={handleCloseAdd} />
+      <EditComplain open={openEdit} handleClose={handleCloseEditComplain} data={rowData} /> */}
+      <DeleteComplain open={openDelete} handleClose={handleCloseDeleteComplain} id={rowData?._id}/>
     
 
       <Container>

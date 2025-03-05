@@ -6,7 +6,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { patchApi } from 'core/apis/api';
@@ -14,33 +13,21 @@ import { urls } from 'core/Constant/urls';
 
 const DeleteBooking = ({ open, handleClose, id }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleDeleteSubmit = async () => {
-    setLoading(true);
-    const startTime = Date.now();
+    setLoading(true); 
     try {
       const result = await patchApi(urls.booking.breakTheBooking, {}, { id });
 
       if (result?.success) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 1000 - elapsedTime);
-        
-        setTimeout(() => {
-          setLoading(false);
-          handleClose();
-        }, remainingTime);
-
-        toast.success(t('companyDeletedSuccessfully'));
-      } else {
-        setLoading(false);
-        toast.error(t('cannotDeletecompany'));
+        toast.success(t('bookingDeletedSuccessfully'));
+        handleClose();
       }
     } catch (error) {
-      toast.error(t('cannotDeleteCompany'));
+      toast.error(t('cannotDeleteBooking'));
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
@@ -58,7 +45,7 @@ const DeleteBooking = ({ open, handleClose, id }) => {
           onClick={handleDeleteSubmit}
           color="error"
           variant="contained"
-          disabled={loading}
+          disabled={loading} 
         >
           {loading ? t('deleting') : t('delete')}
         </Button>

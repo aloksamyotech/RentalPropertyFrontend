@@ -22,7 +22,7 @@ const DeleteCompany = ({ open, handleClose, id }) => {
     try {
       const result = await patchApi(urls.company.delete, { isDeleted: true }, { id });
 
-      if (result?.status === 200 || result?.success) {
+      if (result?.success) {
         toast.success(t('companyDeletedSuccessfully')); 
         handleClose(); 
       } else {

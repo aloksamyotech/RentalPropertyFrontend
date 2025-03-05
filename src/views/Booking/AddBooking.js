@@ -58,7 +58,6 @@ const AddBooking = (props) => {
 
   const payload = tokenPayload();
 
-  // Fetch tenant data
   const fetchTenantData = async () => {
     setLoading(true);
     try {
@@ -73,7 +72,6 @@ const AddBooking = (props) => {
   };
   
 
-  // Fetch property data
   const fetchPropertyData = async () => {
     setLoading(true);
     try {
@@ -96,25 +94,23 @@ const AddBooking = (props) => {
 
   const addBooking = async (values, resetForm) => {
     setLoading(true);
-    const startTime = Date.now();
     values.companyId = payload.companyId;
     values.createdBy = payload._id;
     try {
       const response = await postApi(urls.booking.create, values);
       if (response.success) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 1000 - elapsedTime);
-        setTimeout(() => {
-          setLoading(false);
-          handleClose();
-        }, remainingTime);
         toast.success(t('Booking successfully created'));
         resetForm();
+        handleClose();
       }
     } catch (err) {
       console.error(err);
       setLoading(false);
       toast.error(t('Something went wrong!'));
+    } finally {
+      handleClose();
+      resetForm()
+      setLoading(false);
     }
   };
 
@@ -264,7 +260,7 @@ const AddBooking = (props) => {
 
           <DialogActions>
             <Button type="submit" variant="contained" disabled={loading} color="secondary" style={{ textTransform: 'capitalize' }}>
-              {t('Save')}
+            {loading ? t('Saving...') : t('Save')} 
             </Button>
             <Button
               type="button"

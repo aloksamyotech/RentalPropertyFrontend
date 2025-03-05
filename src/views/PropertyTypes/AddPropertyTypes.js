@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -23,43 +23,34 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
-import { useCallback } from 'react';
-import { throttle } from 'lodash';
-
 
 const AddPropertyTypes = ({ open, handleClose }) => {
   const { t } = useTranslation();
-
   const payload = tokenPayload();
+  const [loading, setIsLoading] = useState(false); 
 
-  const AddPropertyTypes = async (values, resetForm) => {
-    try {
-      values.companyId = payload._id;
+const AddPropertyTypes = async (values, resetForm) => {
+  setIsLoading(true);
+  try {
+    values.companyId = payload._id;
+    const response = await postApi(urls.propertyTypes.create, values);
+    console.log(response, "Response received");
 
-      const response = await postApi(urls.propertyTypes.create, values);
-      console.log(response, "Response received");
-
-      if (response.success) {
-        toast.success(t('Successfully registered property type!'));
-        resetForm();
-  
-        setTimeout(() => {
-          handleClose();
-        }, 200);
-      }
-    } catch (error) {
-      console.error('Error in AddPropertyTypes:', error);
-
-      if (error.status === 409) {
-        toast.error(t('Property type already exists!'));
-      } else {
-        toast.error(t('Failed to register property type!'));
-      }
+    if (response.success) {
+      toast.success(t('Successfully registered property type!'));
+      handleClose();
+      resetForm();
     }
-  };
+  } catch (error) {
+    console.error('Error in AddPropertyTypes:', error);
+    toast.error(t('Failed to register property type!'));
+  } finally {
+    handleClose();
+    resetForm();
+    setIsLoading(false); 
+  }
+};
   
-  
-
   const validationSchema = yup.object({
     name: yup
       .string()
@@ -67,8 +58,7 @@ const AddPropertyTypes = ({ open, handleClose }) => {
       .required(t('Property Name is required')),
     description: yup
       .string()
-      .max(200, t('Property Name must be at most 200 characters'))
-      // .required(t('Description is required')),
+      .max(200, t('Description must be at most 200 characters'))
   });
 
   const initialValues = {
@@ -80,13 +70,9 @@ const AddPropertyTypes = ({ open, handleClose }) => {
     initialValues,
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log('Submitted Values:', values);
       AddPropertyTypes(values, resetForm);
     },
   });
-
-      const throttledSubmit = useCallback(throttle(formik.handleSubmit, 4000), [formik.handleSubmit]);
-    
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -101,12 +87,11 @@ const AddPropertyTypes = ({ open, handleClose }) => {
         <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
       </DialogTitle>
       <DialogContent dividers>
-        <form onSubmit={throttledSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <Typography variant="h6" style={{ marginBottom: '15px' }}>
             {t('Property Types')}
           </Typography>
           <Grid container spacing={3}>
-            {/* Property Name */}
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Type Name')}</FormLabel>
               <TextField
@@ -121,7 +106,6 @@ const AddPropertyTypes = ({ open, handleClose }) => {
               />
             </Grid>
 
-            {/* Description */}
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Description')}</FormLabel>
               <TextField
@@ -140,11 +124,12 @@ const AddPropertyTypes = ({ open, handleClose }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={throttledSubmit} 
+          onClick={formik.handleSubmit}
           variant="contained"
           color="primary"
+          disabled={loading} 
         >
-          {t('Save')}
+          {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {
