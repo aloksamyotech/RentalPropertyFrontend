@@ -25,8 +25,6 @@ const DeleteCompany = ({ open, handleClose, id }) => {
       if (result?.success) {
         toast.success(t('companyDeletedSuccessfully')); 
         handleClose(); 
-      } else {
-        toast.error(t('cannotDeletecompany')); 
       }
     } catch (error) {
       console.error('Error deleting Company:', error);
@@ -35,9 +33,6 @@ const DeleteCompany = ({ open, handleClose, id }) => {
       setLoading(false);
     }
   };
-
-    // const handleDelete = useCallback(debounce(handleDeleteRequest, 500),[]);
-    
 
   return (
     <Dialog open={open} onClose={handleClose}>
