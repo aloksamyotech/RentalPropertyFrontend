@@ -19,11 +19,13 @@ import { toast } from 'react-toastify';
 import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { useCallback } from 'react';
+import { useState } from 'react';
 
 
 const AddCompany = (props) => {
   const { t } = useTranslation();
   const { open, handleClose } = props;
+  const [loading , setLoading] = useState(false);
 
   const validationSchema = yup.object({
     companyName: yup
@@ -54,18 +56,21 @@ const AddCompany = (props) => {
   };
 
   const AddCompany = async (values, resetForm) => {
+    setLoading(true);
     try {
       const response = await postApi(urls.company.create, values);
 
-      if (response.success) toast.success(t(' Company Successfully registered'));
-      resetForm();
-      handleClose();
+      if (response.success){
+        toast.success(t(' Company Successfully registered'));
+        resetForm();
+        handleClose();
+      }
        } catch {
          toast.error(t('Failed to register Company!'));
        } finally {
          handleClose();
          resetForm()
-         setIsLoading(false); 
+         setLoading(false); 
        }
   };
 
@@ -168,7 +173,7 @@ const AddCompany = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
+          <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary" disable={loading}>
           {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
