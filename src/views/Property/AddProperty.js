@@ -70,6 +70,7 @@ const AddProperty = ({ open, handleClose }) => {
     formData.append('typeId', values.typeId);
     formData.append('description', values.description);
     formData.append('rent', values.rent);
+    formData.append('area', values.area);
     formData.append('address', values.address);
     formData.append('zipcode', values.zipcode);
     formData.append('maplink', values.maplink);
@@ -122,6 +123,13 @@ const AddProperty = ({ open, handleClose }) => {
       .max(999999, t('Rent cannot exceed 6 digits'))
       .test('is-positive', t('Rent must be greater than zero'), (value) => value > 0)
       .required(t('Rent is required')),
+    area: yup
+      .number()
+      .typeError(t('Area must be a number'))
+      .min(1, t('must be positive'))
+      .max(999999, t('Rent cannot exceed 6 digits'))
+      .test('is-positive', t('Area must be greater than zero'), (value) => value > 0)
+      .required(t('Area is required')),
     address: yup
       .string()
       .max(100, t('Address cannot exceed 100 characters'))
@@ -137,6 +145,7 @@ const AddProperty = ({ open, handleClose }) => {
       typeId: '',
       description: '',
       rent: '',
+      area:'',
       address: '',
       zipcode: '',
       maplink: '',
@@ -224,7 +233,7 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Rent')}</FormLabel>
+              <FormLabel>{t('Rent per Month')}</FormLabel>
               <TextField
                 id="rent"
                 name="rent"
@@ -235,6 +244,21 @@ const AddProperty = ({ open, handleClose }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.rent && Boolean(formik.errors.rent)}
                 helperText={formik.touched.rent && formik.errors.rent}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Area per square feet')}</FormLabel>
+              <TextField
+                id="area"
+                name="area"
+                type="number"
+                size="small"
+                fullWidth
+                value={formik.values.area}
+                onChange={formik.handleChange}
+                error={formik.touched.area && Boolean(formik.errors.area)}
+                helperText={formik.touched.area && formik.errors.area}
               />
             </Grid>
 

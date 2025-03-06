@@ -136,6 +136,7 @@ const EditProperty = ({ open, handleClose, data }) => {
       typeId: data?.typeId || '',
       description: data?.description || '',
       rent: data?.rent || '',
+      area: data?.area || '',
       address: data?.address || '',
       zipcode: data?.zipcode || '',
       maplink: data?.maplink || '',
@@ -146,10 +147,6 @@ const EditProperty = ({ open, handleClose, data }) => {
     validationSchema,
     onSubmit: (values, { resetForm }) => editProperty(values, resetForm),
   });
-
-      // const throttledSubmit = useCallback(throttle(formik.handleSubmit, 10000), [formik.handleSubmit]);
-        
-      // const throttledSubmit =  useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -241,6 +238,21 @@ const EditProperty = ({ open, handleClose, data }) => {
                 helperText={formik.touched.rent && formik.errors.rent}
               />
             </Grid>
+
+                <Grid item xs={12} sm={6}>
+                          <FormLabel>{t('Area per square feet')}</FormLabel>
+                          <TextField
+                            id="area"
+                            name="area"
+                            type="number"
+                            size="small"
+                            fullWidth
+                            value={formik.values.area}
+                            onChange={formik.handleChange}
+                            error={formik.touched.area && Boolean(formik.errors.area)}
+                            helperText={formik.touched.area && formik.errors.area}
+                          />
+                        </Grid>
 
             <Grid item xs={12}>
               <Box mb={1}>

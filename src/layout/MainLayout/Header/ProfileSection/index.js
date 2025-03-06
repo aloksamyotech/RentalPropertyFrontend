@@ -164,13 +164,13 @@ const ProfileSection = () => {
                         <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
                           {payload.name}
                         </Typography>
-                        <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
+                        {/* <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
                           {payload.email}
-                        </Typography>
+                        </Typography> */}
                       </Stack>
-                      <Typography variant="subtitle2">{payload.role}</Typography>
+                      {/* <Typography variant="subtitle2">{payload.role}</Typography> */}
                     </Stack>
-                    <OutlinedInput
+                    {/* <OutlinedInput
                       sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
                       id="input-search-profile"
                       value={value}
@@ -185,22 +185,26 @@ const ProfileSection = () => {
                       inputProps={{
                         'aria-label': 'weight'
                       }}
-                    />
+                    /> */}
                     <Divider />
                   </Box>
                   <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                     <Box sx={{ p: 2 }}>
-                      <UpgradePlanCard />
+                      {/* <UpgradePlanCard /> */}
+                    
                       <Divider />
-                      <Card
+                      {payload.email}
+                      <Divider />
+                      {payload.role}
+                      {/* <Card
                         sx={{
-                          bgcolor: theme.palette.primary.light,
-                          my: 2
+                          // bgcolor: theme.palette.primary.light,
+                          // my: 2
                         }}
-                      >
-                        <CardContent>
-                          <Grid container spacing={3} direction="column">
-                            <Grid item>
+                      > */}
+                        {/* <CardContent>
+                          <Grid container spacing={3} direction="column"> */}
+                            {/* <Grid item>
                               <Grid item container alignItems="center" justifyContent="space-between">
                                 <Grid item>
                                   <Typography variant="subtitle1">Start DND Mode</Typography>
@@ -216,8 +220,8 @@ const ProfileSection = () => {
                                 </Grid>
                               </Grid>
                             </Grid>
-                            <Grid item>
-                              <Grid item container alignItems="center" justifyContent="space-between">
+                            <Grid item> */}
+                              {/* <Grid item container alignItems="center" justifyContent="space-between">
                                 <Grid item>
                                   <Typography variant="subtitle1">Allow Notifications</Typography>
                                 </Grid>
@@ -229,11 +233,11 @@ const ProfileSection = () => {
                                     size="small"
                                   />
                                 </Grid>
-                              </Grid>
-                            </Grid>
+                              </Grid> */}
+                            {/* </Grid>
                           </Grid>
-                        </CardContent>
-                      </Card>
+                        </CardContent> */}
+                      {/* </Card> */}
                       <Divider />
                       <List
                         component="nav"

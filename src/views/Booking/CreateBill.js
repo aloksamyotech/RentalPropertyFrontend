@@ -57,8 +57,8 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
         price: yup.number().min(0, t('Price cannot be negative')),
       })
     ),
-    electricityUnit: yup.number().required(t('Electricity Bill Unit is required')).min(0, t('Electricity Bill Unit cannot be negative')),
-    electricityRate: yup.number().required(t('Rate of Electricity Bill Unit is required')).positive(t('Electricity Rate must be positive')),
+    // electricityUnit: yup.number().min(0, t('Electricity Bill Unit cannot be negative')),
+    // electricityRate: yup.number().positive(t('Electricity Rate must be positive')),
     note: yup.string(),
   });
 
@@ -68,8 +68,8 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     billingMonth: data?.billingMonth ? new Date(data.billingMonth).toISOString().split('T')[0] : '',
     rentAmount: data?.rentAmount,
     extraCharges: Array.isArray(data?.extraCharges) ? data.extraCharges : [],
-    electricityUnit: data?.electricityUnit || 0, 
-    electricityRate: data?.electricityRate || 0,
+    electricityUnit:  0, 
+    electricityRate:  0,
     electricityBillAmount: 0,
     totalBillAmount: 0,
     note: data?.note || '',
@@ -90,7 +90,8 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
           validationSchema={validationSchema}
           onSubmit={async (values, { resetForm }) => {
             setLoading(true);
-            const startTime = Date.now(); // Added startTime for setTimeout logic
+            console.log(values,"values");
+            const startTime = Date.now();
             
             const updatedValues = {
               ...values,
@@ -99,7 +100,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
               billingMonth: new Date(values.billingMonth).toISOString().split('T')[0],
               rentAmount: Number(values.rentAmount),
               extraAmount: values.extraCharges.reduce((sum, charge) => sum + Number(charge.price), 0),
-              electricityBillAmount: calculateElectricityBill(values.electricityUnit, values.electricityRate),
+              // electricityBillAmount: calculateElectricityBill(values.electricityUnit, values.electricityRate),
               totalBillAmount: calculateTotalBill(
                 values.electricityRate,
                 values.electricityUnit,
@@ -249,7 +250,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={6}>
+                  {/* <Grid item xs={12} sm={6}>
                     <FormLabel>{t('Electricity Bill Unit')}</FormLabel>
                     <Field
                       as={TextField}
@@ -286,7 +287,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                       fullWidth
                       disabled
                     />
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item xs={12} sm={6}>
                     <FormLabel>{t('Billing Month')}</FormLabel>
