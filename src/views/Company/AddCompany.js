@@ -46,6 +46,9 @@ const AddCompany = (props) => {
       .max(80, t('Address cannot exceed 80 characters'))
       .required(t('Address is required')),
     password: yup.string().required(t('Password is required')),
+    gstnumber: yup
+      .string()
+      .max(15, t("Gst number cannot exceed 15 character."))
   });
 
   const initialValues = {
@@ -54,7 +57,8 @@ const AddCompany = (props) => {
     phoneNo: '',
     address: '',
     password: '',
-    currencyCode:''
+    currencyCode:'',
+    gstnumber:''
   };
 
   const AddCompany = async (values, resetForm) => {
@@ -195,6 +199,19 @@ const AddCompany = (props) => {
                     </MenuItem>
                   ))}
                 </Select>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormLabel>{t('GST Number')}</FormLabel>
+                <TextField
+                  id="gstnumber"
+                  name="gstnumber"
+                  size="small"
+                  fullWidth
+                  value={formik.values.gstnumber}
+                  onChange={formik.handleChange}
+                  error={formik.touched.gstnumber && Boolean(formik.errors.gstnumber)}
+                  helperText={formik.touched.gstnumber && formik.errors.gstnumber}
+                />
               </Grid>
             </Grid>
           </form>

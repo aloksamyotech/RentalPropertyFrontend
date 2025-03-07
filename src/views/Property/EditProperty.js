@@ -17,6 +17,7 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 import ClearIcon from '@mui/icons-material/Clear';
 import { updateApi, getApi } from 'core/apis/api'; // Ensure getApi is imported
 import PropTypes from 'prop-types';
@@ -37,12 +38,15 @@ const EditProperty = ({ open, handleClose, data }) => {
   const [attachments, setAttachments] = useState([]);
   const [typeData, setTypeData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const payload = tokenPayload();
+    const [currency, setCurrency] = useState();
+    const payload = tokenPayload();
+  
 
   useEffect(() => {
     if (open) {
       fetchOwnerData();
       fetchTypeData();
+      fetchCurrencyData();
     }
   }, [open]);
 
@@ -55,6 +59,11 @@ const EditProperty = ({ open, handleClose, data }) => {
       const response = await getApi(urls.propertyTypes.getdata, { id: payload._id });
       setTypeData(response.data);
   };
+    const fetchCurrencyData = async () => {
+      const response = await getApi(urls.company.getCompanyById, { id: payload._id });
+      setCurrency(response?.data.currencyCode || [] );
+    };
+  
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
@@ -223,21 +232,24 @@ const EditProperty = ({ open, handleClose, data }) => {
                 </Typography>
               )}
             </Grid>
-
             <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Rent')}</FormLabel>
-              <TextField
-                id="rent"
-                name="rent"
-                type="number"
-                size="small"
-                fullWidth
-                value={formik.values.rent}
-                onChange={formik.handleChange}
-                error={formik.touched.rent && Boolean(formik.errors.rent)}
-                helperText={formik.touched.rent && formik.errors.rent}
-              />
-            </Grid>
+  <FormLabel>{t('Rent per Month')}</FormLabel>
+  <TextField
+    id="rent"
+    name="rent"
+    type="number"
+    size="small"
+    fullWidth
+    value={formik.values.rent}
+    onChange={formik.handleChange}
+    error={formik.touched.rent && Boolean(formik.errors.rent)}
+    helperText={formik.touched.rent && formik.errors.rent}
+    InputProps={{
+      endAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
+    }}
+  />
+</Grid>
+
 
                 <Grid item xs={12} sm={6}>
                           <FormLabel>{t('Area per square feet')}</FormLabel>

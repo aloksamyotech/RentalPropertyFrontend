@@ -16,6 +16,7 @@ import {
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { getApi } from 'core/apis/api';
 import { Link } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import TableStyle from '../../ui-component/TableStyle';
 import { IconHome } from '@tabler/icons';
 import Iconify from '../../ui-component/iconify';
@@ -25,6 +26,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import { useNavigate } from 'react-router-dom';
+import MonthlyInvoiceView from './MonthlyInvoiceView';
+
 
 const BillC = () => {
   const { t } = useTranslation();
@@ -34,6 +38,7 @@ const BillC = () => {
   const [billData, setBillData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
+  const navigate = useNavigate()
   const payload = tokenPayload();
 
   const fetchBillData = async () => {
@@ -78,6 +83,11 @@ const BillC = () => {
   const handleOpenEditCompany = () => {
     setOpenEdit(true);
     handleClose();
+  };
+
+
+  const handleOpenView = () => {
+    navigate(`/dashboard/billC/view?id=${currentRow._id}`);
   };
 
   const breadcrumbs = [
@@ -153,10 +163,10 @@ const BillC = () => {
               horizontal: 'left',
             }}
           >
-            <MenuItem onClick={handleOpenEditCompany} disableRipple>
-              <EditIcon style={{ marginRight: '8px' }} />
-              {t('Edit')}
-            </MenuItem>
+              <MenuItem onClick={handleOpenView}>
+                        <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+                        {t('view')}
+                      </MenuItem>
             <MenuItem
               onClick={handleOpenDeleteCompany}
               sx={{ color: 'red' }}
@@ -172,6 +182,8 @@ const BillC = () => {
   ];
 
   return (
+    <>
+    {/* <MonthlyInvoiceView open={openAdd} handleClose={handleCloseAdd} />    */}
     <Container>
       <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
@@ -198,6 +210,7 @@ const BillC = () => {
         </Box>
       </TableStyle>
     </Container>
+    </>
   );
 };
 

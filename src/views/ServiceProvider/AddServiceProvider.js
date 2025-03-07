@@ -99,7 +99,7 @@ const AddServiceProvider = (props) => {
             justifyContent: 'space-between'
           }}
         >
-          <Typography variant="h6">{t('Create Owner')}</Typography>
+          <Typography variant="h6">{t('Add Service Provider')}</Typography>
           <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
         </DialogTitle>
 

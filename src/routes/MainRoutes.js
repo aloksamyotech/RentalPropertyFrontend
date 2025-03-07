@@ -27,12 +27,14 @@ import Propertyview from 'views/Property/component/propertyView';
 import OwnerDetails from 'views/Owner/Components/OwnerDetails';
 import TenentView from 'views/Tenants/component/TenentViews';
 import AgentView from 'views/Agents/components/AgentView';
-import CreateBill from 'views/Booking/component/CreateBill';
+// import CreateBill from 'views/Booking/component/CreateBill';
 import Bill from 'views/Bill/indexC';
 import BillT from 'views/Bill/indexT';
 import ServiceProvider from 'views/ServiceProvider';
 import AnnouncementViewPage from 'views/Announcement/components/AnnouncementView';
 import VacantPropertyView from 'views/VacantProperties/Component/VacantPropertyView';
+import GenerateMonthlyBill from 'views/Booking/CreateBill';
+import MonthlyInvoiceView from 'views/Bill/MonthlyInvoiceView';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -71,7 +73,6 @@ const superAdminRoutes = {
         { path: 'payment', element: <Payment /> },
         { path: 'agents', element: <Agents /> },
         { path: 'complaints', element: <Complaints /> },
-
         { path: 'Announcement', element: <Announcement /> },
         { path: 'email', element: <Email /> },
         { path: 'meeting', element: <Metting /> },
@@ -105,12 +106,12 @@ const companyAdminRoutes = {
         { path: 'announcement/view', element: <AnnouncementViewPage/> },
         { path: 'serviceprovider', element: <ServiceProvider /> },
         { path: 'companyComplaints', element: <CompanyComplaints/> },
+        { path: 'billC/view', element: <MonthlyInvoiceView/> },
         { path: 'agents', element: <Agents /> },
         { path: 'booking', element: <Booking /> },
         { path: 'complain/view', element: <ComplainDetailsPage/> },
         { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },
-        { path: 'dashboard/booking/createbill', element:<CreateBill/> },
         { path: 'property/view', element:<Propertyview/> },
         { path: 'owner/view', element:<OwnerDetails/> },
         { path: 'tenant/view' , element:<TenentView/>},
@@ -151,7 +152,6 @@ const tenantRoutes = {
         { path: 'booking/tenant/view', element: <BookingDetailsTenantPage /> },
         { path: 'email', element: <Email /> },
         { path: 'meeting', element: <Metting /> },
-        // { path: 'calender', element: <Calender /> },
         { path: 'document', element: <Document /> }
       ]
     }

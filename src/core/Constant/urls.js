@@ -15,7 +15,8 @@ export const urls = Object.freeze({
   bill:{
       createBill: base + '/bill/createBill',
       getAllBill: base + '/bill/getAllBill',
-      getBillByT: base + '/bill/getBillForT'
+      getBillByT: base + '/bill/getBillForT',
+      getBillById: base + '/bill/getBillById'
   },
   company:{
       create: base + '/company/register',
@@ -23,7 +24,8 @@ export const urls = Object.freeze({
       companydata: base + '/company/getAllCompanies',
       edit : base + '/company/edit',
       delete: base + '/company/delete',
-      complaintData : base + '/company/getComplaints'
+      complaintData : base + '/company/getComplaints',
+      getCompanyById: base + '/company/getCompanyById'
   },
   propertyTypes:{
      create : base + '/types/createType',

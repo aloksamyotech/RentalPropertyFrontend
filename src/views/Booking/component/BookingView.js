@@ -12,8 +12,6 @@ import { toast } from 'react-toastify';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import { Link } from 'react-router-dom';
 import { IconHome } from '@tabler/icons';
-import CreateBill from './CreateBill';
-
 
 const BookingDetailsPage = () => {
   const { t } = useTranslation();
@@ -65,10 +63,7 @@ const BookingDetailsPage = () => {
 
   return (
     <>
-      <CreateBill open={openCreate} handleClose={handleCloseCreate} data={rowData} />
-      
-    {/* <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}> */}
-    
+
 <Container>
       <Grid container spacing={3}>
     

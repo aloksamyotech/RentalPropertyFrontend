@@ -16,6 +16,7 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 import ClearIcon from '@mui/icons-material/Clear';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useFormik } from 'formik';
@@ -36,8 +37,7 @@ const AddProperty = ({ open, handleClose }) => {
   const [attachments, setAttachments] = useState([]);
   const [typeData, setTypeData] = useState([]);
   const [loading, setIsLoading] = useState(false); 
-  
-
+  const [currency, setCurrency] = useState();
   const payload = tokenPayload();
 
   const handleFileChange = (event) => {
@@ -59,6 +59,11 @@ const AddProperty = ({ open, handleClose }) => {
   const fetchTypeData = async () => {
     const response = await getApi(urls.propertyTypes.getdata, { id: payload._id });
     setTypeData(response?.data || []);
+  };
+
+  const fetchCurrencyData = async () => {
+    const response = await getApi(urls.company.getCompanyById, { id: payload._id });
+    setCurrency(response?.data.currencyCode || [] );
   };
 
   const addProperty = async (values, resetForm) => {
@@ -103,6 +108,7 @@ const AddProperty = ({ open, handleClose }) => {
     if (open) {
       fetchOwnerData();
       fetchTypeData();
+      fetchCurrencyData();
     }
   }, [open]);
 
@@ -157,8 +163,6 @@ const AddProperty = ({ open, handleClose }) => {
       addProperty({ ...values, files: attachments }, resetForm);
     },
   });
-
-    // const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -233,19 +237,23 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Rent per Month')}</FormLabel>
-              <TextField
-                id="rent"
-                name="rent"
-                type="number"
-                size="small"
-                fullWidth
-                value={formik.values.rent}
-                onChange={formik.handleChange}
-                error={formik.touched.rent && Boolean(formik.errors.rent)}
-                helperText={formik.touched.rent && formik.errors.rent}
-              />
-            </Grid>
+  <FormLabel>{t('Rent per Month')}</FormLabel>
+  <TextField
+    id="rent"
+    name="rent"
+    type="number"
+    size="small"
+    fullWidth
+    value={formik.values.rent}
+    onChange={formik.handleChange}
+    error={formik.touched.rent && Boolean(formik.errors.rent)}
+    helperText={formik.touched.rent && formik.errors.rent}
+    InputProps={{
+      endAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
+    }}
+  />
+</Grid>
+
 
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Area per square feet')}</FormLabel>
@@ -356,7 +364,7 @@ const AddProperty = ({ open, handleClose }) => {
 
       <DialogActions>
         <Button onClick={formik.handleSubmit} variant="contained" color="primary"   disabled={loading} >
-        {loading ? t('Saving...') : t('Save')} 
+           {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {

@@ -21,10 +21,13 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { tokenPayload } from 'helper';
 import { Link } from 'react-router-dom';
 
+
 const Property = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+
+
   const queryParams = new URLSearchParams(location.search);
   const [openAdd, setOpenAdd] = useState(false);
   const [propertyData, setPropertyData] = useState([]);
@@ -34,6 +37,7 @@ const Property = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState([]);
   const payload = tokenPayload();
+  const userRole = payload?.role;
 
   const fetchPropertyData = async () => {
     try {
@@ -142,17 +146,21 @@ const Property = () => {
               horizontal: 'left'
             }}
           >
-            <MenuItem onClick={handleOpenEditProperty}>
+              {userRole === 'companyAdmin' && (
+            <>
+              <MenuItem onClick={handleOpenEditProperty}>
               <EditIcon style={{ marginRight: '8px' }} />
               {t('Edit')}
-            </MenuItem>
-            <MenuItem onClick={handleOpenView}>
-              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
-              {t('view')}
             </MenuItem>
             <MenuItem onClick={handleOpenDeleteProperty} sx={{ color: 'red' }}>
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               {t('Delete')}
+            </MenuItem>
+            </>
+          )}
+            <MenuItem onClick={handleOpenView}>
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('view')}
             </MenuItem>
           </Popover>
         </>
