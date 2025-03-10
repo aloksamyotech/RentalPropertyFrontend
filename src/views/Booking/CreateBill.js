@@ -29,7 +29,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
   const [property, setProperty] = useState(null);
   const [tenant, setTenant] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+  console.log(data,"data....")
 
   useEffect(() => {
     if (data?.propertyId) setProperty(data.propertyId);
@@ -40,24 +40,44 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     return Number(units) * Number(rate);
   };
 
+  const totalgst = (rate, units, rent, extraCharges, gstpercent ) => {
+    const totalAmount = calculateTotalBill(rate, units, rent, extraCharges);
+    const totalgst = (gstpercent/100 ) * totalAmount;
+    return Number(totalgst);
+  };
+
   const calculateTotalBill = (rate, units, rent, extraCharges) => {
     const totalElectricity = calculateElectricityBill(units, rate);
     const totalExtraCharges = extraCharges.reduce((sum, charge) => sum + Number(charge.price), 0);
     return Number(rent) + totalElectricity + totalExtraCharges;
   };
 
+  const calculationAmountAfterGst = (rate, units, rent, extraCharges, gstpercent) => {
+     const totalBill = calculateTotalBill(rate, units, rent, extraCharges);
+     const gstAmount =  totalgst(rate, units, rent, extraCharges, gstpercent);
+     return Number(totalBill) + Number(gstAmount);
+  };
+
+
   const validationSchema = yup.object({
     tenantId: yup.string().required(t('Tenant is required')),
     propertyId: yup.string().required(t('Property is required')),
     billingMonth: yup.date().required(t('Billing Month is required')),
-    rentAmount: yup.number().required(t('Rent Amount is required')).min(0, t('Rent Amount cannot be negative')),
+    rentAmount: yup.number().required(t('Rent Amount is required'))
+    .min(0, t('Rent Amount cannot be negative')) 
+    .max(1000000, t('Rent Amount cannot exceed ')),
     extraCharges: yup.array().of(
       yup.object({
         serviceName: yup.string(),
-        price: yup.number().min(0, t('Price cannot be negative')),
+        price: yup.number().min(0, t('Price cannot be negative')).max(10000, t('Price cannot exceed 1000')),
       })
     ),
-    // electricityUnit: yup.number().min(0, t('Electricity Bill Unit cannot be negative')),
+    gstpercent: yup
+    .number()
+    .required(t('GST Percent is required'))
+    .min(0, t('GST Percent cannot be negative'))
+    .max(100, t('GST Percent cannot exceed 100')),
+      // electricityUnit: yup.number().min(0, t('Electricity Bill Unit cannot be negative')),
     // electricityRate: yup.number().positive(t('Electricity Rate must be positive')),
     note: yup.string(),
   });
@@ -66,12 +86,15 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     tenantId: tenant?._id || '',
     propertyId: property?._id || '',
     billingMonth: data?.billingMonth ? new Date(data.billingMonth).toISOString().split('T')[0] : '',
-    rentAmount: data?.rentAmount,
+    rentAmount: data?.rentAmount||"...",
     extraCharges: Array.isArray(data?.extraCharges) ? data.extraCharges : [],
     electricityUnit:  0, 
     electricityRate:  0,
+    gstpercent: 18 || 0,
     electricityBillAmount: 0,
     totalBillAmount: 0,
+    totalgst: 0,
+    totalBillAmountAfterGST: 0,
     note: data?.note || '',
   };
 
@@ -101,12 +124,28 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
               rentAmount: Number(values.rentAmount),
               extraAmount: values.extraCharges.reduce((sum, charge) => sum + Number(charge.price), 0),
               // electricityBillAmount: calculateElectricityBill(values.electricityUnit, values.electricityRate),
+              gstpercent: values.gstpercent,
               totalBillAmount: calculateTotalBill(
                 values.electricityRate,
                 values.electricityUnit,
                 values.rentAmount,
                 values.extraCharges
               ),
+              totalgst: totalgst(
+                values.electricityRate,
+                values.electricityUnit,
+                values.rentAmount,
+                values.extraCharges,
+                values.gstpercent
+              ),
+              totalBillAmountAfterGST: calculationAmountAfterGst(
+                values.electricityRate,
+                values.electricityUnit,
+                values.rentAmount,
+                values.extraCharges,
+                values.gstpercent
+              ),
+              
             };
 
             try {
@@ -114,6 +153,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
               if (response.success) {
                 const elapsedTime = Date.now() - startTime;
                 const remainingTime = Math.max(0, 1000 - elapsedTime);
+                console.log(updatedValues,"updatedValues")
                 setTimeout(() => {
                   setLoading(false);
                   handleClose();
@@ -138,6 +178,23 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
               values.electricityUnit,
               values.rentAmount,
               values.extraCharges
+            );
+
+            const totalBillAmountAfterGST = calculationAmountAfterGst(
+              values.electricityRate,
+              values.electricityUnit,
+              values.rentAmount,
+              values.extraCharges,
+              values.gstpercent
+            );
+
+                 
+            const totalgstAmount = totalgst(
+              values.electricityRate,
+              values.electricityUnit,
+              values.rentAmount,
+              values.extraCharges,
+              values.gstpercent
             );
 
             return (
@@ -250,6 +307,20 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                     />
                   </Grid>
 
+                  <Grid item xs={12} sm={6}>
+                    <FormLabel>{t('Enter Gst in %')}</FormLabel>
+                    <Field
+                      as={TextField}
+                      name="gstpercent"
+                      type="number"
+                      size="small"
+                      fullWidth
+                      error={touched.gstpercent && errors.gstpercent}
+                      helperText={touched.gstpercent && errors.gstpercent}
+                      required
+                    />
+                  </Grid>
+
                   {/* <Grid item xs={12} sm={6}>
                     <FormLabel>{t('Electricity Bill Unit')}</FormLabel>
                     <Field
@@ -319,6 +390,28 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                     <FormLabel>{t('Total Amount')}</FormLabel>
                     <TextField
                       value={totalAmount}
+                      type="number"
+                      size="small"
+                      fullWidth
+                      disabled
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <FormLabel>{t('Total GST')}</FormLabel>
+                    <TextField
+                      value={totalgstAmount}
+                      type="number"
+                      size="small"
+                      fullWidth
+                      disabled
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <FormLabel>{t('Total Amount After GST')}</FormLabel>
+                    <TextField
+                      value={totalBillAmountAfterGST}
                       type="number"
                       size="small"
                       fullWidth

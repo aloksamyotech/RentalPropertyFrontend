@@ -39,7 +39,9 @@ const AddBooking = (props) => {
       const { startingDate } = this.parent;
       return new Date(startingDate) <= new Date(value);
     }),
-    rentAmount: yup.number().required(t('Rent Amount is required')),
+  rentAmount: yup.number().required(t('Rent Amount is required'))
+    .min(0, t('Rent Amount cannot be negative')) 
+    .max(1000000, t('Rent Amount cannot exceed 1000000')),
     advanceAmount: yup.number()
     .typeError(t('Rent must be a number'))
     .min(1, t('must be positive'))

@@ -212,7 +212,7 @@ const agentDashboard = {
       id: '6',
       title: 'Bill Management',
       type: 'item',
-      url: '/dashboard/bill',
+      url: '/dashboard/billC',
       icon: PaymentIcon,
       breadcrumbs: false
     },
@@ -308,7 +308,7 @@ const tenantDashboard = {
       id: '7',
       title: 'Bill Management',
       type: 'item',
-      url: '/dashboard/billT',
+      url: '/dashboard/billC',
       icon: PaymentIcon,
       breadcrumbs: false
     },

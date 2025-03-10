@@ -73,11 +73,11 @@ const AddCompany = (props) => {
       }
        } catch {
          toast.error(t('Failed to register Company!'));
-       } finally {
+      } finally {
          handleClose();
          resetForm()
          setLoading(false); 
-       }
+      }
   };
 
   const formik = useFormik({

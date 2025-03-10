@@ -138,6 +138,15 @@ const isAdmin = payload?.role === 'companyAdmin';
     setCurrentRow(null);
   };
 
+  const handleOpenEdit = () => {
+    if (currentRow) {
+      setRowData(currentRow); // Ensure rowData gets updated
+      setOpenEdit(true);
+      handleClose();
+    }
+  };
+  
+
   const handleOpenView = () => {
     navigate(`/dashboard/booking/view?id=${currentRow._id}&reporterName=${currentRow.name}`);
   };
@@ -211,17 +220,22 @@ const isAdmin = payload?.role === 'companyAdmin';
               horizontal: 'left',
             }}
           >
-            <MenuItem
+            {/* <MenuItem
               disableRipple
               onClick={() => {
-                handleClose();
+                
                 setOpenEdit(true);
+                handleClose();
               }}
               disabled={!isAdmin} 
             >
               <EditIcon style={{ marginRight: '8px' }} />
               {t('CreateBill')}
-            </MenuItem>
+            </MenuItem> */}
+               <MenuItem onClick={handleOpenEdit}>
+                          <EditIcon style={{ marginRight: '8px' }} />
+                          {t('Create Bill')}
+                        </MenuItem>
               <MenuItem onClick={handleOpenView} disableRipple>
               <VisibilityIcon style={{ marginRight: '8px' }} />
               {t('view')}  
@@ -247,7 +261,11 @@ const isAdmin = payload?.role === 'companyAdmin';
   return (
     <>
     <AddBooking open={openAdd} handleClose={handleCloseAdd} />
-    <GenerateMonthlyBill open={openEdit} handleClose={handleCloseEditBooking} data={currentRow} />
+    <GenerateMonthlyBill 
+  open={openEdit} 
+  handleClose={handleCloseEditBooking} 
+  data={rowData}
+/>
     <DeleteBooking open={openDelete} handleClose={handleCloseDelete} id={rowData?._id} />
 
     <Container>

@@ -60,7 +60,6 @@ const FirebaseLogin = ({ ...others }) => {
           try {
             const loginUrl = values.email === 'admin@samyotech.com' ? urls.user.login : urls.company.login;
           
-
             const response = await postApi(loginUrl, values);
 
             if (response.success === true) {

@@ -38,8 +38,10 @@ const EditProperty = ({ open, handleClose, data }) => {
   const [attachments, setAttachments] = useState([]);
   const [typeData, setTypeData] = useState([]);
   const [loading, setLoading] = useState(false);
-    const [currency, setCurrency] = useState();
-    const payload = tokenPayload();
+  const [currency, setCurrency] = useState();
+  const payload = tokenPayload();
+  
+  console.log(data,"data")
   
 
   useEffect(() => {
