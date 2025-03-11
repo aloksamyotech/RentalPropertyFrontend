@@ -72,6 +72,7 @@ export const urls = Object.freeze({
     tenantBookingData : base+ '/tenant/mybooking',
     getMyTenants: base + '/tenant/getMyTenants',
     getAllTenants: base + '/tenant/getAllTenants',
+    tenantDocs: base + '/tenant/tenantDoc',
     image: imageBase
   },
   booking:{

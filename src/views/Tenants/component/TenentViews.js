@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useState, useEffect } from 'react';
 import {
@@ -10,16 +12,24 @@ import {
   Chip,
   Breadcrumbs,
   Grid,
+  ListItemIcon,
   Table,
   TableBody,
   TableRow,
   TableCell,
   Paper,
+  CardContent,
   DialogContent,
+  List,
+  ListItem,
   IconButton,
+  
+  ListItemText,
+
   Dialog,
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import DescriptionIcon from '@mui/icons-material/Description';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -32,6 +42,7 @@ import { urls } from 'core/Constant/urls';
 import { ConsoleView } from 'react-device-detect';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+import AddDocumentDialog from './AddDocument';
 
 const imagepath = urls.tenant.image;
 
@@ -48,7 +59,7 @@ const TenantView = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [tenantDocs, setTenantDocs] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [openAdd, setOpenAdd] = useState(false);
   const fetchTenantData = async () => {
     try {
       setLoading(true);
@@ -56,12 +67,16 @@ const TenantView = () => {
       setTenantData(response?.data?.tenant);
       setPropertyData(response?.data?.booking);
       setTenantDocs(response?.data?.tenant?.files);
+      // setTenantDocs(response?.data?.tenant)
     } catch (error) {
       console.error('Error fetching tenant data:', error);
     } finally {
       setLoading(false);
     }
   };
+  const handleOpenAdd = () => setOpenAdd(true);
+  const handleCloseAdd = () => setOpenAdd(false);
+
 
   useEffect(() => {
     if (tenantId) {
@@ -209,7 +224,12 @@ const TenantView = () => {
 )}
 </TabPanel>
           <TabPanel value="2">
-          {tenantDocs && tenantDocs.length > 0 ? (
+                  <AddDocumentDialog open={openAdd} handleClose={handleCloseAdd} />
+                     <Button variant="contained"  onClick={handleOpenAdd}>
+                                {t('Add Documents')}
+                      </Button>
+            
+          {/* {tenantDocs && tenantDocs.length > 0 ? (
               <ImageList cols={3} gap={8}>
                 {tenantDocs.map((img, index) => (
                   <ImageListItem key={index} onClick={() => handleImageClick(img)}>
@@ -227,13 +247,35 @@ const TenantView = () => {
               <Typography variant="body2" color="textSecondary">
                 {t('No images available.')}
               </Typography>
-            )}
+            )} */}
+{/* 
+<CardContent>
+                      <List>
+                        {tenantDocs.map((item, index) => (
+                          <ListItem
+                            key={index}
+                            button
+                            onClick={() => window.open(urls.tenant.image + item.url, '_blank')}
+                            sx={{
+                              borderBottom: '1px solid',
+                              borderColor: 'divider'
+                            }}
+                          >
+                            <ListItemIcon>
+                              <DescriptionIcon color="primary" />
+                            </ListItemIcon>
+                            <ListItemText primary={item.name} />
+                            <ListItemText secondary={item.type} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </CardContent> */}
           </TabPanel>
         </TabContext>
       </Card>
 
       {/* Image Popup Dialog */}
-      <Dialog open={Boolean(selectedImage)} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+      {/* <Dialog open={Boolean(selectedImage)} onClose={handleCloseDialog} maxWidth="md" fullWidth>
         <DialogContent sx={{ position: 'relative' }}>
           <IconButton
             aria-label="close"
@@ -259,7 +301,7 @@ const TenantView = () => {
             />
           )}
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </Container>
   );
 };
