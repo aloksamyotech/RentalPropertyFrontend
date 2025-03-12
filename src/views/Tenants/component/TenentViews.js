@@ -19,8 +19,10 @@ import {
   TableCell,
   Paper,
   CardContent,
+    Popover,
   DialogContent,
   List,
+    MenuItem,
   ListItem,
   IconButton,
   
@@ -29,8 +31,12 @@ import {
   Dialog,
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import DescriptionIcon from '@mui/icons-material/Description';
 import TabContext from '@mui/lab/TabContext';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
@@ -43,6 +49,8 @@ import { ConsoleView } from 'react-device-detect';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import AddDocumentDialog from './AddDocument';
+import TableStyle from '../../../ui-component/TableStyle';
+
 
 const imagepath = urls.tenant.image;
 
@@ -57,9 +65,18 @@ const TenantView = () => {
   const [tenantData, setTenantData] = useState({});
   const [propertyData, setPropertyData] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+    const [openDelete, setOpenDelete] = useState(false);
+  
+    const [rowData, setRowData] = useState(null);
+  
   const [tenantDocs, setTenantDocs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
+  const [document, setDocument] = useState(false);
+    const [currentRow, setCurrentRow] = useState([]);
+  
+  
   const fetchTenantData = async () => {
     try {
       setLoading(true);
@@ -74,8 +91,28 @@ const TenantView = () => {
       setLoading(false);
     }
   };
+
+  const fetchDocumentData = async () => {
+    try {
+      const response = await getApi(urls.tenant.getAllDocByTenantId, { id: tenantId });
+      setDocument(response.data);
+    } catch (error) {
+      setDocument([]);
+    }
+  };
+  useEffect(() => {
+    if (tenantId) {
+      fetchDocumentData();
+    }
+  }, [tenantId,openAdd ]);
+
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setCurrentRow(null);
+  };
 
 
   useEffect(() => {
@@ -95,6 +132,78 @@ const TenantView = () => {
   const handleImageClick = (img) => {
     setSelectedImage(`${imagepath}${img}`);
   };
+
+  const handleOpenDeleteDialog = () => {
+    setRowData(currentRow);
+    setOpenDelete(true);
+    handleClose();
+  };
+
+  const handleClick = (event, row) => {
+    setAnchorEl(event.currentTarget);
+    setCurrentRow(row);
+  };
+
+  
+ const columns = [
+  {
+    field: 'documentName',
+    headerName: t('Document Name'),
+    flex: 1,
+    cellClassName: 'name-column--cell name-column--cell--capitalize',
+  },
+  {
+    field: 'url',
+    headerName: t('URL'),
+    flex: 1,
+    renderCell: (params) => (
+      <>
+        <a 
+          href={urls?.tenant?.image+params?.row?.url} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          style={{ textDecoration: 'none', color: 'blue' }}
+        >
+          {t('View Document')}
+        </a>
+        <IconButton
+          aria-describedby={params?.row._id}
+          onClick={(event) => handleClick(event, params?.row)}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        <Popover
+          open={Boolean(anchorEl) && currentRow?._id === params?.row._id}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          {/* <MenuItem onClick={handleOpenEditTenant} disableRipple>
+            <EditIcon style={{ marginRight: '8px' }} />
+            {t('Edit')}
+          </MenuItem>
+          <MenuItem onClick={() => window.open(params.row.url, '_blank')} >
+            <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+            {t('View')}
+          </MenuItem> */}
+          <MenuItem
+            onClick={handleOpenDeleteDialog}
+            sx={{ color: 'red' }}
+            disableRipple
+          >
+            <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
+            {t('Delete')}
+          </MenuItem>
+        </Popover>
+      </>
+    ),
+  },
+];
+
+
 
   const breadcrumbs = [
     <Link key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
@@ -224,11 +333,26 @@ const TenantView = () => {
 )}
 </TabPanel>
           <TabPanel value="2">
+          <Box width="100%" sx={{ display: "flex", justifyContent: "flex-end" }}>
                   <AddDocumentDialog open={openAdd} handleClose={handleCloseAdd} />
                      <Button variant="contained"  onClick={handleOpenAdd}>
                                 {t('Add Documents')}
                       </Button>
-            
+                      </Box >
+                      <TableStyle>
+          <Box width="100%">
+            <Card sx={{ height: '600px', pt: 2 }}>
+              <DataGrid
+                rows={document}
+                columns={columns}
+                checkboxSelection
+                getRowId={(row) => row._id || row.id}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{ toolbar: { showQuickFilter: true } }}
+              />
+            </Card>
+          </Box>
+        </TableStyle>
           {/* {tenantDocs && tenantDocs.length > 0 ? (
               <ImageList cols={3} gap={8}>
                 {tenantDocs.map((img, index) => (

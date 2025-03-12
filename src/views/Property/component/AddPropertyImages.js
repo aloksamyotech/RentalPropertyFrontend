@@ -8,13 +8,12 @@ import { postApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { toast } from 'react-toastify';
 
-const AddDocumentDialog = ({ open, handleClose }) => {
+const AddImageDialog = ({ open, handleClose }) => {
   const { t } = useTranslation();
   const [files, setFiles] = useState(null);
   const [loading, setLoading] = useState(false);
   const queryParams = new URLSearchParams(location.search);
-    const [openAdd, setOpenAdd] = useState(false);
-  const tenantId = queryParams.get('id');
+  const propertyId = queryParams.get('id');
 
   const validationSchema = yup.object({
     name: yup.string().required(t('Document Name is required')),
@@ -29,12 +28,12 @@ const AddDocumentDialog = ({ open, handleClose }) => {
       const formData = new FormData();
       formData.append('name', values.name);
       formData.append('files', values.files);
-      formData.append('tenantId', tenantId); 
+      formData.append('propertyId', propertyId); 
 
 
       try {
         setLoading(true);
-        const response = await postApi(urls.tenant.tenantDocs, formData, {
+        const response = await postApi(urls.property.uplaodImages, formData, {
           'Content-Type': 'multipart/form-data'
         });
         if (response.success) {
@@ -61,14 +60,14 @@ const AddDocumentDialog = ({ open, handleClose }) => {
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-      <DialogTitle>{t('Add Document')}</DialogTitle>
+      <DialogTitle>{t('Add Image')}</DialogTitle>
       <DialogContent>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label={t('Document Name')}
+                label={t('Image Name')}
                 name="name"
                 value={formik.values.name}
                 onChange={formik.handleChange}
@@ -103,4 +102,4 @@ const AddDocumentDialog = ({ open, handleClose }) => {
   );
 };
 
-export default AddDocumentDialog;
+export default AddImageDialog;

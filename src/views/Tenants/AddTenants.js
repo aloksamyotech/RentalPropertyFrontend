@@ -52,8 +52,7 @@ const AddTenants = ({ open, handleClose }) => {
     formData.append('companyId', payload.companyId);
     formData.append('reporterId', payload._id);
   
-    console.log(values, "valuesvalues");
-  
+
     const documentsArray = values.documents.map((doc) => ({
       name: doc.name,
       file: doc.file
@@ -249,7 +248,7 @@ const AddTenants = ({ open, handleClose }) => {
             </Grid>
 
             {/* Documents - Using Manual Implementation Instead of FieldArray */}
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Box mb={1}>
                 <FormLabel>{t('Documents')}</FormLabel>
               </Box>
@@ -289,9 +288,9 @@ const AddTenants = ({ open, handleClose }) => {
                       <DeleteIcon />
                     </IconButton>
                     
-                    <Grid container spacing={2} alignItems="center">
+                    <Grid container spacing={2} alignItems="center"> */}
   {/* Document Name Input */}
-  <Grid item xs={12} sm={4}>
+  {/* <Grid item xs={12} sm={4}>
     <TextField
       fullWidth
       size="small"
@@ -302,10 +301,10 @@ const AddTenants = ({ open, handleClose }) => {
       error={documentNameTouched && Boolean(documentNameError)}
       helperText={documentNameTouched && documentNameError}
     />
-  </Grid>
+  </Grid> */}
 
   {/* File Upload Button */}
-  <Grid item xs={12} sm={4}>
+  {/* <Grid item xs={12} sm={4}>
     <Button variant="contained" component="label" size="small" fullWidth>
       {document.file ? t('Change File') : t('Upload File')}
       <input
@@ -314,10 +313,10 @@ const AddTenants = ({ open, handleClose }) => {
         onChange={(event) => handleFileChange(event, index, formik.setFieldValue)}
       />
     </Button>
-  </Grid>
+  </Grid> */}
 
   {/* File Name Display */}
-  <Grid item xs={12} sm={4}>
+  {/* <Grid item xs={12} sm={4}>
     {document.file ? (
       <Typography variant="body2" color="textSecondary" sx={{ wordBreak: 'break-word' }}>
         📄 {document.file.name}
@@ -336,7 +335,7 @@ const AddTenants = ({ open, handleClose }) => {
                   </Paper>
                 );
               })}
-            </Grid>
+            </Grid> */}
 
             {/* Address */}
             <Grid item xs={12}>
