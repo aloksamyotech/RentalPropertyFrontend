@@ -67,7 +67,7 @@ const superAdminDashboard = {
   ]
 };
 
-// Company Admin Dashboard
+// Company Admin company
 const companyAdminDashboard = {
   title: 'Company Admin Dashboard',
   type: 'group',
@@ -184,14 +184,14 @@ const agentDashboard = {
       icon: PersonIcon,
       breadcrumbs: false
     },
-    // {
-    //   id: '3',
-    //   title: 'Property Management',
-    //   type: 'item',
-    //   url: '/dashboard/property',
-    //   icon: AddHomeWorkIcon,
-    //   breadcrumbs: false,
-    // },
+    {
+      id: '3',
+      title: 'Property Management',
+      type: 'item',
+      url: '/dashboard/property',
+      icon: AddHomeWorkIcon,
+      breadcrumbs: false,
+    },
     {
       id: '4',
       title: 'Complaints',
@@ -212,7 +212,7 @@ const agentDashboard = {
       id: '6',
       title: 'Bill Management',
       type: 'item',
-      url: '/dashboard/bill',
+      url: '/dashboard/billC',
       icon: PaymentIcon,
       breadcrumbs: false
     },
@@ -308,7 +308,7 @@ const tenantDashboard = {
       id: '7',
       title: 'Bill Management',
       type: 'item',
-      url: '/dashboard/billT',
+      url: '/dashboard/billC',
       icon: PaymentIcon,
       breadcrumbs: false
     },

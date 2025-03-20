@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
@@ -9,6 +10,7 @@ import {
   Card,
   Box,
   IconButton,
+  Grid,
   Popover,
   Breadcrumbs,
   MenuItem,
@@ -16,6 +18,7 @@ import {
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { getApi } from 'core/apis/api';
 import { Link } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import TableStyle from '../../ui-component/TableStyle';
 import { IconHome } from '@tabler/icons';
 import Iconify from '../../ui-component/iconify';
@@ -25,6 +28,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import { useNavigate } from 'react-router-dom';
+import MonthlyInvoiceView from './MonthlyInvoiceView';
+
 
 const BillC = () => {
   const { t } = useTranslation();
@@ -34,10 +40,11 @@ const BillC = () => {
   const [billData, setBillData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
+  const navigate = useNavigate()
   const payload = tokenPayload();
 
   const fetchBillData = async () => {
-    const response = await getApi(urls.bill.getAllBill, { id: payload._id });
+    const response = await getApi(urls.bill.getAllBill, { id: payload.companyId });
 
     const formattedData = response.data.map((item) => {
       const billingDate = new Date(item.billingMonth);
@@ -80,12 +87,17 @@ const BillC = () => {
     handleClose();
   };
 
+
+  const handleOpenView = () => {
+    navigate(`/dashboard/billC/view?id=${currentRow._id}`);
+  };
+
   const breadcrumbs = [
     <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
       <IconHome />
     </Link>,
     <Typography key="company" color="text.primary">
-      {t('bill Management')}
+      {t('Bill Management')}
     </Typography>,
   ];
 
@@ -102,6 +114,11 @@ const BillC = () => {
     {
       field: 'propertyName',
       headerName: t('Property Name'),
+      flex: 1,
+    },
+    {
+      field: 'paymentType',
+      headerName: t('Payment Type'),
       flex: 1,
     },
     {
@@ -127,7 +144,7 @@ const BillC = () => {
             fontWeight: 'bold',
           }}
         >
-          {params.row.status ? t('Resolved') : t('Pending')}
+          {params.row.status ? t('Paid') : t('Pending')}
         </Typography>
       ),
     },
@@ -153,10 +170,10 @@ const BillC = () => {
               horizontal: 'left',
             }}
           >
-            <MenuItem onClick={handleOpenEditCompany} disableRipple>
-              <EditIcon style={{ marginRight: '8px' }} />
-              {t('Edit')}
-            </MenuItem>
+              <MenuItem onClick={handleOpenView}>
+                        <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+                        {t('view')}
+                      </MenuItem>
             <MenuItem
               onClick={handleOpenDeleteCompany}
               sx={{ color: 'red' }}
@@ -172,17 +189,26 @@ const BillC = () => {
   ];
 
   return (
+    <>
+    {/* <MonthlyInvoiceView open={openAdd} handleClose={handleCloseAdd} />    */}
     <Container>
-      <Card sx={{ p: 2, mb: 2 }}>
+    <Grid item xs={12}>
+        <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
           <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {t('Bill / Invoice Management')}
+            {t('Bill Management')}
+            <Breadcrumbs separator="›" aria-label="breadcrumb">
+              {breadcrumbs}
+            </Breadcrumbs>
           </Typography>
-          <Breadcrumbs separator="›" aria-label="breadcrumb">
-            {breadcrumbs}
-          </Breadcrumbs>
+          {/* <Button variant="outlined" sx={{ display: 'flex', alignItems: 'right', gap: 2 }}>
+            {t('Create Booking')}
+          </Button> */}
         </Stack>
       </Card>
+     
+        </Grid>
+
       <TableStyle>
         <Box width="100%">
           <Card style={{ height: '600px', paddingTop: '15px' }}>
@@ -198,6 +224,7 @@ const BillC = () => {
         </Box>
       </TableStyle>
     </Container>
+    </>
   );
 };
 

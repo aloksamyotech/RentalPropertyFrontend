@@ -25,7 +25,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
-
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const BillT = () => {
   const { t } = useTranslation();
@@ -155,6 +155,10 @@ const BillT = () => {
               <EditIcon style={{ marginRight: '8px' }} />
               {t('Edit')}
             </MenuItem>
+             <MenuItem onClick={handleOpenView}>
+                          <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+                          {t('view')}
+                        </MenuItem>
             <MenuItem
               onClick={handleOpenDeleteCompany}
               sx={{ color: 'red' }}

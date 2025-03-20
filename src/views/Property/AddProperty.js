@@ -16,6 +16,7 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 import ClearIcon from '@mui/icons-material/Clear';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useFormik } from 'formik';
@@ -36,8 +37,7 @@ const AddProperty = ({ open, handleClose }) => {
   const [attachments, setAttachments] = useState([]);
   const [typeData, setTypeData] = useState([]);
   const [loading, setIsLoading] = useState(false); 
-  
-
+  const [currency, setCurrency] = useState();
   const payload = tokenPayload();
 
   const handleFileChange = (event) => {
@@ -61,6 +61,11 @@ const AddProperty = ({ open, handleClose }) => {
     setTypeData(response?.data || []);
   };
 
+  const fetchCurrencyData = async () => {
+    const response = await getApi(urls.company.getCompanyById, { id: payload._id });
+    setCurrency(response?.data.currencyCode || [] );
+  };
+
   const addProperty = async (values, resetForm) => {
     setIsLoading(true);
 
@@ -70,6 +75,7 @@ const AddProperty = ({ open, handleClose }) => {
     formData.append('typeId', values.typeId);
     formData.append('description', values.description);
     formData.append('rent', values.rent);
+    formData.append('area', values.area);
     formData.append('address', values.address);
     formData.append('zipcode', values.zipcode);
     formData.append('maplink', values.maplink);
@@ -102,6 +108,7 @@ const AddProperty = ({ open, handleClose }) => {
     if (open) {
       fetchOwnerData();
       fetchTypeData();
+      fetchCurrencyData();
     }
   }, [open]);
 
@@ -122,6 +129,13 @@ const AddProperty = ({ open, handleClose }) => {
       .max(999999, t('Rent cannot exceed 6 digits'))
       .test('is-positive', t('Rent must be greater than zero'), (value) => value > 0)
       .required(t('Rent is required')),
+    area: yup
+      .number()
+      .typeError(t('Area must be a number'))
+      .min(1, t('must be positive'))
+      .max(999999, t('Rent cannot exceed 6 digits'))
+      .test('is-positive', t('Area must be greater than zero'), (value) => value > 0)
+      .required(t('Area is required')),
     address: yup
       .string()
       .max(100, t('Address cannot exceed 100 characters'))
@@ -137,6 +151,7 @@ const AddProperty = ({ open, handleClose }) => {
       typeId: '',
       description: '',
       rent: '',
+      area:'',
       address: '',
       zipcode: '',
       maplink: '',
@@ -148,8 +163,6 @@ const AddProperty = ({ open, handleClose }) => {
       addProperty({ ...values, files: attachments }, resetForm);
     },
   });
-
-    // const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -224,17 +237,36 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Rent')}</FormLabel>
+  <FormLabel>{t('Rent per Month')}</FormLabel>
+  <TextField
+    id="rent"
+    name="rent"
+    type="number"
+    size="small"
+    fullWidth
+    value={formik.values.rent}
+    onChange={formik.handleChange}
+    error={formik.touched.rent && Boolean(formik.errors.rent)}
+    helperText={formik.touched.rent && formik.errors.rent}
+    InputProps={{
+      endAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
+    }}
+  />
+</Grid>
+
+
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Area per square feet')}</FormLabel>
               <TextField
-                id="rent"
-                name="rent"
+                id="area"
+                name="area"
                 type="number"
                 size="small"
                 fullWidth
-                value={formik.values.rent}
+                value={formik.values.area}
                 onChange={formik.handleChange}
-                error={formik.touched.rent && Boolean(formik.errors.rent)}
-                helperText={formik.touched.rent && formik.errors.rent}
+                error={formik.touched.area && Boolean(formik.errors.area)}
+                helperText={formik.touched.area && formik.errors.area}
               />
             </Grid>
 
@@ -332,7 +364,7 @@ const AddProperty = ({ open, handleClose }) => {
 
       <DialogActions>
         <Button onClick={formik.handleSubmit} variant="contained" color="primary"   disabled={loading} >
-        {loading ? t('Saving...') : t('Save')} 
+           {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {

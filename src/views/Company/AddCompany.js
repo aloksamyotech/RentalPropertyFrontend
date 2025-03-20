@@ -20,7 +20,8 @@ import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { useCallback } from 'react';
 import { useState } from 'react';
-
+import {Select,MenuItem} from '@mui/material';
+import currencyCodes from 'currency-codes';
 
 const AddCompany = (props) => {
   const { t } = useTranslation();
@@ -45,6 +46,9 @@ const AddCompany = (props) => {
       .max(80, t('Address cannot exceed 80 characters'))
       .required(t('Address is required')),
     password: yup.string().required(t('Password is required')),
+    gstnumber: yup
+      .string()
+      .max(15, t("Gst number cannot exceed 15 character."))
   });
 
   const initialValues = {
@@ -53,6 +57,8 @@ const AddCompany = (props) => {
     phoneNo: '',
     address: '',
     password: '',
+    currencyCode:'',
+    gstnumber:''
   };
 
   const AddCompany = async (values, resetForm) => {
@@ -62,16 +68,16 @@ const AddCompany = (props) => {
 
       if (response.success){
         toast.success(t(' Company Successfully registered'));
-        resetForm();
         handleClose();
+        resetForm();
       }
        } catch {
          toast.error(t('Failed to register Company!'));
-       } finally {
+      } finally {
          handleClose();
          resetForm()
          setLoading(false); 
-       }
+      }
   };
 
   const formik = useFormik({
@@ -84,7 +90,10 @@ const AddCompany = (props) => {
     },
   });
 
-  // const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+  const currencyOptions = currencyCodes.data.map((currency) => ({
+    code: currency.code,
+    name: currency.currency,
+  }));
 
   return (
     <div>
@@ -167,6 +176,41 @@ const AddCompany = (props) => {
                   onChange={formik.handleChange}
                   error={formik.touched.password && Boolean(formik.errors.password)}
                   helperText={formik.touched.password && formik.errors.password}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormLabel>{t('currency_code')}</FormLabel>
+                <Select
+                  id="currencyCode"
+                  name="currencyCode"
+                  size="small"
+                  fullWidth
+                  value={formik.values.currencyCode}
+                  onChange={formik.handleChange}
+                  error={formik.touched.currencyCode && Boolean(formik.errors.currencyCode)}
+                >
+                  <MenuItem value="" disabled>
+                  {t('select_currency_code')}
+                  </MenuItem>
+                  {currencyOptions.map((currency) => (
+                    <MenuItem key={currency.code} value={currency.code}>
+                      {`${currency.code} - ${currency.name}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormLabel>{t('GST Number')}</FormLabel>
+                <TextField
+                  id="gstnumber"
+                  name="gstnumber"
+                  size="small"
+                  fullWidth
+                  value={formik.values.gstnumber}
+                  onChange={formik.handleChange}
+                  error={formik.touched.gstnumber && Boolean(formik.errors.gstnumber)}
+                  helperText={formik.touched.gstnumber && formik.errors.gstnumber}
                 />
               </Grid>
             </Grid>
