@@ -13,24 +13,31 @@ const AddDocumentDialog = ({ open, handleClose }) => {
   const [files, setFiles] = useState(null);
   const [loading, setLoading] = useState(false);
   const queryParams = new URLSearchParams(location.search);
-    const [openAdd, setOpenAdd] = useState(false);
   const tenantId = queryParams.get('id');
 
   const validationSchema = yup.object({
     name: yup.string().required(t('Document Name is required')),
-    files: yup.mixed().required(t('File is required'))
+    files: yup.mixed()
+      .required(t('File is required'))
+      .test('fileType', t('Only PDF, Excel, JPG, and JPEG files are allowed'), (value) => {
+        const allowedTypes = [
+          'application/pdf', 
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+          'application/vnd.ms-excel', 
+          'image/jpeg' 
+        ];
+        return value && allowedTypes.includes(value.type);
+      })
   });
 
   const formik = useFormik({
     initialValues: { name: '', files: null },
-
     validationSchema,
     onSubmit: async (values) => {
       const formData = new FormData();
       formData.append('name', values.name);
       formData.append('files', values.files);
       formData.append('tenantId', tenantId); 
-
 
       try {
         setLoading(true);
@@ -44,7 +51,7 @@ const AddDocumentDialog = ({ open, handleClose }) => {
           handleClose();
         }
       } catch (error) {
-        toast.success('Error in uploading file');
+        toast.error(t('Error in uploading file'));
       } finally {
         setLoading(false);
       }
@@ -65,7 +72,7 @@ const AddDocumentDialog = ({ open, handleClose }) => {
       <DialogContent>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12}> 
               <TextField
                 fullWidth
                 label={t('Document Name')}
@@ -74,8 +81,10 @@ const AddDocumentDialog = ({ open, handleClose }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.name && Boolean(formik.errors.name)}
                 helperText={formik.touched.name && formik.errors.name}
+                sx={{ padding: '10px' }}
               />
             </Grid>
+
             <Grid item xs={12}>
               <Button variant="contained" component="label" fullWidth>
                 {files ? t('Change File') : t('Upload File')}

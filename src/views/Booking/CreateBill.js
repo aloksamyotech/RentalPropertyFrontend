@@ -24,12 +24,12 @@ import AddIcon from '@mui/icons-material/Add';
 import { useCallback } from 'react';
 
 const GenerateMonthlyBill = ({ open, handleClose, data }) => {
+
   const { t } = useTranslation();
   const payload = tokenPayload();
   const [property, setProperty] = useState(null);
   const [tenant, setTenant] = useState(null);
   const [loading, setLoading] = useState(false);
-  console.log(data,"data....")
 
   useEffect(() => {
     if (data?.propertyId) setProperty(data.propertyId);
@@ -96,6 +96,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     totalgst: 0,
     totalBillAmountAfterGST: 0,
     note: data?.note || '',
+    createdBy: data.createdBy
   };
 
 
@@ -113,13 +114,12 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
           validationSchema={validationSchema}
           onSubmit={async (values, { resetForm }) => {
             setLoading(true);
-            console.log(values,"values");
             const startTime = Date.now();
             
             const updatedValues = {
               ...values,
               companyId: payload.companyId,
-              createdBy: payload._id,
+              createdBy: values.createdBy,
               billingMonth: new Date(values.billingMonth).toISOString().split('T')[0],
               rentAmount: Number(values.rentAmount),
               extraAmount: values.extraCharges.reduce((sum, charge) => sum + Number(charge.price), 0),
@@ -153,7 +153,6 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
               if (response.success) {
                 const elapsedTime = Date.now() - startTime;
                 const remainingTime = Math.max(0, 1000 - elapsedTime);
-                console.log(updatedValues,"updatedValues")
                 setTimeout(() => {
                   setLoading(false);
                   handleClose();

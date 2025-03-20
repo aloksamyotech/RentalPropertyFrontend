@@ -48,7 +48,7 @@ const VacantProperties = () => {
         <IconHome />
       </Link>,
       <Link underline="hover" key="property-management" to="/dashboard/vacantproperty" style={{ color: 'inherit', textDecoration: 'none' }}>
-        {t('Vacant Property Details')}
+        {t('Vacant Properties')}
       </Link>,
       // <Typography key="view" color="text.primary">
       //   {t('View')}
@@ -56,13 +56,22 @@ const VacantProperties = () => {
     ];
 
   const handleOpenView = () => {
-    navigate(`/dashboard/vacantProperty/view?id=${currentRow._id}`);
+    navigate(`/dashboard/vacantproperty/view?id=${currentRow._id}`);
   };
 
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = propertyData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      },
+    },
     {
       field: 'propertyname',
       headerName: 'Property Name',
@@ -143,7 +152,7 @@ const VacantProperties = () => {
                 <DataGrid
                               rows={propertyData}
                               columns={columns}
-                              checkboxSelection
+                              // checkboxSelection
                               getRowId={(row) => row._id || row.id}
                               slots={{ toolbar: GridToolbar }}
                               slotProps={{ toolbar: { showQuickFilter: true } }}

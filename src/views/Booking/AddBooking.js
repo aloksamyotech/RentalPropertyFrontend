@@ -33,12 +33,17 @@ const AddBooking = (props) => {
     tenantId: yup.string().required(t('Tenant is required')),
     propertyId: yup.string().required(t('Property is required')),
     startingDate: yup.date().required(t('Starting Date is required')),
-    // endingDate: yup.date().required(t('Ending Date is required')),
-    endingDate: yup.date().required(t('Ending Date is required'))
-    .test('is-greater', t('Ending Date must be greater than Starting Date'), function(value) {
-      const { startingDate } = this.parent;
-      return new Date(startingDate) <= new Date(value);
-    }),
+    endingDate: yup
+      .date()
+      .required(t('Ending Date is required'))
+      .test('is-greater', t('Ending Date must be greater than Starting Date'), function(value) {
+        const { startingDate } = this.parent;
+        return new Date(startingDate) < new Date(value); 
+      })
+      .test('is-not-same', t('Ending Date must not be the same as Starting Date'), function(value) {
+        const { startingDate } = this.parent;
+        return new Date(startingDate).getTime() !== new Date(value).getTime(); 
+      }),
   rentAmount: yup.number().required(t('Rent Amount is required'))
     .min(0, t('Rent Amount cannot be negative')) 
     .max(1000000, t('Rent Amount cannot exceed 1000000')),
@@ -120,7 +125,6 @@ const AddBooking = (props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      console.log(values)
       addBooking(values, resetForm);
     },
   });

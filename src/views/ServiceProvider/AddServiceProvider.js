@@ -32,9 +32,10 @@ const AddServiceProvider = (props) => {
 
   const validationSchema = yup.object({
     name: yup
-      .string()
-      .max(50, t('Owner Name cannot exceed 50 characters'))
-      .required(t('Owner Name is required')),
+    .string()
+    .max(50, t('Service Provider Name cannot exceed 50 characters'))
+    .matches(/^[a-zA-Z0-9\s]*$/, t('Service Provider Name cannot contain special characters'))
+    .required(t('Service Provider Name is required')),  
     phoneNo: yup
       .string()
       .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))

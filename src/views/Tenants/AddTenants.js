@@ -75,6 +75,8 @@ const AddTenants = ({ open, handleClose }) => {
         handleClose();
         resetForm();
       }
+        } catch {
+               toast.error(t('Failed to register Tenant!'));
     } finally {
       handleClose();
       resetForm();
@@ -83,8 +85,12 @@ const AddTenants = ({ open, handleClose }) => {
   };
 
   const validationSchema = yup.object({
-    tenantName: yup.string().max(50, t('Tenant Name must be at most 50 characters')).required(t('Tenant Name is required')),
-    email: yup.string().email(t('Invalid email')).required(t('Email is required')),
+    tenantName: yup
+    .string()
+    .max(50, t('Tenant Name must be at most 50 characters'))
+    .matches(/^[A-Za-z\s]*$/, t('Tenant Name cannot contain numbers or special characters'))
+    .required(t('Tenant Name is required')),
+      email: yup.string().email(t('Invalid email')).required(t('Email is required')),
     password: yup.string().required(t('Password is required')),
     phoneno: yup
       .string()
@@ -196,11 +202,16 @@ const AddTenants = ({ open, handleClose }) => {
               <TextField
                 id="phoneno"
                 name="phoneno"
-                type="tel"
+                type="number"
                 size="small"
                 fullWidth
                 value={formik.values.phoneno}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+                    formik.handleChange(e);
+                  }
+                }}
                 error={formik.touched.phoneno && Boolean(formik.errors.phoneno)}
                 helperText={formik.touched.phoneno && formik.errors.phoneno}
                 required
@@ -215,7 +226,12 @@ const AddTenants = ({ open, handleClose }) => {
                   id="identityCardType"
                   name="identityCardType"
                   value={formik.values.identityCardType}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value.length <= 15 && /^[0-9]*$/.test(value)) {
+                      formik.handleChange(e);
+                    }
+                  }}
                   required
                 >
                   <MenuItem value="" disabled>

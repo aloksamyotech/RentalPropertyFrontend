@@ -15,21 +15,28 @@ const AddImageDialog = ({ open, handleClose }) => {
   const queryParams = new URLSearchParams(location.search);
   const propertyId = queryParams.get('id');
 
+  // Validation Schema with additional file type validation
   const validationSchema = yup.object({
     name: yup.string().required(t('Document Name is required')),
-    files: yup.mixed().required(t('File is required'))
+    files: yup.mixed().test(
+      'fileType',
+      t('Only jpeg, jpg, and png files are allowed'),
+      (value) => {
+        if (!value) return false; // If no file selected
+        const allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+        return allowedFormats.includes(value.type);
+      }
+    ).required(t('File is required'))
   });
 
   const formik = useFormik({
     initialValues: { name: '', files: null },
-
     validationSchema,
     onSubmit: async (values) => {
       const formData = new FormData();
       formData.append('name', values.name);
       formData.append('files', values.files);
-      formData.append('propertyId', propertyId); 
-
+      formData.append('propertyId', propertyId);
 
       try {
         setLoading(true);
@@ -37,13 +44,13 @@ const AddImageDialog = ({ open, handleClose }) => {
           'Content-Type': 'multipart/form-data'
         });
         if (response.success) {
-          toast.success(t('File uploaded successfully:'));
+          toast.success(t('File uploaded successfully'));
           formik.resetForm();
           setFiles(null);
           handleClose();
         }
       } catch (error) {
-        toast.success('Error in uploading file');
+        toast.error(t('Error in uploading file'));
       } finally {
         setLoading(false);
       }
@@ -53,8 +60,16 @@ const AddImageDialog = ({ open, handleClose }) => {
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
     if (uploadedFile) {
-      setFiles(uploadedFile);
-      formik.setFieldValue('files', uploadedFile);
+      // Check if the uploaded file is a valid image type
+      const allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedFormats.includes(uploadedFile.type)) {
+        toast.error(t('Only jpeg, jpg, and png files are allowed'));
+        setFiles(null);
+        formik.setFieldValue('files', null); // Reset file input
+      } else {
+        setFiles(uploadedFile);
+        formik.setFieldValue('files', uploadedFile);
+      }
     }
   };
 

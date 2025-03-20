@@ -75,6 +75,15 @@ const Agents = () => {
   };
 
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = agentData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      },
+    },
     { field: 'agentName', headerName: t('agentName'), flex: 1 },
     { field: 'email', headerName: t('email'), flex: 1 },
     { field: 'phoneNo', headerName: t('phoneNo'), flex: 1 },
@@ -156,7 +165,7 @@ const Agents = () => {
               <DataGrid
                 rows={agentData}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row._id || row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

@@ -3,18 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 // @mui
-import {
-  Stack,
-  Button,
-  Container,
-  Typography,
-  Breadcrumbs,
-  Box,
-  Card,
-  IconButton,
-  Popover,
-  MenuItem,
-} from '@mui/material';
+import { Stack, Button, Container, Typography, Breadcrumbs, Box, Card, IconButton, Popover, MenuItem } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from 'react-router-dom';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
@@ -35,7 +24,7 @@ import DeleteComplain from './DeleteCompalain';
 
 const Complaints = () => {
   const { t } = useTranslation();
- 
+
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -46,11 +35,15 @@ const Complaints = () => {
   const payload = tokenPayload();
   const navigate = useNavigate();
 
+  // const userId = userRole === 'companyAdmin' || userRole === 'agent' ? payload.companyId : payload._id;
+
+  // const response = await getApi(urls.Complaints.getComplain, { id: userId });
+  // setComplaintData(response.data);
 
   const fetchComplaintData = async () => {
     try {
       const response = await getApi(urls.Complaints.getComplain, { id: payload._id });
-        setComplaintData(response.data);
+      setComplaintData(response.data);
     } catch (error) {
       console.error(t('Error fetching complaints data:'), error);
     }
@@ -66,10 +59,18 @@ const Complaints = () => {
 
   const handleCloseEditComplain = () => setOpenEdit(false);
 
-    
+  // const handleOpenView = () => {
+  //   console.log(currentRow,"currentRow")
+  //   navigate(`/dashboard/complain/tenant/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
+  // };
+
   const handleOpenView = () => {
-    console.log(currentRow,"currentRow")
-    navigate(`/dashboard/complain/tenant/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
+    const userRole = payload?.role;
+    if (userRole === 'agent') {
+      navigate(`/dashboard/complain/agent/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
+    } else {
+      navigate(`/dashboard/complain/tenant/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
+    }
   };
 
   const handleClick = (event, row) => {
@@ -94,26 +95,32 @@ const Complaints = () => {
   //   handleClose();
   // };
 
-
   const handleDeleteComplaint = () => {
-    console.log('Delete complaint:', currentRow);
     setRowData(currentRow);
     setOpenDelete(true);
     handleClose();
   };
-  
+
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = complaintData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      }},
     {
       field: 'concernTopic',
       headerName: t('Topic'),
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize',
+      cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'comment',
       headerName: t('Comment'),
       flex: 1,
-      cellClassName: 'name-column--cell--capitalize',
+      cellClassName: 'name-column--cell--capitalize'
     },
     {
       field: 'status',
@@ -121,15 +128,15 @@ const Complaints = () => {
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
       renderCell: (params) => (
-        <Typography 
-          style={{ 
-            color: params.row.status ? 'green' : 'red', 
-            fontWeight: 'bold' 
+        <Typography
+          style={{
+            color: params.row.status ? 'green' : 'red',
+            fontWeight: 'bold'
           }}
         >
           {params.row.status ? t('Resolved') : t('Pending')}
         </Typography>
-      ),
+      )
     },
     {
       field: 'action',
@@ -137,10 +144,7 @@ const Complaints = () => {
       flex: 1,
       renderCell: (params) => (
         <>
-          <IconButton
-            aria-describedby={params.row._id}
-            onClick={(event) => handleClick(event, params.row)}
-          >
+          <IconButton aria-describedby={params.row._id} onClick={(event) => handleClick(event, params.row)}>
             <MoreVertIcon />
           </IconButton>
           <Popover
@@ -150,21 +154,21 @@ const Complaints = () => {
             onClose={handleClose}
             anchorOrigin={{
               vertical: 'bottom',
-              horizontal: 'left',
+              horizontal: 'left'
             }}
           >
-             <MenuItem onClick={handleOpenView} disableRipple>
+            <MenuItem onClick={handleOpenView} disableRipple>
               <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
-              {t('view')}  
-              </MenuItem>
+              {t('view')}
+            </MenuItem>
             <MenuItem onClick={handleDeleteComplaint} sx={{ color: 'red' }} disableRipple>
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               {t('Delete')}
             </MenuItem>
           </Popover>
         </>
-      ),
-    },
+      )
+    }
   ];
 
   // const breadcrumbs = [
@@ -179,27 +183,23 @@ const Complaints = () => {
   //   </Typography>,
   // ];
 
-         const breadcrumbs = [
-              <Link underline="hover" key="home" to="/" style={{ color: 'inherit' }}>
-                <IconHome />
-              </Link>,
-              <Link underline="hover" key="property-management" to="/dashboard/companyComplaints" style={{ color: 'inherit' }}>
-                {t('Compalain Management')}
-              </Link>,
-              // <Typography key="view" color="text.primary">
-              //   {t('View')}
-              // </Typography>,
-            ];
-
-  
+  const breadcrumbs = [
+    <Link underline="hover" key="home" to="/" style={{ color: 'inherit' }}>
+      <IconHome />
+    </Link>,
+    <Link underline="hover" key="property-management" to="/dashboard/companyComplaints" style={{ color: 'inherit' }}>
+      {t('Compalain Management')}
+    </Link>
+    // <Typography key="view" color="text.primary">
+    //   {t('View')}
+    // </Typography>,
+  ];
 
   return (
     <>
- 
       <AddComplaints open={openAdd} handleClose={handleCloseAdd} />
       <EditComplain open={openEdit} handleClose={handleCloseEditComplain} data={rowData} />
-      <DeleteComplain open={openDelete} handleClose={handleCloseDeleteComplain} id={rowData?._id}/>
-    
+      <DeleteComplain open={openDelete} handleClose={handleCloseDeleteComplain} id={rowData?._id} />
 
       <Container>
         <Card sx={{ p: 2, mb: 2 }}>
@@ -210,11 +210,10 @@ const Complaints = () => {
                 {breadcrumbs}
               </Breadcrumbs>
             </Typography>
-           
-              <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenAdd(true)}>
-                {t('Add New Complaint')}
-              </Button>
-    
+
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenAdd(true)}>
+              {t('Add New Complaint')}
+            </Button>
           </Stack>
         </Card>
 
@@ -225,7 +224,7 @@ const Complaints = () => {
               <DataGrid
                 rows={complaintData}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row.id || row._id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

@@ -42,7 +42,7 @@ const Tenants = () => {
   const navigate = useNavigate();
   const [openAdd, setOpenAdd] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentRow, setCurrentRow] = useState(null); 
+  const [currentRow, setCurrentRow] = useState(null);
   const [tenantData, setTenantData] = useState([]);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -50,11 +50,12 @@ const Tenants = () => {
   const [value, setValue] = useState('1');
 
   const payload = tokenPayload();
+  const userRole = payload.role;
 
   const fetchTenantData = async () => {
     try {
       const response = await getApi(urls.tenant.getAllTenants, { id: payload.companyId });
-        setTenantData(response.data);
+      setTenantData(response.data);
     } catch (error) {
       setTenantData([]);
     }
@@ -63,24 +64,19 @@ const Tenants = () => {
   const fetchMyTenantData = async () => {
     try {
       const response = await getApi(urls.tenant.getMyTenants, { id: payload._id });
-        setTenantData(response.data);
+      setTenantData(response.data);
     } catch (error) {
       setTenantData([]);
     }
   };
 
-  const handleOpenView = () => {
-    navigate(`/dashboard/tenant/view?id=${currentRow._id}`);
-  };
-
-
   useEffect(() => {
     if (value === '1') {
       fetchMyTenantData();
-    } else if (value === '2') {
+    } else if (value === '2' && userRole === 'companyAdmin') {
       fetchTenantData();
     }
-  }, [value, openAdd, openEdit, openDelete]);
+  }, [value, openAdd, openEdit, openDelete, userRole]);
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
@@ -97,17 +93,17 @@ const Tenants = () => {
   };
 
   const handleOpenEditTenant = () => {
-    setRowData(currentRow); 
+    setRowData(currentRow);
     setOpenEdit(true);
-    handleClose(); 
+    handleClose();
   };
-  
+
   const handleCloseEditTenant = () => {
     setOpenEdit(false);
   };
 
   const handleOpenDeleteTenantDialog = () => {
-    setRowData(currentRow); 
+    setRowData(currentRow);
     setOpenDelete(true);
     handleClose();
   };
@@ -116,7 +112,20 @@ const Tenants = () => {
     setOpenDelete(false);
   };
 
+  const handleOpenView = () => {
+    navigate(`/dashboard/tenant/view?id=${currentRow._id}`);
+  };
+
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = tenantData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1;
+      },
+    },
     {
       field: 'tenantName',
       headerName: t('Tenant Name'),
@@ -135,8 +144,8 @@ const Tenants = () => {
       flex: 1,
     },
     {
-      field: 'address',
-      headerName: t('Address'),
+      field: 'Creater',
+      headerName: t('Created By'),
       flex: 1,
     },
     {
@@ -146,14 +155,14 @@ const Tenants = () => {
       renderCell: (params) => (
         <Typography
           style={{
-            color: params.row.isOccupied ? 'green' : 'blue', 
+            color: params.row.isOccupied ? 'green' : 'blue',
             fontWeight: 'bold',
           }}
         >
           {params.row.isOccupied ? t('Occupied') : t('Not Occupied')}
         </Typography>
       ),
-    },    
+    },
     {
       field: 'action',
       headerName: t('Action'),
@@ -179,7 +188,7 @@ const Tenants = () => {
               <EditIcon style={{ marginRight: '8px' }} />
               {t('Edit')}
             </MenuItem>
-            <MenuItem onClick={handleOpenView} >
+            <MenuItem onClick={handleOpenView}>
               <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
               {t('view')}
             </MenuItem>
@@ -194,30 +203,18 @@ const Tenants = () => {
           </Popover>
         </>
       ),
-    }
+    },
   ];
 
-  // const breadcrumbs = [
-  //   <Link underline="hover" key="home" color="primary" href="/">
-  //     <IconHome />
-  //   </Link>,
-  //   <Link underline="hover" key="add-tenants" color="primary">
-  //     {t('Add Tenants')}
-  //   </Link>,
-  //   <Typography key="items" sx={{ color: 'text.primary' }}>
-  //     {t('Items')}
-  //   </Typography>,
-  // ]
+  const breadcrumbs = [
+    <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+      <IconHome />
+    </Link>,
+    <Typography key="tenant" color="text.primary">
+      {t('Tenant Management')}
+    </Typography>,
+  ];
 
-  
-    const breadcrumbs = [
-      <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
-        <IconHome />
-      </Link>,
-      <Typography key="tenant" color="text.primary">
-       {t('Tenant Management')}
-      </Typography>,
-    ];
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
@@ -247,29 +244,29 @@ const Tenants = () => {
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                   <TabList onChange={handleChange} aria-label="Tenant tabs">
                     <Tab label={t('My Tenants')} value="1" />
-                    <Tab label={t('All Tenants')} value="2" />
+                    {userRole === 'companyAdmin' && <Tab label={t('All Tenants')} value="2" />}
                   </TabList>
                 </Box>
                 <TabPanel value="1">
                   <DataGrid
                     rows={tenantData}
                     columns={columns}
-                    checkboxSelection
                     getRowId={(row) => row._id || row.id}
                     slots={{ toolbar: GridToolbar }}
                     slotProps={{ toolbar: { showQuickFilter: true } }}
                   />
                 </TabPanel>
-                <TabPanel value="2">
-                  <DataGrid
-                    rows={tenantData}
-                    columns={columns} 
-                    checkboxSelection
-                    getRowId={(row) => row._id || row.id}
-                    slots={{ toolbar: GridToolbar }}
-                    slotProps={{ toolbar: { showQuickFilter: true } }}
-                  />
-                </TabPanel>
+                {userRole === 'companyAdmin' && (
+                  <TabPanel value="2">
+                    <DataGrid
+                      rows={tenantData}
+                      columns={columns}
+                      getRowId={(row) => row._id || row.id}
+                      slots={{ toolbar: GridToolbar }}
+                      slotProps={{ toolbar: { showQuickFilter: true } }}
+                    />
+                  </TabPanel>
+                )}
               </TabContext>
             </Card>
           </Box>

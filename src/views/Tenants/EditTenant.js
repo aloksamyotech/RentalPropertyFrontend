@@ -72,10 +72,11 @@ const EditTenant = ({ open, handleClose, data }) => {
   };
 
    const validationSchema = yup.object({
-      tenantName: yup
-        .string()
-        .max(50, t('Tenant Name must be at most 50 characters'))
-        .required(t('Tenant Name is required')),
+    tenantName: yup
+  .string()
+  .max(50, t('Tenant Name must be at most 50 characters'))
+  .matches(/^[A-Za-z\s]*$/, t('Tenant Name cannot contain numbers or special characters'))
+  .required(t('Tenant Name is required')),
       email: yup.string().email(t('Invalid email')).required(t('Email is required')),
       // password: yup.string().required(t('Password is required')),
       phoneno: yup
@@ -178,11 +179,16 @@ const EditTenant = ({ open, handleClose, data }) => {
               <TextField
                 id="phoneno"
                 name="phoneno"
-                type="tel"
+                type="number"
                 size="small"
                 fullWidth
                 value={formik.values.phoneno}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+                    formik.handleChange(e);
+                  }
+                }}
                 error={formik.touched.phoneno && Boolean(formik.errors.phoneno)}
                 helperText={formik.touched.phoneno && formik.errors.phoneno}
                 required
@@ -222,44 +228,19 @@ const EditTenant = ({ open, handleClose, data }) => {
                 size="small"
                 fullWidth
                 value={formik.values.identityNo}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 15 && /^[0-9]*$/.test(value)) {
+                    formik.handleChange(e);
+                  }
+                }}
                 error={formik.touched.identityNo && Boolean(formik.errors.identityNo)}
                 helperText={formik.touched.identityNo && formik.errors.identityNo}
                 required
               />
             </Grid>
 
-            {/* Documents */}
-            <Grid item xs={12}>
-              <Box mb={1}>
-                <FormLabel>{t('Documents')}</FormLabel>
-              </Box>
-              <Button variant="contained" component="label">
-                {t('Upload Files')}
-                <input type="file" multiple hidden onChange={handleFileChange} />
-              </Button>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  gap: 1,
-                  flexWrap: 'wrap',
-                  maxHeight: '100px',
-                  overflowY: 'auto',
-                  marginTop: 1
-                }}
-              >
-                {attachments.map((file, index) => (
-                  <Chip
-                    key={index}
-                    sx={{ background: 'green', color: 'white' }}
-                    label={file.name}
-                    onDelete={() => handleFileRemove(file.name)}
-                    deleteIcon={<CloseIcon />}
-                  />
-                ))}
-              </Box>
-            </Grid>
+         
 
             {/* Address */}
             <Grid item xs={12}>

@@ -98,6 +98,14 @@ const Company = () => {
 
   const columns = [
     {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = companyData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      }},
+    {
       field: 'companyName',
       headerName: t('Company Name'),
       flex: 1,
@@ -189,7 +197,7 @@ const Company = () => {
               <DataGrid
                 rows={companyData}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row._id || row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

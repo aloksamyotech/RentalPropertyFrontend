@@ -56,7 +56,7 @@ const Booking = () => {
   const navigate = useNavigate();
   const [value, setValue] = React.useState('1');
 
-const isAdmin = payload?.role === 'companyAdmin'; 
+const isAdmin = payload?.role === 'companyAdmin';
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -77,7 +77,6 @@ const isAdmin = payload?.role === 'companyAdmin';
           : 'N/A',
       }));
       setBookingData(formattedData);
-    
   };
 
   const fetchBookingData = async () => {
@@ -140,7 +139,7 @@ const isAdmin = payload?.role === 'companyAdmin';
 
   const handleOpenEdit = () => {
     if (currentRow) {
-      setRowData(currentRow); // Ensure rowData gets updated
+      setRowData(currentRow); 
       setOpenEdit(true);
       handleClose();
     }
@@ -167,6 +166,7 @@ const isAdmin = payload?.role === 'companyAdmin';
   ];
 
   const columns = [
+    
     {
       field: 'propertyName',
       headerName: t('Property Name'),
@@ -257,83 +257,174 @@ const isAdmin = payload?.role === 'companyAdmin';
       ),
     },
   ];
+  const columns2 = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = bookingData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      }},
+    {
+      field: 'propertyName',
+      headerName: t('Property Name'),
+      flex: 1,
+      cellClassName: 'name-column--cell',
+    },
+    {
+      field: 'tenantName',
+      headerName: t('Tenant Name'),
+      flex: 1,
+    },
+    {
+      field: 'startingDate',
+      headerName: t('Starting Date'),
+      flex: 1,
+    },
+    {
+      field: 'endingDate',
+      headerName: t('Ending Date'),
+      flex: 1,
+    },
+    {
+      field: 'rentAmount',
+      headerName: t('Rent Amount'),
+      flex: 1,
+    },
+    {
+      field: 'action',
+      headerName: t('Action'),
+      flex: 1,
+      renderCell: (params) => (
+        <>
+          <IconButton
+            aria-describedby={params?.row._id}
+            onClick={(event) => handleClick(event, params?.row)}
+          >
+            <MoreVertIcon />
+          </IconButton>
+          <Popover
+            id={params?.row._id}
+            open={Boolean(anchorEl) && currentRow?._id === params?.row._id}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+          >
+            {/* <MenuItem
+              disableRipple
+              onClick={() => {
+                
+                setOpenEdit(true);
+                handleClose();
+              }}
+              disabled={!isAdmin} 
+            >
+              <EditIcon style={{ marginRight: '8px' }} />
+              {t('CreateBill')}
+            </MenuItem> */}
+               <MenuItem onClick={handleOpenEdit}>
+                          <EditIcon style={{ marginRight: '8px' }} />
+                          {t('Create Bill')}
+                        </MenuItem>
+              <MenuItem onClick={handleOpenView} disableRipple>
+              <VisibilityIcon style={{ marginRight: '8px' }} />
+              {t('view')}  
+              </MenuItem>
+            <MenuItem
+              sx={{ color: 'red' }}
+              disableRipple
+              onClick={() => {
+                handleClose();
+                setOpenDelete(true);
+              }}
+              disabled={!isAdmin} 
+            >
+              <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
+              {t('Delete')}
+            </MenuItem>
+          </Popover>
+        </>
+      ),
+    },
+  ];
+
 
   return (
     <>
-    <AddBooking open={openAdd} handleClose={handleCloseAdd} />
-    <GenerateMonthlyBill 
-  open={openEdit} 
-  handleClose={handleCloseEditBooking} 
-  data={rowData}
-/>
-    <DeleteBooking open={openDelete} handleClose={handleCloseDelete} id={rowData?._id} />
-
-    <Container>
-      <Card sx={{ p: 2, mb: 2 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {t('Booking Management')}
-            <Breadcrumbs separator="›" aria-label="breadcrumb">
-              {breadcrumbs}
-            </Breadcrumbs>
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={handleOpenAdd}
-          >
-            {t('Add Booking')}
-          </Button>
-        </Stack>
-      </Card>
-
-      <TableStyle>
-        <Box width="100%">
-          <Card style={{ height: '600px', paddingTop: '15px' }}>
-            <TabContext value={value}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <TabList onChange={handleChange} aria-label="Booking tabs">
-                  <Tab label={t('My Booking')} value="1" />
-                  <Tab label={t('All Booking')} value="2" />
-                  <Tab label={t('Booking On Notice')} value="3" />
-                </TabList>
-              </Box>
-              <TabPanel value="1">
-                <DataGrid
-                  rows={bookingData}
-                  columns={columns}
-                  checkboxSelection
-                  getRowId={(row) => row._id || row.id}
-                  slots={{ toolbar: GridToolbar }}
-                  slotProps={{ toolbar: { showQuickFilter: true } }}
-                />
-              </TabPanel>
-              <TabPanel value="2">
-                <DataGrid
-                  rows={bookingData}
-                  columns={columns}
-                  checkboxSelection
-                  getRowId={(row) => row._id || row.id}
-                  slots={{ toolbar: GridToolbar }}
-                  slotProps={{ toolbar: { showQuickFilter: true } }}
-                />
-              </TabPanel>
-              <TabPanel value="3">
-                <DataGrid
-                  rows={bookingData}
-                  columns={columns}
-                  checkboxSelection
-                  getRowId={(row) => row._id || row.id}
-                  slots={{ toolbar: GridToolbar }}
-                  slotProps={{ toolbar: { showQuickFilter: true } }}
-                />
-              </TabPanel>
-            </TabContext>
-          </Card>
-        </Box>
-      </TableStyle>
-    </Container>
-  </>
+      <AddBooking open={openAdd} handleClose={handleCloseAdd} />
+      <GenerateMonthlyBill open={openEdit} handleClose={handleCloseEditBooking} data={rowData} />
+      <DeleteBooking open={openDelete} handleClose={handleCloseDelete} id={rowData?._id} />
+  
+      <Container>
+        <Card sx={{ p: 2, mb: 2 }}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+            <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {t('Booking Management')}
+              <Breadcrumbs separator="›" aria-label="breadcrumb">
+                {breadcrumbs}
+              </Breadcrumbs>
+            </Typography>
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
+              {t('Add Booking')}
+            </Button>
+          </Stack>
+        </Card>
+  
+        <TableStyle>
+          <Box width="100%">
+            <Card style={{ height: '600px', paddingTop: '15px' }}>
+              <TabContext value={value}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <TabList onChange={handleChange} aria-label="Booking tabs">
+                    <Tab label={t('My Booking')} value="1" />
+                    {isAdmin && <Tab label={t('All Booking')} value="2" />}
+                    {isAdmin && <Tab label={t('Booking On Notice')} value="3" />}
+                  </TabList>
+                </Box>
+                <TabPanel value="1">
+                  <DataGrid
+                    rows={bookingData}
+                    columns={columns}
+                    // checkboxSelection
+                    getRowId={(row) => row._id || row.id}
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{ toolbar: { showQuickFilter: true } }}
+                  />
+                </TabPanel>
+                {isAdmin && (
+                  <TabPanel value="2">
+                    <DataGrid
+                      rows={bookingData}
+                      columns={columns}
+                      // checkboxSelection
+                      getRowId={(row) => row._id || row.id}
+                      slots={{ toolbar: GridToolbar }}
+                      slotProps={{ toolbar: { showQuickFilter: true } }}
+                    />
+                  </TabPanel>
+                )}
+                {isAdmin && (
+                  <TabPanel value="3">
+                    <DataGrid
+                      rows={bookingData}
+                      columns={columns2}
+                      // checkboxSelection
+                      getRowId={(row) => row._id || row.id}
+                      slots={{ toolbar: GridToolbar }}
+                      slotProps={{ toolbar: { showQuickFilter: true } }}
+                    />
+                  </TabPanel>
+                )}
+              </TabContext>
+            </Card>
+          </Box>
+        </TableStyle>
+      </Container>
+    </>
   );
 };
 

@@ -30,9 +30,10 @@ const AddCompany = (props) => {
 
   const validationSchema = yup.object({
     companyName: yup
-      .string()
-      .max(50, t('Owner Name cannot exceed 50 characters'))
-      .required(t('Owner Name is required')),
+       .string()
+       .matches(/^[A-Za-z\s]+$/, t('Company Name can only contain letters and spaces'))
+       .max(50, t('Company Name cannot exceed 50 characters'))
+       .required(t('Company Name is required')),
     email: yup
       .string()
       .email(t('Invalid email address'))
@@ -46,6 +47,7 @@ const AddCompany = (props) => {
       .max(80, t('Address cannot exceed 80 characters'))
       .required(t('Address is required')),
     password: yup.string().required(t('Password is required')),
+    currencyCode: yup.string().required(t('Currency is required')),
     gstnumber: yup
       .string()
       .max(15, t("Gst number cannot exceed 15 character."))
@@ -85,7 +87,6 @@ const AddCompany = (props) => {
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       values.email = values.email.toLowerCase();
-      console.log(values);
       AddCompany(values, resetForm);
     },
   });
@@ -130,6 +131,7 @@ const AddCompany = (props) => {
                 <TextField
                   id="email"
                   name="email"
+                  type='email'
                   size="small"
                   fullWidth
                   value={formik.values.email}
@@ -143,6 +145,7 @@ const AddCompany = (props) => {
                 <TextField
                   id="phoneNo"
                   name="phoneNo"
+                  type="number"
                   size="small"
                   fullWidth
                   value={formik.values.phoneNo}

@@ -83,6 +83,15 @@ const TenantBooking = () => {
   }, []);
 
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = bookingData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      },
+    },
     { field: 'propertyName', headerName: t('Property Name'), flex: 1 },
     { field: 'tenantName', headerName: t('Tenant Name'), flex: 1 },
     { field: 'startingDate', headerName: t('Starting Date'), flex: 1 },
@@ -112,7 +121,7 @@ const TenantBooking = () => {
               <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
               {t('View')}
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               onClick={() => {
                 handleClose();
               }}
@@ -131,7 +140,7 @@ const TenantBooking = () => {
             >
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               {t('Delete')}
-            </MenuItem>
+            </MenuItem> */}
           </Popover>
         </>
       ),
@@ -172,7 +181,7 @@ const TenantBooking = () => {
             <DataGrid
               rows={bookingData}
               columns={columns}
-              checkboxSelection
+              // checkboxSelection
               getRowId={(row) => row._id}
               slots={{ toolbar: GridToolbar }}
               slotProps={{ toolbar: { showQuickFilter: true } }}

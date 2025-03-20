@@ -39,7 +39,6 @@ const Owner = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [ownerData, setOwnerData] = useState([]);
    const payload = tokenPayload();
-   console.log(payload,"payload")
   // const company = JSON.parse(localStorage.getItem('companyData'));
 
   // Fetch owner data
@@ -94,6 +93,14 @@ const Owner = () => {
   ];
 
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = ownerData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      }},
     {
       field: 'ownerName',
       headerName: t('Owner Name'),
@@ -190,7 +197,7 @@ const Owner = () => {
               <DataGrid
                 rows={ownerData}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row._id || row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

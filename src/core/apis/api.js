@@ -38,7 +38,6 @@ export const updateApi = async (url, data = {}, params = {}, headers = {}) => {
       'Content-Type': 'application/json',
       ...headers
     };
-    console.log('url===========', url);
     const response = await axios.put(url, data, {
       headers: defaultHeaders,
       params

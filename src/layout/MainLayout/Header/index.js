@@ -1,23 +1,39 @@
+/* eslint-disable prettier/prettier */
 import PropTypes from 'prop-types';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Box, ButtonBase } from '@mui/material';
+import { Avatar, Box, ButtonBase, Typography, Tooltip } from '@mui/material';
 
 // project imports
 import LogoSection from '../LogoSection';
-import SearchSection from './SearchSection';
 import ProfileSection from './ProfileSection';
 import NotificationSection from './NotificationSection';
 
 // assets
 import { IconMenu2 } from '@tabler/icons';
 import LanguageSwitcher from 'views/switchLanguage/LanguageSwitcher';
+import { useState, useEffect } from 'react';
+import { getApi } from 'core/apis/api';
+import { urls } from 'core/Constant/urls';
+import { tokenPayload } from 'helper';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
 const Header = ({ handleLeftDrawerToggle }) => {
+  const payload = tokenPayload();
+  const [company, setCompany] = useState('');
   const theme = useTheme();
+
+  // Fetch company name data
+  const fetchCompanyData = async () => {
+    const response = await getApi(urls.company.getCompanyById, { id: payload.companyId });
+    setCompany(response?.data?.companyName || '');
+  };
+
+  useEffect(() => {
+    fetchCompanyData();
+  }, []);
 
   return (
     <>
@@ -27,8 +43,8 @@ const Header = ({ handleLeftDrawerToggle }) => {
           width: 228,
           display: 'flex',
           [theme.breakpoints.down('md')]: {
-            width: 'auto'
-          }
+            width: 'auto',
+          },
         }}
       >
         <Box component="span" sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
@@ -45,8 +61,8 @@ const Header = ({ handleLeftDrawerToggle }) => {
               color: theme.palette.secondary.dark,
               '&:hover': {
                 background: theme.palette.secondary.dark,
-                color: theme.palette.secondary.light
-              }
+                color: theme.palette.secondary.light,
+              },
             }}
             onClick={handleLeftDrawerToggle}
             color="inherit"
@@ -56,13 +72,44 @@ const Header = ({ handleLeftDrawerToggle }) => {
         </ButtonBase>
       </Box>
 
-      {/* header search */}
-      <SearchSection />
-      <Box sx={{ flexGrow: 1 }} />
+      {/* Company name in header */}
+      {company && (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            paddingLeft: 2,
+            paddingRight: 2,
+            flexShrink: 0,
+          }}
+        >
+         <Tooltip title="Company" arrow>
+      <Typography
+        variant="h6"
+        sx={{
+          fontWeight: 600,
+          fontSize: '1.4rem',
+          color: theme.palette.primary.main,
+          transition: 'color 0.3s ease-in-out, transform 0.3s ease-in-out', // Added transition for scale
+          '&:hover': {
+            color: theme.palette.primary.dark,
+            cursor: 'pointer',
+            transform: 'scale(1.05)', // Slightly enlarges text on hover
+          },
+        }}
+      >
+        Welcome to {company}
+      </Typography>
+    </Tooltip>
+        </Box>
+      )}
+
+      {/* header search (if needed) */}
+      {/* <SearchSection /> */}
       <Box sx={{ flexGrow: 1 }} />
 
-      {/* notification & profile */}
-      <LanguageSwitcher/>
+      {/* Language switcher, notification & profile */}
+      <LanguageSwitcher />
       <NotificationSection />
       <ProfileSection />
     </>
@@ -70,7 +117,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
 };
 
 Header.propTypes = {
-  handleLeftDrawerToggle: PropTypes.func
+  handleLeftDrawerToggle: PropTypes.func,
 };
 
 export default Header;

@@ -51,8 +51,11 @@ const AddAgents = (props) => {
   };
 
   const validationSchema = yup.object({
-    agentName: yup.string().max(50, t('Agent Name cannot exceed 50 characters')).required(t('Agent Name is required')),
-    email: yup.string().email(t('Invalid email address')).required(t('Email is required')),
+    agentName: yup.string()
+    .matches(/^[A-Za-z\s]*$/, t('Agent Name cannot contain special characters or numbers'))
+    .max(50, t('Agent Name cannot exceed 50 characters'))
+    .required(t('Agent Name is required')),
+      email: yup.string().email(t('Invalid email address')).required(t('Email is required')),
     phoneNo: yup
       .string()
       .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
@@ -118,10 +121,16 @@ const AddAgents = (props) => {
               <TextField
                 id="phoneNo"
                 name="phoneNo"
+                type="number"
                 size="small"
                 fullWidth
                 value={formik.values.phoneNo}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+                    formik.handleChange(e);
+                  }
+                }}
                 error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
                 helperText={formik.touched.phoneNo && formik.errors.phoneNo}
               />

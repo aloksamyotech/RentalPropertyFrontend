@@ -28,8 +28,12 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
   const [loading, setLoading] = useState(false);
 
   const validationSchema = yup.object({
-    name: yup.string().max(50, t('Service Provider Name cannot exceed 50 characters')).required(t('Service Provider Name is required')),
-    phoneNo: yup.string().matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits')).required(t('Phone Number is required')),
+    name: yup
+    .string()
+    .max(50, t('Service Provider Name cannot exceed 50 characters'))
+    .matches(/^[a-zA-Z0-9\s]*$/, t('Service Provider Name cannot contain special characters'))
+    .required(t('Service Provider Name is required')),  
+      phoneNo: yup.string().matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits')).required(t('Phone Number is required')),
     workType: yup.string().max(80, t('Work Type cannot exceed 80 characters')).required(t('Work Type is required')),
     address: yup.string().max(80, t('Address cannot exceed 80 characters')).required(t('Address is required')),
   });
@@ -102,7 +106,7 @@ const EditServiceProvider = ({ open, handleClose, data }) => {
                 id="phoneNo"
                 name="phoneNo"
                 size="small"
-                type="text"
+                type="number"
                 fullWidth
                 value={formik.values.phoneNo}
                 onChange={formik.handleChange}

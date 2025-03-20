@@ -129,12 +129,16 @@ const EditProperty = ({ open, handleClose, data }) => {
   };
 
   const validationSchema = yup.object({
-    propertyname: yup.string().max(50, t('Property Name must be at most 50 characters')).required(t('Property Name is required')),
-    typeId: yup.string().required(t('Type is required')),
+     propertyname: yup.string()
+     .max(50, t('Property Name must be at most 50 characters'))
+     .required(t('Property Name is required')),  
+      typeId: yup.string().required(t('Type is required')),
     description: yup.string().max(200, t('Description cannot exceed 200 characters')).required(t('Description is required')),
-    rent: yup.number().min(100, t('Rent must be at least 3 digits')).max(999999, t('Rent cannot exceed 6 digits')).required(t('Rent is required')),
+    rent: yup.number().min(100, t('Rent must be at least 3 digits')).max(9999999999, t('Rent cannot exceed 10 digits')).required(t('Rent is required')),
     address: yup.string().max(100, t('Address cannot exceed 100 characters')).required(t('Address is required')),
-    zipcode: yup.string().required(t('Zip Code is required')),
+    zipcode: yup.string()
+    .matches(/^[0-9]{3,8}$/, t('Zipcode must be between 3 and 8 digits'))
+    .required(t('Zip Code is required')),
     maplink: yup.string().url(t('Must be a valid URL')).required(t('Google Map Link is required')),
     ownerId: yup.string().required(t('Owner Id is required')),
   });
@@ -265,7 +269,7 @@ const EditProperty = ({ open, handleClose, data }) => {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Box mb={1}>
                 <FormLabel>{t('Property Images')}</FormLabel>
               </Box>
@@ -283,9 +287,9 @@ const EditProperty = ({ open, handleClose, data }) => {
                   overflowY: 'auto',
                   marginTop: 1,
                 }}
-              >
+              > */}
                 {/* Display existing images */}
-                {existingImages.map((url, index) => (
+                {/* {existingImages.map((url, index) => (
                   <Chip
                     key={index}
                     sx={{ background: 'blue', color: 'white' }}
@@ -293,9 +297,9 @@ const EditProperty = ({ open, handleClose, data }) => {
                     onDelete={() => handleExistingImageRemove(url)}
                     deleteIcon={<CloseIcon />}
                   />
-                ))}
+                ))} */}
                 {/* Display new images */}
-                {newImages.map((file, index) => (
+                {/* {newImages.map((file, index) => (
                   <Chip
                     key={index}
                     sx={{ background: 'green', color: 'white' }}
@@ -305,7 +309,7 @@ const EditProperty = ({ open, handleClose, data }) => {
                   />
                 ))}
               </Box>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <FormLabel>{t('Description')}</FormLabel>
@@ -342,6 +346,7 @@ const EditProperty = ({ open, handleClose, data }) => {
               <TextField
                 id="zipcode"
                 name="zipcode"
+                type='number'
                 size="small"
                 fullWidth
                 value={formik.values.zipcode}

@@ -34,7 +34,6 @@ const AddPropertyTypes = async (values, resetForm) => {
   try {
     values.companyId = payload._id;
     const response = await postApi(urls.propertyTypes.create, values);
-    console.log(response, "Response received");
 
     if (response.success) {
       toast.success(t('Successfully registered property type!'));

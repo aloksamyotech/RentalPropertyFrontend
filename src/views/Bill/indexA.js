@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-undef */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
@@ -10,7 +9,6 @@ import {
   Card,
   Box,
   IconButton,
-  Grid,
   Popover,
   Breadcrumbs,
   MenuItem,
@@ -18,7 +16,6 @@ import {
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { getApi } from 'core/apis/api';
 import { Link } from 'react-router-dom';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import TableStyle from '../../ui-component/TableStyle';
 import { IconHome } from '@tabler/icons';
 import Iconify from '../../ui-component/iconify';
@@ -28,41 +25,39 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate } from 'react-router-dom';
-import MonthlyInvoiceView from './MonthlyInvoiceView';
-import DeleteBill from './billDelete';
 
-
-const BillC = () => {
+const BillA = () => {
   const { t } = useTranslation();
   const [openDelete, setOpenDelete] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [billData, setBillData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [rowData, setRowData] = useState()
   const [currentRow, setCurrentRow] = useState(null);
-  const navigate = useNavigate()
-  const payload = tokenPayload();
-  const userRole = payload.role;
+  const [rowData, setRowData] = useState([]);
+   const payload = tokenPayload();
+   const userRole = payload.role;
+   const navigate = useNavigate();
 
-  const fetchBillData = async () => {
-    const response = await getApi(urls.bill.getAllBill, { id: payload.companyId });
 
-    const formattedData = response.data.map((item) => {
-      const billingDate = new Date(item.billingMonth);
-      const formattedBillingMonth = `${billingDate.toLocaleString('default', { month: 'long' })} ${billingDate.getFullYear()}`; // Format as "Month Year"
-
-      return {
-        ...item,
-        tenantName: item.tenantId?.tenantName,
-        propertyName: item.propertyId?.propertyname,
-        billingMonth: formattedBillingMonth,
-      };
-    });
-
-    setBillData(formattedData);
-  };
+   const fetchBillData = async () => {
+      const response = await getApi(urls.bill.getBillByAgentId,  { id: payload._id });
+ 
+      const formattedData = response.data.map((item) => {
+        const billingDate = new Date(item.billingMonth);
+        const formattedBillingMonth = `${billingDate.toLocaleString('default', { month: 'long' })} ${billingDate.getFullYear()}`; // Format as "Month Year"
+  
+        return {
+          ...item,
+          tenantName: item.tenantId?.tenantName,
+          propertyName: item.propertyId?.propertyname,
+          billingMonth: formattedBillingMonth,
+        };
+      });
+        setBillData(formattedData);
+    };
 
   useEffect(() => {
     fetchBillData();
@@ -78,21 +73,24 @@ const BillC = () => {
     setCurrentRow(null);
   };
 
-  const handleCloseDeleteBill = () => setOpenDelete(false);
+  const handleOpenView = () => {
+    navigate(`/dashboard/billC/view?id=${currentRow._id}`);
+  };
 
-  const handleOpenDeleteBill = () => {
+  const handleCloseDeleteCompany = () => setOpenDelete(false);
+
+  const handleOpenDeleteCompany = () => {
     setRowData(currentRow);
     setOpenDelete(true);
     handleClose();
   };
-  // const handleOpenDeleteBill = () => {
-  //   setOpenDelete(true);
-  //   handleClose();
-  // };
 
+  const handleCloseEditCompany = () => setOpenEdit(false);
 
-  const handleOpenView = () => {
-    navigate(`/dashboard/billC/view?id=${currentRow._id}`);
+  const handleOpenEditCompany = () => {
+    setRowData(currentRow);
+    setOpenEdit(true);
+    handleClose();
   };
 
   const breadcrumbs = [
@@ -100,10 +98,28 @@ const BillC = () => {
       <IconHome />
     </Link>,
     <Typography key="company" color="text.primary">
-      {t('Bill Management')}
+      {t('bill Management')}
     </Typography>,
+    // <Link key="bill" style={{ color: 'inherit', textDecoration: 'none' }}>
+    //   {t('Bill Management')}
+    // </Link>
   ];
+  
 
+    // const breadcrumbs = [
+    //       <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
+    //         <IconHome />
+    //       </Link>,
+    //       <Link underline="hover" key="property-management" to="/dashboard/booking" style={{ color: 'inherit' }}>
+    //         {t('Booking Management')}
+    //       </Link>,
+    //       <Typography key="view" color="text.primary">
+    //         {t('View')}
+    //       </Typography>,
+    //     ];
+
+  const handleOpenAdd = () => setOpenAdd(true);
+  const handleCloseAdd = () => setOpenAdd(false);
 
   const columns = [
     {
@@ -126,11 +142,6 @@ const BillC = () => {
       flex: 1,
     },
     {
-      field: 'paymentType',
-      headerName: t('Payment Type'),
-      flex: 1,
-    },
-    {
       field: 'billingMonth',
       headerName: t('Billing Month'),
       flex: 1,
@@ -142,24 +153,18 @@ const BillC = () => {
       cellClassName: 'name-column--cell--capitalize',
     },
     {
-      field: 'name',
-      headerName: t('Booking Creater'),
-      flex: 1,
-      cellClassName: 'name-column--cell--capitalize',
-    },
-    {
       field: 'status',
       headerName: t('Status'),
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
       renderCell: (params) => (
-        <Typography
-          style={{
-            color: params.row.status ? 'green' : 'red',
-            fontWeight: 'bold',
+        <Typography 
+          style={{ 
+            color: params.row.status ? 'green' : 'red', 
+            fontWeight: 'bold' 
           }}
         >
-          {params.row.status ? t('Paid') : t('Pending')}
+          {params.row.status ? t('Resolved') : t('Pending')}
         </Typography>
       ),
     },
@@ -185,21 +190,22 @@ const BillC = () => {
               horizontal: 'left',
             }}
           >
-              <MenuItem onClick={handleOpenView}>
-                        <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
-                        {t('view')}
-                      </MenuItem>
-                      {userRole === "companyAdmin" && (
-  <MenuItem
-    onClick={handleOpenDeleteBill}
-    sx={{ color: 'red' }}
-    disableRipple
-  >
-    <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
-    {t('Delete')}
-  </MenuItem>
-)}
-
+            {/* <MenuItem onClick={handleOpenEditCompany} disableRipple>
+              <EditIcon style={{ marginRight: '8px' }} />
+              {t('Edit')}
+            </MenuItem> */}
+             <MenuItem onClick={handleOpenView}>
+                          <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+                          {t('view')}
+                        </MenuItem>
+            {/* <MenuItem
+              onClick={handleOpenDeleteCompany}
+              sx={{ color: 'red' }}
+              disableRipple
+            >
+              <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
+              {t('Delete')}
+            </MenuItem> */}
           </Popover>
         </>
       ),
@@ -207,24 +213,24 @@ const BillC = () => {
   ];
 
   return (
-    <>
-        <DeleteBill open={openDelete} handleClose={handleCloseDeleteBill} id={rowData?._id} />
-  
     <Container>
-    <Grid item xs={12}>
-        <Card sx={{ p: 2, mb: 2 }}>
+      <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
           <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {t('Bill Management')}
-            <Breadcrumbs separator="›" aria-label="breadcrumb">
-              {breadcrumbs}
-            </Breadcrumbs>
+            {t('Bill / Invoice Management')}
           </Typography>
+          <Breadcrumbs separator="›" aria-label="breadcrumb">
+            {breadcrumbs}
+          </Breadcrumbs>
+          {/* <Button
+            variant="contained"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+            onClick={handleOpenAdd}
+          >
+            {t('Add Company')}
+          </Button> */}
         </Stack>
       </Card>
-     
-        </Grid>
-
       <TableStyle>
         <Box width="100%">
           <Card style={{ height: '600px', paddingTop: '15px' }}>
@@ -240,8 +246,7 @@ const BillC = () => {
         </Box>
       </TableStyle>
     </Container>
-    </>
   );
 };
 
-export default BillC;
+export default BillA;
