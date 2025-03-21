@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import PropTypes from 'prop-types';
 
 // material-ui
@@ -25,15 +24,19 @@ const Header = ({ handleLeftDrawerToggle }) => {
   const [company, setCompany] = useState('');
   const theme = useTheme();
 
-  // Fetch company name data
+  const userRole = payload.role;
+
   const fetchCompanyData = async () => {
     const response = await getApi(urls.company.getCompanyById, { id: payload.companyId });
     setCompany(response?.data?.companyName || '');
   };
 
   useEffect(() => {
-    fetchCompanyData();
-  }, []);
+    // Only fetch company data if the userRole is not 'admin'
+    if (userRole !== 'admin') {
+      fetchCompanyData();
+    }
+  }, [userRole]);  // Add userRole as a dependency to re-run when it changes
 
   return (
     <>
@@ -83,24 +86,24 @@ const Header = ({ handleLeftDrawerToggle }) => {
             flexShrink: 0,
           }}
         >
-         <Tooltip title="Company" arrow>
-      <Typography
-        variant="h6"
-        sx={{
-          fontWeight: 600,
-          fontSize: '1.4rem',
-          color: theme.palette.primary.main,
-          transition: 'color 0.3s ease-in-out, transform 0.3s ease-in-out', // Added transition for scale
-          '&:hover': {
-            color: theme.palette.primary.dark,
-            cursor: 'pointer',
-            transform: 'scale(1.05)', // Slightly enlarges text on hover
-          },
-        }}
-      >
-        Welcome to {company}
-      </Typography>
-    </Tooltip>
+          <Tooltip title="Company" arrow>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 600,
+                fontSize: '1.4rem',
+                color: theme.palette.primary.main,
+                transition: 'color 0.3s ease-in-out, transform 0.3s ease-in-out', // Added transition for scale
+                '&:hover': {
+                  color: theme.palette.primary.dark,
+                  cursor: 'pointer',
+                  transform: 'scale(1.05)', // Slightly enlarges text on hover
+                },
+              }}
+            >
+              Welcome to {company}
+            </Typography>
+          </Tooltip>
         </Box>
       )}
 

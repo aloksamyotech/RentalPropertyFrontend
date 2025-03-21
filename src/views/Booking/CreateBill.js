@@ -85,6 +85,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
   const initialValues = {
     tenantId: tenant?._id || '',
     propertyId: property?._id || '',
+    bookingId: data._id || '',
     billingMonth: data?.billingMonth ? new Date(data.billingMonth).toISOString().split('T')[0] : '',
     rentAmount: data?.rentAmount||"...",
     extraCharges: Array.isArray(data?.extraCharges) ? data.extraCharges : [],
@@ -119,6 +120,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
             const updatedValues = {
               ...values,
               companyId: payload.companyId,
+              bookingId: data._id,
               createdBy: values.createdBy,
               billingMonth: new Date(values.billingMonth).toISOString().split('T')[0],
               rentAmount: Number(values.rentAmount),
@@ -145,7 +147,6 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                 values.extraCharges,
                 values.gstpercent
               ),
-              
             };
 
             try {
@@ -187,7 +188,6 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
               values.gstpercent
             );
 
-                 
             const totalgstAmount = totalgst(
               values.electricityRate,
               values.electricityUnit,

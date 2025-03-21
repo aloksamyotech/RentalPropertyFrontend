@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -13,9 +14,11 @@ import {
   Popover,
   Breadcrumbs,
   MenuItem,
+  ToggleButtonGroup,
+  ToggleButton
 } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { getApi } from 'core/apis/api';
+import { getApi, patchApi } from 'core/apis/api';
 import { Link } from 'react-router-dom';
 import TableStyle from '../../ui-component/TableStyle';
 import { IconHome } from '@tabler/icons';
@@ -28,10 +31,15 @@ import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import EditCompany from './EditCompany';
 import DeleteCompany from './DeleteCompany';
+import Switch from '@mui/material/Switch';
+
+const label = { inputProps: { 'aria-label': 'Switch demo' } };
+
 
 // ----------------------------------------------------------------------
 
 const Company = () => {
+ 
   const { t } = useTranslation();
   const [openDelete, setOpenDelete] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
@@ -40,6 +48,21 @@ const Company = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
   const [rowData, setRowData] = useState([]);
+  const [status , setStatus] = useState([]);
+
+
+  const updateCompanyStatus = async (id) => {
+    try {
+      const response = await patchApi(urls.company.changestatus,{},{id:id} );
+      if (response?.data ) {
+        setStatus(response.data);
+      } else {
+        setStatus([]);
+      }
+    } catch (error) {
+      console.error(t('Error changing company status:'), error);
+    }
+  };
 
   const fetchCompanyData = async () => {
     try {
@@ -127,6 +150,38 @@ const Company = () => {
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
     },
+    {
+      field: 'status',
+      headerName: 'Status',
+      flex: 1,
+      renderCell: (params) => {
+        const [status, setStatus] = useState(params.row.status === true);
+    
+        const handleStatusChange = async (event) => {
+          const newStatus = event.target.checked ? true : false;
+          setStatus(event.target.checked);
+    
+   
+          try {
+            await updateCompanyStatus(params.row._id, newStatus);
+
+            fetchCompanyData();
+          } catch (error) {
+            console.error(t('Error updating company status:'), error);
+          }
+        };
+    
+        return (
+          <Switch
+            checked={status}
+            onChange={handleStatusChange}
+            color="primary"
+            inputProps={{ 'aria-label': 'company status' }}
+          />
+        );
+      },
+    },
+    
     {
       field: 'action',
       headerName: t('Action'),

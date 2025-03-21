@@ -134,6 +134,17 @@ const BillT = () => {
       headerName: t('Tenant Name'),
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize',
+       renderCell: (params) => (
+                    <Button
+                      variant="text"
+                      color="primary"
+                      onClick={() =>
+                        navigate(`/dashboard/billC/view?id=${params.row._id}`) 
+                      }
+                    >
+                      {params.row.tenantName}  
+                    </Button>
+                  ),
     },
     {
       field: 'propertyName',

@@ -131,6 +131,18 @@ const Tenants = () => {
       headerName: t('Tenant Name'),
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize',
+       renderCell: (params) => (
+                          <Button
+                            variant="text"
+                            color="primary"
+                            onClick={() =>
+                              navigate(`/dashboard/tenant/view?id=${params.row._id}`) 
+                            }
+                          >
+                            {params.row.tenantName}  
+                          </Button>
+                        ),
+      
     },
     {
       field: 'email',

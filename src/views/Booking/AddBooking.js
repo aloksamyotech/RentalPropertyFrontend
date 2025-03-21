@@ -21,6 +21,7 @@ import { toast } from 'react-toastify';
 import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
+import { data } from 'currency-codes';
 
 const AddBooking = (props) => {
   const { t } = useTranslation();
@@ -103,6 +104,7 @@ const AddBooking = (props) => {
     setLoading(true);
     values.companyId = payload.companyId;
     values.createdBy = payload._id;
+
     try {
       const response = await postApi(urls.booking.create, values);
       if (response.success) {

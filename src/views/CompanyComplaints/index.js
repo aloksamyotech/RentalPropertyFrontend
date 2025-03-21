@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 // @mui
 import {
@@ -71,7 +72,7 @@ const CompanyComplaints = () => {
           ...item,
           agentName: item.agentId?.agentName,
           propertyname: item.propertyId?.propertyname,
-          phoneNo: item.tenantId?.phoneno,
+          phoneNo: item?.agentId?.phoneNo,
         }));
         setAgentComplaintData(formattedData);
       } else {
@@ -124,6 +125,17 @@ const CompanyComplaints = () => {
       field: 'tenantName',
       headerName: t('Tenant Name'),
       flex: 1,
+         renderCell: (params) => (
+              <Button
+                variant="text"
+                color="primary"
+                onClick={() =>
+                  navigate(`/dashboard/complain/view?id=${params.row._id}`) 
+                }
+              >
+                {params.row.tenantName}  
+              </Button>
+            ),
     },
     {
       field: 'phoneNo',
@@ -204,6 +216,17 @@ const CompanyComplaints = () => {
       field: 'agentName',
       headerName: t('Agent Name'),
       flex: 1,
+      renderCell: (params) => (
+        <Button
+          variant="text"
+          color="primary"
+          onClick={() =>
+            navigate(`/dashboard/complain/view?id=${params.row._id}`) 
+          }
+        >
+          {params.row.agentName}  
+        </Button>
+      ),
     },
     {
       field: 'phoneNo',

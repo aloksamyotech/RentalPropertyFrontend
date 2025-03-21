@@ -80,9 +80,7 @@ const ServiceProvider = () => {
     handleClose();
   };
 
-  const handleOpenView = () => {
-    navigate(`/dashboard/property/view?id=${currentRow._id}`);
-  };
+
 
   const handleCloseEditProperty = () => setOpenEdit(false);
   const handleCloseDeleteProperty = () => setOpenDelete(false);
@@ -101,7 +99,7 @@ const ServiceProvider = () => {
       field: 'name',
       headerName: t('Service Provider Name'),  
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
+      // cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'phoneNo',

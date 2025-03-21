@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
-import { Box, Grid, Typography, Paper, Divider, Container, Card, Breadcrumbs, Stack } from '@mui/material';
+import { Box, Grid, Typography, Paper, Divider, Container,  IconButton, Card, Breadcrumbs, Stack ,  Popover,  MenuItem,} from '@mui/material';
 import { useNavigate, useLocation } from 'react-router';
 import { getApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
@@ -11,6 +11,13 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import TableStyle from 'ui-component/TableStyle';
+// import TableStyle from '../../ui-component/TableStyle';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
+
 
 const BookingDetailsPage = () => {
   const { t } = useTranslation();
@@ -19,11 +26,17 @@ const BookingDetailsPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const bookingId = queryParams.get('id');
   const reporterName = queryParams.get('reporterName');
+  const [rowData, setRowData] = useState([]);
 
   const [bookingData, setBookingData] = useState({});
   const [tenantData, setTenantData] = useState({});
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [billData, setBillData] = useState([]);
+  const [currentRow, setCurrentRow] = useState(null);
+    
+  
   const [propertyData, setPropertyData] = useState({});
-  const [value, setValue] = useState('1'); // Active tab state
+  const [value, setValue] = useState('1'); 
 
   const fetchBookingData = async () => {
     try {
@@ -37,12 +50,140 @@ const BookingDetailsPage = () => {
   };
 
   const handleChange = (event, newValue) => {
-    setValue(newValue); // Update the active tab
+    setValue(newValue); 
   };
-
+  const handleClose = () => {
+    setAnchorEl(null);
+    setCurrentRow(null);
+  };
   useEffect(() => {
     fetchBookingData();
   }, [bookingId]);
+
+     const fetchBillDataByBookingId = async () => {
+        const response = await getApi(urls.bill.getBillByBookingId, { id: bookingId});
+        const formattedData = response.data.map((item) => {
+          const billingDate = new Date(item.billingMonth);
+          const formattedBillingMonth = `${billingDate.toLocaleString('default', { month: 'long' })} ${billingDate.getFullYear()}`; // Format as "Month Year"
+    
+          return {
+            ...item,
+            tenantName: item.tenantId?.tenantName,
+            propertyName: item.propertyId?.propertyname,
+            billingMonth: formattedBillingMonth,
+          };
+        });
+          setBillData(formattedData);
+      };
+  
+    useEffect(() => {
+      fetchBillDataByBookingId();
+    }, []);
+
+      const columns = [
+        {
+          field: 'serialNo',
+          headerName: 'S.No.',
+          width: 30,
+          renderCell: (params) => {
+            const rowIndex = billData.findIndex((row) => row._id === params.row._id);
+            return rowIndex + 1; 
+          }},
+        {
+          field: 'tenantName',
+          headerName: t('Tenant Name'),
+          flex: 1,
+          // cellClassName: 'name-column--cell name-column--cell--capitalize',
+        },
+        {
+          field: 'propertyName',
+          headerName: t('Property Name'),
+          flex: 1,
+        },
+        {
+          field: 'billingMonth',
+          headerName: t('Billing Month'),
+          flex: 1,
+        },
+        {
+          field: 'totalBillAmount',
+          headerName: t('Total Bill Amount'),
+          flex: 1,
+          cellClassName: 'name-column--cell--capitalize',
+        },
+        {
+          field: 'status',
+          headerName: t('Status'),
+          flex: 1,
+          cellClassName: 'name-column--cell--capitalize',
+          renderCell: (params) => (
+            <Typography 
+              style={{ 
+                color: params.row.status ? 'green' : 'red', 
+                fontWeight: 'bold' 
+              }}
+            >
+              {params.row.status ? t('Resolved') : t('Pending')}
+            </Typography>
+          ),
+        },
+        {
+          field: 'action',
+          headerName: t('Action'),
+          flex: 1,
+          renderCell: (params) => (
+            <>
+              <IconButton
+                aria-describedby={params.row._id}
+                onClick={(event) => handleClick(event, params.row)}
+              >
+                <MoreVertIcon />
+              </IconButton>
+              <Popover
+                id={params.row._id}
+                open={Boolean(anchorEl) && currentRow?._id === params.row._id}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+              >
+                {/* <MenuItem onClick={handleOpenEditCompany} disableRipple>
+                  <EditIcon style={{ marginRight: '8px' }} />
+                  {t('Edit')}
+                </MenuItem> */}
+                 <MenuItem onClick={handleOpenView}>
+                              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+                              {t('view')}
+                            </MenuItem>
+                {/* <MenuItem
+                  onClick={handleOpenDeleteCompany}
+                  sx={{ color: 'red' }}
+                  disableRipple
+                >
+                  <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
+                  {t('Delete')}
+                </MenuItem> */}
+              </Popover>
+            </>
+          ),
+        },
+      ];
+
+      const handleClick = (event, row) => {
+        setAnchorEl(event.currentTarget);
+        setCurrentRow(row);
+        setRowData(row);  
+      };
+
+      
+  // const handleOpenView = () => {
+  //   navigate(`/dashboard/booking/view?id=${currentRow._id}&reporterName=${currentRow.name}`);
+  // };
+  const handleOpenView = () => {
+    navigate(`/dashboard/billC/view?id=${currentRow._id}`);
+  };
 
   const breadcrumbs = [
     <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
@@ -173,7 +314,20 @@ const BookingDetailsPage = () => {
 
               {/* TabPanel 2 - Tenant Bills (Empty for now) */}
               <TabPanel value="2">
-                <Typography>{t('tenant_bills_not_available')}</Typography>
+                 <TableStyle>
+                        <Box width="100%">
+                          <Card style={{ height: '600px', paddingTop: '15px' }}>
+                            <DataGrid
+                              rows={billData}
+                              columns={columns}
+                              // checkboxSelection
+                              getRowId={(row) => row._id || row.id}
+                              slots={{ toolbar: GridToolbar }}
+                              slotProps={{ toolbar: { showQuickFilter: true } }}
+                            />
+                          </Card>
+                        </Box>
+                      </TableStyle>
               </TabPanel>
             </TabContext>
           </Card>

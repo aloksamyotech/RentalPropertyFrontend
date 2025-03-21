@@ -106,6 +106,17 @@ const Owner = () => {
       headerName: t('Owner Name'),
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize',
+      renderCell: (params) => (
+        <Button
+          variant="text"
+          color="primary"
+          onClick={() =>
+            navigate(`/dashboard/owner/view?id=${params.row._id}`) 
+          }
+        >
+          {params.row.ownerName}  
+        </Button>
+      ),
     },
     {
       field: 'email',
