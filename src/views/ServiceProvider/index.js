@@ -43,7 +43,7 @@ const ServiceProvider = () => {
   const fetchServiceData = async () => {
     try {
       const response = await getApi(urls.serviceProvider.getAll, { id: payload.companyId });
-      console.log(response.data);
+
       if (response?.data) {
         setServiceData(response.data);
       } else {
@@ -88,6 +88,15 @@ const ServiceProvider = () => {
   const handleCloseDeleteProperty = () => setOpenDelete(false);
 
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = serviceData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      },
+    },
     {
       field: 'name',
       headerName: t('Service Provider Name'),  
@@ -172,9 +181,12 @@ const ServiceProvider = () => {
                 {breadcrumbs}
               </Breadcrumbs>
             </Typography>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              {t('Add Service Provider')}  
-            </Button>
+
+            {userRole !== "tenant" && (
+  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
+    {t('Add Service Provider')}
+  </Button>
+)}
           </Stack>
         </Card>
 
@@ -184,7 +196,7 @@ const ServiceProvider = () => {
               <DataGrid
                 rows={serviceData}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row._id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

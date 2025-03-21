@@ -144,7 +144,12 @@ const AddOwner = (props) => {
                   type="number"
                   fullWidth
                   value={formik.values.phoneNo}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+                      formik.handleChange(e);
+                    }
+                  }}
                   error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
                   helperText={formik.touched.phoneNo && formik.errors.phoneNo}
                   inputProps={{ maxLength: 10 }} 

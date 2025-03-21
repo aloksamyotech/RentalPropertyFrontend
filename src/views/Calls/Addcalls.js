@@ -84,7 +84,6 @@ const AddCompany = (props) => {
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       //   addCall(values);
-      console.log('CallValues', values);
       handleClose();
       toast.success('Calls Add successfully');
       resetForm();

@@ -82,7 +82,6 @@ const AddContact = (props) => {
     validationSchema,
     onSubmit: async (values) => {
       // addContact(values)
-      console.log('ContactValues', values);
       handleClose();
       toast.success('Contact Add successfully');
     }

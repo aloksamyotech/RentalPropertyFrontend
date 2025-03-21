@@ -54,7 +54,6 @@ const AddDocuments = (props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values) => {
-      console.log('AddDocument', values);
       handleClose();
       toast.success('Add Documents upload successfully');
       //   fileUpload(values);

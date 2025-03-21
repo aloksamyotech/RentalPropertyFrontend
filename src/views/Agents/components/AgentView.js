@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import {
-  Box, Grid, Typography, Paper, Divider, Card, Breadcrumbs, Stack,Container
+  Box, Grid, Typography, Paper, Divider, Card, Breadcrumbs, Stack, Container
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate, useLocation } from 'react-router';
@@ -46,6 +46,7 @@ const AgentView = () => {
         email: tenant?.email || t('not_available'),
         phoneno: tenant?.phoneno || t('not_available'),
         address: tenant?.address || t('not_available'),
+        isOccupied: tenant?.isOccupied || t('not_available')
       }));
 
       setTenantData(formattedTenant);
@@ -55,20 +56,36 @@ const AgentView = () => {
   };
 
   const propertyColumns = [
-    { field: 'propertyName', headerName: t('property_name'), width: 150 },
-    { field: 'tenantName', headerName: t('tenant_name'), width: 150 },
-    { field: 'rent', headerName: t('rent'), width: 100 },
-    { field: 'bookingDate', headerName: t('booking_date'), width: 100 },
-    { field: 'startingDate', headerName: t('starting_date'), width: 100 },
-    { field: 'endingDate', headerName: t('ending_date'), width: 100 },
-    { field: 'advanceAmount', headerName: t('advance_amount'), width: 100 },
+    { field: 'propertyName', headerName: t('property_name'), width: 180 },
+    { field: 'tenantName', headerName: t('tenant_name'), width: 180 },
+    { field: 'rent', headerName: t('Rent'), width: 120 },
+    { field: 'bookingDate', headerName: t('booking_date'), width: 160 },
+    { field: 'startingDate', headerName: t('starting_date'), width: 160 },
+    { field: 'endingDate', headerName: t('ending_date'), width: 160 },
+    { field: 'advanceAmount', headerName: t('advance_amount'), width: 150 },
   ];
 
   const tenantColumns = [
-    { field: 'tenantName', headerName: t('tenant_name'), width: 150 },
-    { field: 'email', headerName: t('email'), width: 250 },
-    { field: 'phoneno', headerName: t('phone_no'), width: 150 },
-    { field: 'address', headerName: t('address'), width: 150 },
+    { field: 'tenantName', headerName: t('tenant_name'), width: 180 },
+    { field: 'email', headerName: t('email'), width: 200 },
+    { field: 'phoneno', headerName: t('phone_no'), width: 180 },
+    { field: 'address', headerName: t('address'), width: 180 },
+    {
+         field: 'isOccupied',
+         headerName: t('Status'),
+         flex: 1,
+         renderCell: (params) => (
+          <Typography
+            style={{
+              color: params.value ? 'green' : 'blue',
+              fontWeight: 'bold',
+            }}
+          >
+            {params.value ? t('Occupied') : t('Not Occupied')}
+          </Typography>
+        ),
+        
+       },    
   ];
 
   useEffect(() => {
@@ -88,7 +105,6 @@ const AgentView = () => {
   ];
 
   return (
-    // <Box sx={{ width: '100%', padding: 3, backgroundColor: '#f4f4f9' }}>
     <Container>
       <Grid container spacing={3}>
         {/* Header Section */}
@@ -130,7 +146,16 @@ const AgentView = () => {
             <Typography variant="h4" gutterBottom>{t('booking_information')}</Typography>
             <Divider sx={{ mb: 2 }} />
             {bookingData.length ? (
-              <DataGrid autoHeight rows={bookingData} columns={propertyColumns} pageSizeOptions={[5, 10]} checkboxSelection sx={{ border: 0 }} />
+              <div style={{ width: '100%', overflowX: 'auto' }}>
+                <DataGrid 
+                  autoHeight 
+                  rows={bookingData} 
+                  columns={propertyColumns} 
+                  pageSizeOptions={[5, 10]} 
+                  checkboxSelection 
+                  sx={{ border: 0 }} 
+                />
+              </div>
             ) : (
               <Typography variant="body2" color="textSecondary">{t('no_booking_details')}</Typography>
             )}
@@ -143,15 +168,23 @@ const AgentView = () => {
             <Typography variant="h4" gutterBottom>{t('tenant_information')}</Typography>
             <Divider sx={{ mb: 2 }} />
             {tenantData.length ? (
-              <DataGrid autoHeight rows={tenantData} columns={tenantColumns} pageSizeOptions={[5, 10]} checkboxSelection sx={{ border: 0 }} />
+              <div style={{ width: '100%', overflowX: 'auto' }}>
+                <DataGrid 
+                  autoHeight 
+                  rows={tenantData} 
+                  columns={tenantColumns} 
+                  pageSizeOptions={[5, 10]} 
+                  checkboxSelection 
+                  sx={{ border: 0 }} 
+                />
+              </div>
             ) : (
               <Typography variant="body2" color="textSecondary">{t('no_tenant_details')}</Typography>
             )}
           </Paper>
         </Grid>
       </Grid>
-      </Container>
-    // </Box>
+    </Container>
   );
 };
 

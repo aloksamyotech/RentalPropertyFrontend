@@ -34,6 +34,9 @@ const Announcement = () => {
   const [currentRow, setCurrentRow] = useState(null);
   const [rowData, setRowData] = useState([]);
   const [openDelete, setOpenDelete] = useState(false);
+
+  const userRole = payload?.role;
+
   const handleClose = () => {
     setAnchorEl(null);
     setCurrentRow(null);
@@ -93,6 +96,14 @@ const Announcement = () => {
   ];
 
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = announcements.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      }},
     { field: 'topic', headerName: t('topic'), flex: 1, cellClassName: 'name-column--cell--capitalize' },
     { field: 'details', headerName: t('Details'), flex: 1, cellClassName: 'name-column--cell--capitalize' },
     {
@@ -159,9 +170,15 @@ const Announcement = () => {
             <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               {t('announcement')} <Breadcrumbs separator="›" aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
             </Typography>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setOpenAdd(true)}>
-              {t('addNewAnnouncement')}
-            </Button>
+            {userRole !== 'tenant' && (
+    <Button 
+      variant="contained" 
+      startIcon={<Iconify icon="eva:plus-fill" />} 
+      onClick={() => setOpenAdd(true)}
+    >
+      {t('addNewAnnouncement')}
+    </Button>
+  )}
           </Stack>
         </Card>
         <TableStyle>
@@ -170,7 +187,7 @@ const Announcement = () => {
               <DataGrid
                 rows={announcements}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

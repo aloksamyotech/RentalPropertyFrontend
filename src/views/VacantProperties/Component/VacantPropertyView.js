@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import { useState, useEffect } from 'react';
@@ -10,15 +12,18 @@ import {
   Card,
   Box,
   Breadcrumbs,
+  Paper,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
   Grid,
   Dialog,
   DialogContent,
   IconButton,
-  Paper,
 } from '@mui/material';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-import { Table, TableBody, TableRow, TableCell } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -29,6 +34,7 @@ import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { useLocation, Link } from 'react-router-dom';
 import { IconHome } from '@tabler/icons';
+// import AddImageDialog from './AddPropertyImages';
 
 const VacantPropertyView = () => {
   const { t } = useTranslation();
@@ -40,44 +46,50 @@ const VacantPropertyView = () => {
   const [value, setValue] = useState('1');
   const [propertyData, setPropertyData] = useState({});
   const [selectedImage, setSelectedImage] = useState(null);
-  const [propertyImages, setPropertyImages] = useState([]);
   const [ownerData, setOwnerData] = useState({});
   const [typeData, setTypeData] = useState({});
+  const [openAdd, setOpenAdd] = useState(false);
+  const [images, setImages] = useState([]);
 
   const imagepath = urls.property.image;
+
+  useEffect(() => {
+    if (propertyId) {
+      fetchPropertyData();
+      fetchImageData();
+    }
+    
+  }, [propertyId]);
 
   const fetchPropertyData = async () => {
     const response = await getApi(urls.property.getPropertyById, { id: propertyId });
     setPropertyData(response.data);
-    setOwnerData(response.data?.ownerId);
-    setTypeData(response.data?.typeId);
-    setPropertyImages(response.data?.files);
+    setOwnerData(response.data?.ownerId || {});
+    setTypeData(response.data?.typeId || {});
+  };
+
+  const fetchImageData = async () => {
+    const response = await getApi(urls.property.getAllImgByPropertyId, { id: propertyId });
+    setImages(response?.data || []);
+  };
+
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   const handleCloseDialog = () => {
     setSelectedImage(null);
   };
 
-  const handleImageClick = (img) => {
-    setSelectedImage(`${imagepath}${img}`);
-  };
-
-  useEffect(() => {
-    if (propertyId) {
-      fetchPropertyData();
-    }
-  }, [propertyId]);
-
-  const handleTabChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const handleOpenAdd = () => setOpenAdd(true);
+  const handleCloseAdd = () => setOpenAdd(false);
 
   const breadcrumbs = [
-    <Link underline="hover" key="home" to="/dashboard" style={{ color: 'inherit', textDecoration: 'none' }}>
+    <Link key="home" to="/dashboard" style={{ color: 'inherit', textDecoration: 'none' }}>
       <IconHome />
     </Link>,
-    <Link underline="hover" key="property-management" to="/dashboard/vacantproperty" style={{ color: 'inherit', textDecoration: 'none' }}>
-      {t('Vacant Property Details')}
+    <Link key="property-management" to="/dashboard/vacantproperty" style={{ color: 'inherit', textDecoration: 'none' }}>
+      {t('Vacant Properties')}
     </Link>,
     <Typography key="view" color="text.primary">
       {t('View')}
@@ -90,7 +102,7 @@ const VacantPropertyView = () => {
       <Card sx={{ p: 2, mb: 2, borderRadius: 2, boxShadow: 3 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
           <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {t('Vacant Property Details')}
+            {t('Property Details')}
             <Breadcrumbs separator="›" aria-label="breadcrumb">
               {breadcrumbs}
             </Breadcrumbs>
@@ -107,6 +119,7 @@ const VacantPropertyView = () => {
             </TabList>
           </Box>
 
+          {/* Property Details Tab */}
           <TabPanel value="1">
             {Object.keys(propertyData).length ? (
               <Paper sx={{ p: 3, borderRadius: 2, boxShadow: 3 }}>
@@ -115,64 +128,35 @@ const VacantPropertyView = () => {
                 </Typography>
                 <Table>
                   <TableBody>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', width: '30%', color: 'text.secondary' }}>
-                        {t('Property Name:')}
-                      </TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{propertyData.propertyname}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Property Type')}</TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{typeData?.name || 'N/A'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
-                        {t('Property Type Description')}
-                      </TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{typeData?.description || 'N/A'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Description')}</TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{propertyData.description}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Address')}</TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{propertyData.address}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Rent')}</TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{propertyData.rent}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Zipcode')}</TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{propertyData.zipcode}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
-                        {t('Google Map Location')}
-                      </TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>
-                        <a href={propertyData.maplink} target="_blank" rel="noopener noreferrer">
-                          {t('View on Map')}
-                        </a>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Owner Name')}</TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{ownerData?.ownerName || 'N/A'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Owner Address')}</TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{ownerData?.address || 'N/A'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Owner Email')}</TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{ownerData?.email || 'N/A'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{t('Owner Phone No.')}</TableCell>
-                      <TableCell sx={{ color: 'text.primary' }}>{ownerData?.phoneNo || 'N/A'}</TableCell>
-                    </TableRow>
+                    {[
+                      { label: t('Property Name'), value: propertyData.propertyname },
+                      { label: t('Property Type'), value: typeData?.name || 'N/A' },
+                      { label: t('Property Type Description'), value: typeData?.description || 'N/A' },
+                      { label: t('Description'), value: propertyData.description },
+                      { label: t('Property Size in sq.ft'), value: propertyData.area },
+                      { label: t('Address'), value: propertyData.address },
+                      { label: t('Rent'), value: propertyData.rent },
+                      { label: t('Zipcode'), value: propertyData.zipcode },
+                      {
+                        label: t('Google Map Location'),
+                        value: (
+                          <a href={propertyData.maplink} target="_blank" rel="noopener noreferrer">
+                            {t('View on Map')}
+                          </a>
+                        ),
+                      },
+                      { label: t('Owner Name'), value: ownerData?.ownerName || 'N/A' },
+                      { label: t('Owner Address'), value: ownerData?.address || 'N/A' },
+                      { label: t('Owner Email'), value: ownerData?.email || 'N/A' },
+                      { label: t('Owner Phone No.'), value: ownerData?.phoneNo || 'N/A' },
+                    ].map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell sx={{ fontWeight: 'bold', width: '30%', color: 'text.secondary' }}>
+                          {row.label}
+                        </TableCell>
+                        <TableCell sx={{ color: 'text.primary' }}>{row.value}</TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </Paper>
@@ -183,24 +167,32 @@ const VacantPropertyView = () => {
             )}
           </TabPanel>
 
+          {/* Property Images Tab */}
           <TabPanel value="2">
-              {propertyImages && propertyImages.length > 0 ? (
+            {/* <AddImageDialog open={openAdd} handleClose={handleCloseAdd} /> */}
+            {/* <Button variant="contained" onClick={handleOpenAdd} sx={{ mb: 2 }}>
+              {t('Add Images')}
+            </Button> */}
+            {images.length > 0 ? (
               <ImageList cols={3} gap={8}>
-                {propertyImages.map((img, index) => (
-                  <ImageListItem key={index} onClick={() => handleImageClick(img)}>
+                {images.map((doc, index) => (
+                  <ImageListItem key={index}>
                     <img
-                      src={`${imagepath}${img}`}
-                      srcSet={`${imagepath}${img}`}
-                      alt={`Property image ${index + 1}`}
+                      src={`${imagepath}${doc.url}`}
+                      alt={doc.documentName}
                       loading="lazy"
                       style={{ borderRadius: '8px', cursor: 'pointer' }}
+                      onClick={() => setSelectedImage(`${imagepath}${doc.url}`)}
                     />
+                    <Typography variant="body2" sx={{ textAlign: 'center', mt: 1 }}>
+                      {doc.documentName}
+                    </Typography>
                   </ImageListItem>
                 ))}
               </ImageList>
             ) : (
-              <Typography variant="body2" color="textSecondary">
-                {t('No images available.')}
+              <Typography variant="body2" sx={{ textAlign: 'center' }}>
+                {t('No Images available.')}
               </Typography>
             )}
           </TabPanel>
@@ -210,29 +202,10 @@ const VacantPropertyView = () => {
       {/* Image Popup Dialog */}
       <Dialog open={Boolean(selectedImage)} onClose={handleCloseDialog} maxWidth="md" fullWidth>
         <DialogContent sx={{ position: 'relative' }}>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseDialog}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
+          <IconButton aria-label="close" onClick={handleCloseDialog} sx={{ position: 'absolute', right: 8, top: 8 }}>
             <Close />
           </IconButton>
-          {selectedImage && (
-            <img
-              src={selectedImage}
-              alt="Selected Property"
-              style={{
-                width: '100%',
-                height: 'auto',
-                borderRadius: '8px',
-              }}
-            />
-          )}
+          {selectedImage && <img src={selectedImage} alt="Selected Property" style={{ width: '100%', borderRadius: '8px' }} />}
         </DialogContent>
       </Dialog>
     </Container>

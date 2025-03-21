@@ -43,7 +43,12 @@ const Property = () => {
     try {
       const response = await getApi(urls.property.propertyDataAll, { id: payload.companyId });
       if (response?.data) {
-        setPropertyData(response.data);
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          propertyType: item?.typeId?.name,
+        }));
+        
+        setPropertyData(formattedData);
       } else {
         setPropertyData([]);
       }
@@ -87,14 +92,23 @@ const Property = () => {
 
   const columns = [
     {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = propertyData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      },
+    },
+    {
       field: 'propertyname',
       headerName: t('Property Name'),
       flex: 1,
       cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
-      field: 'description',
-      headerName: t('Description'),
+      field: 'propertyType',
+      headerName: t('Property Type'),
       flex: 1
     },
     {
@@ -207,9 +221,10 @@ const Property = () => {
                 {breadcrumbs}
               </Breadcrumbs>
             </Typography>
+            {userRole === 'companyAdmin' &&(
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
               {t('Add Property')}
-            </Button>
+            </Button>)}
           </Stack>
         </Card>
 
@@ -219,7 +234,7 @@ const Property = () => {
               <DataGrid
                 rows={propertyData}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row._id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

@@ -104,6 +104,14 @@ const PropertyTypes = () => {
   // DataGrid Columns
   const columns = [
     {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = ownerData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      }},
+    {
       field: 'name',
       headerName: t('Property Type'),
       flex: 1,
@@ -186,7 +194,7 @@ const PropertyTypes = () => {
               <DataGrid
                 rows={ownerData}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row._id || row.id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

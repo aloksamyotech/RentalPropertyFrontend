@@ -26,7 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-
+import { useNavigate } from 'react-router-dom';
 const BillT = () => {
   const { t } = useTranslation();
   const [openDelete, setOpenDelete] = useState(false);
@@ -37,14 +37,24 @@ const BillT = () => {
   const [currentRow, setCurrentRow] = useState(null);
   const [rowData, setRowData] = useState([]);
    const payload = tokenPayload();
+   const userRole = payload.role;
+   const navigate = useNavigate();
+
+
 
    const fetchBillData = async () => {
       const response = await getApi(urls.bill.getBillByT,  { id: payload._id });
-        const formattedData = response.data.map((item) => ({
+      const formattedData = response.data.map((item) => {
+        const billingDate = new Date(item.billingMonth);
+        const formattedBillingMonth = `${billingDate.toLocaleString('default', { month: 'long' })} ${billingDate.getFullYear()}`; // Format as "Month Year"
+  
+        return {
           ...item,
           tenantName: item.tenantId?.tenantName,
-          propertyName: item.propertyId?.propertyname
-        }));
+          propertyName: item.propertyId?.propertyname,
+          billingMonth: formattedBillingMonth,
+        };
+      });
         setBillData(formattedData);
     };
 
@@ -60,6 +70,10 @@ const BillT = () => {
   const handleClose = () => {
     setAnchorEl(null);
     setCurrentRow(null);
+  };
+
+  const handleOpenView = () => {
+    navigate(`/dashboard/billC/view?id=${currentRow._id}`);
   };
 
   const handleCloseDeleteCompany = () => setOpenDelete(false);
@@ -85,12 +99,36 @@ const BillT = () => {
     <Typography key="company" color="text.primary">
       {t('bill Management')}
     </Typography>,
+    // <Link key="bill" style={{ color: 'inherit', textDecoration: 'none' }}>
+    //   {t('Bill Management')}
+    // </Link>
   ];
+  
+
+    // const breadcrumbs = [
+    //       <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
+    //         <IconHome />
+    //       </Link>,
+    //       <Link underline="hover" key="property-management" to="/dashboard/booking" style={{ color: 'inherit' }}>
+    //         {t('Booking Management')}
+    //       </Link>,
+    //       <Typography key="view" color="text.primary">
+    //         {t('View')}
+    //       </Typography>,
+    //     ];
 
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = billData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      }},
     {
       field: 'tenantName',
       headerName: t('Tenant Name'),
@@ -151,22 +189,22 @@ const BillT = () => {
               horizontal: 'left',
             }}
           >
-            <MenuItem onClick={handleOpenEditCompany} disableRipple>
+            {/* <MenuItem onClick={handleOpenEditCompany} disableRipple>
               <EditIcon style={{ marginRight: '8px' }} />
               {t('Edit')}
-            </MenuItem>
+            </MenuItem> */}
              <MenuItem onClick={handleOpenView}>
                           <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
                           {t('view')}
                         </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               onClick={handleOpenDeleteCompany}
               sx={{ color: 'red' }}
               disableRipple
             >
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               {t('Delete')}
-            </MenuItem>
+            </MenuItem> */}
           </Popover>
         </>
       ),
@@ -198,7 +236,7 @@ const BillT = () => {
             <DataGrid
               rows={billData}
               columns={columns}
-              checkboxSelection
+              // checkboxSelection
               getRowId={(row) => row._id || row.id}
               slots={{ toolbar: GridToolbar }}
               slotProps={{ toolbar: { showQuickFilter: true } }}

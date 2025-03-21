@@ -37,7 +37,6 @@ const EditAgent = ({ open, handleClose, data }) => {
   const fetchOwnerData = async () => {
     try {
       const response = await getApi(urls.owner.ownerdata, { id: payload._id });
-      console.log('Fetched Owner Data:', response.data);
     } catch (err) {
       console.error('Error fetching owner data:', err);
       toast.error(t('Failed to fetch owner data!'));
@@ -68,10 +67,10 @@ const EditAgent = ({ open, handleClose, data }) => {
   };
 
   const validationSchema = yup.object({
-    agentName: yup
-      .string()
-      .max(50, t('Agent Name cannot exceed 50 characters'))
-      .required(t('Agent Name is required')),
+    agentName: yup.string()
+    .matches(/^[A-Za-z\s]*$/, t('Agent Name cannot contain special characters or numbers'))
+    .max(50, t('Agent Name cannot exceed 50 characters'))
+    .required(t('Agent Name is required')),  
     email: yup
       .string()
       .email(t('Invalid email address'))
@@ -142,10 +141,16 @@ const EditAgent = ({ open, handleClose, data }) => {
               <TextField
                 id="phoneNo"
                 name="phoneNo"
+                type="number"
                 size="small"
                 fullWidth
                 value={formik.values.phoneNo}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+                    formik.handleChange(e);
+                  }
+                }}
                 error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
                 helperText={formik.touched.phoneNo && formik.errors.phoneNo}
               />

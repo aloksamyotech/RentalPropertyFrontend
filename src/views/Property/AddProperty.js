@@ -113,10 +113,9 @@ const AddProperty = ({ open, handleClose }) => {
   }, [open]);
 
   const validationSchema = yup.object({
-    propertyname: yup
-      .string()
-      .max(50, t('Property Name must be at most 50 characters'))
-      .required(t('Property Name is required')),
+    propertyname: yup.string()
+    .max(50, t('Property Name must be at most 50 characters'))
+    .required(t('Property Name is required')),  
     typeId: yup.string().required(t('Type is required')),
     description: yup
       .string()
@@ -126,22 +125,25 @@ const AddProperty = ({ open, handleClose }) => {
       .number()
       .typeError(t('Rent must be a number'))
       .min(1, t('must be positive'))
-      .max(999999, t('Rent cannot exceed 6 digits'))
+      .max(9999999999, t('Rent cannot exceed 10 digits'))
       .test('is-positive', t('Rent must be greater than zero'), (value) => value > 0)
       .required(t('Rent is required')),
     area: yup
       .number()
       .typeError(t('Area must be a number'))
       .min(1, t('must be positive'))
-      .max(999999, t('Rent cannot exceed 6 digits'))
+      .max(9999999999, t('Rent cannot exceed 10 digits'))
       .test('is-positive', t('Area must be greater than zero'), (value) => value > 0)
       .required(t('Area is required')),
     address: yup
       .string()
       .max(100, t('Address cannot exceed 100 characters'))
       .required(t('Address is required')),
-    zipcode: yup.string().required(t('Zip Code is required')),
-    maplink: yup.string().url(t('Must be a valid URL')).required(t('Google Map Link is required')),
+      zipcode: 
+      yup.string()
+      .matches(/^[0-9]{3,8}$/, t('Zipcode must be between 3 and 8 digits'))
+      .required(t('Zip Code is required')),
+        maplink: yup.string().url(t('Must be a valid URL')).required(t('Google Map Link is required')),
     ownerId: yup.string().required(t('Owner Name is required')),
   });
 
@@ -245,7 +247,13 @@ const AddProperty = ({ open, handleClose }) => {
     size="small"
     fullWidth
     value={formik.values.rent}
-    onChange={formik.handleChange}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Only allow numbers and prevent adding if more than 8 digits
+      if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+        formik.handleChange(e);
+      }
+    }}
     error={formik.touched.rent && Boolean(formik.errors.rent)}
     helperText={formik.touched.rent && formik.errors.rent}
     InputProps={{
@@ -253,6 +261,7 @@ const AddProperty = ({ open, handleClose }) => {
     }}
   />
 </Grid>
+
 
 
             <Grid item xs={12} sm={6}>
@@ -264,13 +273,18 @@ const AddProperty = ({ open, handleClose }) => {
                 size="small"
                 fullWidth
                 value={formik.values.area}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+                    formik.handleChange(e);
+                  }
+                }}
                 error={formik.touched.area && Boolean(formik.errors.area)}
                 helperText={formik.touched.area && formik.errors.area}
               />
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Box mb={1}>
                 <FormLabel>{t('Property Images')}</FormLabel>
               </Box>
@@ -299,7 +313,7 @@ const AddProperty = ({ open, handleClose }) => {
                   />
                 ))}
               </Box>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <FormLabel>{t('Description')}</FormLabel>
@@ -336,6 +350,7 @@ const AddProperty = ({ open, handleClose }) => {
               <TextField
                 id="zipcode"
                 name="zipcode"
+                type="number"
                 size="small"
                 fullWidth
                 value={formik.values.zipcode}

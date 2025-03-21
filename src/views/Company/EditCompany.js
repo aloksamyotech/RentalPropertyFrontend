@@ -76,25 +76,28 @@ const EditComplain = ({ open, handleClose, data }) => {
   };
 
   const validationSchema = yup.object({
-    companyName: yup
-      .string()
-      .max(50, t('Owner Name cannot exceed 50 characters'))
-      .required(t('Owner Name is required')),
-    email: yup
-      .string()
-      .email(t('Invalid email address'))
-      .required(t('Email is required')),
-    phoneNo: yup
-      .string()
-      .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
-      .required(t('Phone Number is required')),
-    address: yup
-      .string()
-      .max(80, t('Address cannot exceed 80 characters'))
-      .required(t('Address is required')),
-    gstnumber: yup
-            .string()
-            .max(15, t("Gst number cannot exceed 15 character."))
+     companyName: yup
+          .string()
+          .matches(/^[A-Za-z\s]+$/, t('Company Name can only contain letters and spaces'))
+          .max(50, t('Company Name cannot exceed 50 characters'))
+          .required(t('Company Name is required')),
+       email: yup
+         .string()
+         .email(t('Invalid email address'))
+         .required(t('Email is required')),
+       phoneNo: yup
+         .string()
+         .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
+         .required(t('Phone Number is required')),
+       address: yup
+         .string()
+         .max(80, t('Address cannot exceed 80 characters'))
+         .required(t('Address is required')),
+       password: yup.string().required(t('Password is required')),
+       currencyCode: yup.string().required(t('Currency is required')),
+       gstnumber: yup
+         .string()
+         .max(15, t("Gst number cannot exceed 15 character."))
   });
 
   const formik = useFormik({
@@ -109,7 +112,6 @@ const EditComplain = ({ open, handleClose, data }) => {
     enableReinitialize: true,
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log(values, 'values');
       editCompany(values, resetForm);
     },
   });
@@ -157,6 +159,7 @@ const EditComplain = ({ open, handleClose, data }) => {
                 id="phoneNo"
                 name="phoneNo"
                 size="small"
+                type="number"
                 fullWidth
                 value={formik.values.phoneNo}
                 onChange={formik.handleChange}
