@@ -10,6 +10,7 @@ import {
   Typography,
   Box,
   Breadcrumbs,
+  Button,
   Card,
   Popover,
   MenuItem,
@@ -48,7 +49,7 @@ const TenantBooking = () => {
       const formattedData = response.data.map((item) => ({
         ...item,
         tenantName: item.tenantId?.tenantName || 'N/A',
-        propertyName: item.propertyId?.propertyname || 'N/A',
+        propertyname: item.propertyId?.propertyname || 'N/A',
         startingDate: item.startingDate
           ? new Date(item.startingDate).toLocaleDateString()
           : 'N/A',
@@ -92,7 +93,21 @@ const TenantBooking = () => {
         return rowIndex + 1; 
       },
     },
-    { field: 'propertyName', headerName: t('Property Name'), flex: 1 },
+    // { field: 'propertyname', headerName: t('Property Name'), flex: 1,
+    //    renderCell: (params) => (
+    //                 <Button
+    //                   variant="text"
+    //                   color="primary"
+    //                   onClick={() =>
+    //                     navigate(`/dashboard/property/view?id=${params.row._id}`) 
+    //                   }
+    //                 >
+    //                   {params.row.propertyname}  
+    //                 </Button>
+    //               ),
+    //  },
+     { field: 'propertyname', headerName: t('Property Name'), flex: 1 },
+
     { field: 'tenantName', headerName: t('Tenant Name'), flex: 1 },
     { field: 'startingDate', headerName: t('Starting Date'), flex: 1 },
     { field: 'endingDate', headerName: t('Ending Date'), flex: 1 },

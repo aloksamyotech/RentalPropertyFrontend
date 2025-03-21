@@ -166,13 +166,29 @@ const isAdmin = payload?.role === 'companyAdmin';
   ];
 
   const columns = [
-    
     {
-      field: 'propertyName',
-      headerName: t('Property Name'),
-      flex: 1,
-      cellClassName: 'name-column--cell',
-    },
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = bookingData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      }},
+      {
+        field: 'propertyName',
+        headerName: t('Property Name'),
+        flex: 1,
+        cellClassName: 'name-column--cell',
+        renderCell: (params) => (
+          <Button 
+            variant="text"
+            color="primary"
+            onClick={() => navigate(`/dashboard/booking/view?id=${params.row._id}&reporterName=${params.row.name}`)}
+          >
+            {params.row.propertyName}
+          </Button>
+        ),
+      },
     {
       field: 'tenantName',
       headerName: t('Tenant Name'),

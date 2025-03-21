@@ -84,7 +84,23 @@ const Agents = () => {
         return rowIndex + 1; 
       },
     },
-    { field: 'agentName', headerName: t('agentName'), flex: 1 },
+    {
+      field: 'agentName',
+      headerName: t('agentName'),
+      flex: 1,
+      renderCell: (params) => (
+        <Button
+          variant="text"
+          color="primary"
+          onClick={() =>
+            navigate(`/dashboard/agent/view?id=${params.row._id}`) 
+          }
+        >
+          {params.row.agentName}  
+        </Button>
+      ),
+    },
+    
     { field: 'email', headerName: t('email'), flex: 1 },
     { field: 'phoneNo', headerName: t('phoneNo'), flex: 1 },
     { field: 'address', headerName: t('address'), flex: 1 },

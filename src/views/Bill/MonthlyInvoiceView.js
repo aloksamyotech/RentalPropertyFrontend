@@ -31,6 +31,27 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { IconHome } from '@tabler/icons';
 
+const printStyles = `
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    .print-only {
+      display: block !important;
+    }
+    body {
+      visibility: hidden;
+    }
+    .invoice-container {
+      visibility: visible;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 120%;
+    }
+  }
+`;
+
 const InvoiceDetails = ({ value }) => <Typography variant="subtitle1">{value}</Typography>;
 
 const InvoiceTable = ({ items }) => (
@@ -105,8 +126,6 @@ const MonthlyInvoiceView = () => {
     }
   };
 
-
-
   useEffect(() => {
     fetchInvoiceData();
   }, [bookingId]);
@@ -117,7 +136,7 @@ const MonthlyInvoiceView = () => {
       const response = await patchApi(urls.bill.changeBillStatus, { paymentType }, { id: bookingId });
 
       if (response?.success) {
-        setIsPaid(true); // Mark as paid
+        setIsPaid(true); 
         toast.success(t("Bill status updated successfully!"));
       } else {
         toast.error(t("Failed to update bill status."));
@@ -139,38 +158,38 @@ const MonthlyInvoiceView = () => {
     window.print();
   };
 
-     const breadcrumbs = [
-        <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
-          <IconHome />
-        </Link>,
-        <Link underline="hover" key="property-management" to={userRole === "companyAdmin" || "agent" ? "/dashboard/billC" : "/dashboard/billT"} style={{ color: 'inherit' }}>
-          {t('Bill Management')}
-        </Link>,
-        <Typography key="view" color="text.primary">
-          {t('View')}
-        </Typography>,
-      ];
-
+  const breadcrumbs = [
+    <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }} className="no-print">
+      <IconHome />
+    </Link>,
+    <Link underline="hover" key="property-management" to={userRole === "companyAdmin" || "agent" ? "/dashboard/billC" : "/dashboard/billT"} style={{ color: 'inherit' }} className="no-print">
+      {t('Bill Management')}
+    </Link>,
+    <Typography key="view" color="text.primary" className="no-print">
+      {t('View')}
+    </Typography>,
+  ];
 
   const currentDate = new Date().toLocaleDateString();
 
   return (
     <Grid container justifyContent="center" sx={{ padding: '20px' }}>
-      <Grid item xs={12}>
+      <style>{printStyles}</style>
+      <Grid item xs={12} className="no-print">
         <Card sx={{ p: 2, mb: 2 }}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-              <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                {t('Bill Management')}
-                <Breadcrumbs separator="›" aria-label="breadcrumb">
-                  {breadcrumbs}
-                </Breadcrumbs>
-              </Typography>
-              </Stack>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+            <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {t('Bill Management')}
+              <Breadcrumbs separator="›" aria-label="breadcrumb">
+                {breadcrumbs}
+              </Breadcrumbs>
+            </Typography>
+          </Stack>
         </Card>
       </Grid>
 
       <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Paper elevation={2} sx={{ padding: '20px', maxWidth: '800px', marginTop: '12px' }}>
+        <Paper elevation={2} sx={{ padding: '20px', maxWidth: '800px', marginTop: '12px' }} className="invoice-container">
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h3" align="center" gutterBottom>
@@ -208,11 +227,10 @@ const MonthlyInvoiceView = () => {
               <InvoiceDetails value={invoiceData?.tenantId?.phoneno} />
             </Grid>
 
-             <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={4}>
               <Typography variant="h4" gutterBottom>
                 {t('Reporter Details')}
               </Typography>
-              {/* <InvoiceDetails value={reporter?.agentName} /> */}
               <InvoiceDetails value={invoiceData?.companyId?.email} />
               <InvoiceDetails value={invoiceData?.companyId?.phoneNo} />
             </Grid>
@@ -237,35 +255,31 @@ const MonthlyInvoiceView = () => {
         </Paper>
       </Grid>
 
-      <Grid item xs={12} sx={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }} className="print-button">
-  <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-    {/* If the bill is not paid, show the payment buttons */}
-    {userRole === "companyAdmin"  && !isPaid && (
-      <>
-        <FormControl variant="outlined" size="small">
-          <InputLabel>{t("Payment Type")}</InputLabel>
-          <Select value={paymentType} onChange={handlePaymentChange} label={t("Payment Type")}>
-            <MenuItem value="cash">{t("Cash")}</MenuItem>
-            <MenuItem value="credit_card">{t("Credit Card")}</MenuItem>
-            <MenuItem value="upi">{t("UPI")}</MenuItem>
-            <MenuItem value="bank_transfer">{t("Bank Transfer")}</MenuItem>
-          </Select>
-        </FormControl>
+      <Grid item xs={12} sx={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }} className="no-print">
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          {userRole === "companyAdmin"  && !isPaid && (
+            <>
+              <FormControl variant="outlined" size="small">
+                <InputLabel>{t("Payment Type")}</InputLabel>
+                <Select value={paymentType} onChange={handlePaymentChange} label={t("Payment Type")}>
+                  <MenuItem value="cash">{t("Cash")}</MenuItem>
+                  <MenuItem value="credit_card">{t("Credit Card")}</MenuItem>
+                  <MenuItem value="upi">{t("UPI")}</MenuItem>
+                  <MenuItem value="bank_transfer">{t("Bank Transfer")}</MenuItem>
+                </Select>
+              </FormControl>
 
-        <Button variant="contained" onClick={handlePaymentSubmit} disabled={loading || isPaid}>
-          {loading ? t("Processing...") : t("Paid")}
-        </Button>
-      </>
-    )}
+              <Button variant="contained" onClick={handlePaymentSubmit} disabled={loading || isPaid}>
+                {loading ? t("Processing...") : t("Paid")}
+              </Button>
+            </>
+          )}
 
-
-      <Button variant="contained" onClick={handlePrint}>
-        {t("Print")}
-      </Button>
-    
-  </div>
-</Grid>
-
+          <Button variant="contained" onClick={handlePrint}>
+            {t("Print")}
+          </Button>
+        </div>
+      </Grid>
     </Grid>
   );
 };

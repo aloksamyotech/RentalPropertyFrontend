@@ -2,8 +2,8 @@
 
 import Complaints from 'views/Complaints';
 
-// const base = 'http://localhost:7200/api/v1';
-const base = 'http://165.22.218.55:7202/api/v1';
+const base = 'http://localhost:7200/api/v1';
+// const base = 'http://165.22.218.55:7202/api/v1';
 const imageBase = 'http://localhost:7200/';
 
 export const urls = Object.freeze({
@@ -20,7 +20,8 @@ export const urls = Object.freeze({
     getBillById: base + '/bill/getBillById',
     changeBillStatus: base + '/bill/changeBillStatus',
     delete: base + '/bill/DeleteBill',
-    getBillByAgentId: base + '/bill/getBillByAgentId'
+    getBillByAgentId: base + '/bill/getBillByAgentId',
+    getBillByBookingId:base + '/bill/getBillByBookingId'
   },
   company: {
     create: base + '/company/register',
@@ -29,7 +30,8 @@ export const urls = Object.freeze({
     edit: base + '/company/edit',
     delete: base + '/company/delete',
     complaintData: base + '/company/getComplaints',
-    getCompanyById: base + '/company/getCompanyById'
+    getCompanyById: base + '/company/getCompanyById',
+    changestatus: base+'/company/changestatus'
   },
   propertyTypes: {
     create: base + '/types/createType',

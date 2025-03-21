@@ -104,7 +104,19 @@ const Announcement = () => {
         const rowIndex = announcements.findIndex((row) => row._id === params.row._id);
         return rowIndex + 1; 
       }},
-    { field: 'topic', headerName: t('topic'), flex: 1, cellClassName: 'name-column--cell--capitalize' },
+    { field: 'topic', headerName: t('topic'), flex: 1, cellClassName: 'name-column--cell--capitalize',
+         renderCell: (params) => (
+              <Button
+                variant="text"
+                color="primary"
+                onClick={() =>
+                  navigate(`/dashboard/announcement/view?id=${params.row._id}`) 
+                }
+              >
+                {params.row.topic}  
+              </Button>
+            ),
+     },
     { field: 'details', headerName: t('Details'), flex: 1, cellClassName: 'name-column--cell--capitalize' },
     {
       field: 'createdAt',
