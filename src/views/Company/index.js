@@ -152,7 +152,7 @@ const Company = () => {
     },
     {
       field: 'status',
-      headerName: 'Status',
+      headerName: t('Status'),
       flex: 1,
       renderCell: (params) => {
         const [status, setStatus] = useState(params.row.status === true);

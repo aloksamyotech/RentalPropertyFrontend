@@ -218,34 +218,29 @@ const AddTenants = ({ open, handleClose }) => {
               />
             </Grid>
 
-            {/* Identity Card Type */}
             <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Identity Card Type')}</FormLabel>
-              <FormControl fullWidth size="small" error={formik.touched.identityCardType && Boolean(formik.errors.identityCardType)}>
-                <Select
-                  id="identityCardType"
-                  name="identityCardType"
-                  value={formik.values.identityCardType}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value.length <= 15 && /^[0-9]*$/.test(value)) {
-                      formik.handleChange(e);
-                    }
-                  }}
-                  required
-                >
-                  <MenuItem value="" disabled>
-                    {t('Select Identity Card Type')}
-                  </MenuItem>
-                  <MenuItem value="Aadhar">{t('Aadhar')}</MenuItem>
-                  <MenuItem value="Passport">{t('Passport')}</MenuItem>
-                  <MenuItem value="DriverLicense">{t('Driver License')}</MenuItem>
-                </Select>
-                {formik.touched.identityCardType && formik.errors.identityCardType && (
-                  <FormHelperText>{formik.errors.identityCardType}</FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
+  <FormLabel>{t('Identity Card Type')}</FormLabel>
+  <FormControl fullWidth size="small" error={formik.touched.identityCardType && Boolean(formik.errors.identityCardType)}>
+    <Select
+      id="identityCardType"
+      name="identityCardType"
+      value={formik.values.identityCardType}
+      onChange={formik.handleChange}
+      required
+    >
+      <MenuItem value="" disabled>
+        {t('Select Identity Card Type')}
+      </MenuItem>
+      <MenuItem value="Aadhar">{t('Aadhar')}</MenuItem>
+      <MenuItem value="Passport">{t('Passport')}</MenuItem>
+      <MenuItem value="DriverLicense">{t('Driver License')}</MenuItem>
+    </Select>
+    {formik.touched.identityCardType && formik.errors.identityCardType && (
+      <FormHelperText>{formik.errors.identityCardType}</FormHelperText>
+    )}
+  </FormControl>
+</Grid>
+
 
             {/* Identity Number */}
             <Grid item xs={12} sm={6}>

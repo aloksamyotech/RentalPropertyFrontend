@@ -22,12 +22,12 @@ const DeleteImage = ({ open, handleClose, id }) => {
       const result = await deleteApi(urls.property.deleteImg, { id });
 
       if (result?.success) {
-          toast.success(t('tenant_deleted_successfully')); 
-          handleClose()
+        toast.success(t('propertyImagesDeleted')); // Translated message for success
+        handleClose();
       }
     } catch (error) {
-      console.error('Error deleting tenant:', error);
-      toast.error(t('cannot_delete_tenant_error'));
+      console.error('Error deleting property images:', error);
+      toast.error(t('cannotDeleteImagesError')); // Translated error message
       setLoading(false); 
     } finally {
       setLoading(false); 
@@ -36,13 +36,13 @@ const DeleteImage = ({ open, handleClose, id }) => {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{t('delete_tenant')}</DialogTitle> 
+      <DialogTitle>{t('deleteImages')}</DialogTitle> {/* Translated title */}
       <DialogContent>
-        <p>{t('are_you_sure_delete_tenant')}</p> 
+        <p>{t('areYouSureDeleteImage')}</p> {/* Translated confirmation message */}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary" disabled={loading}>
-          {t('cancel')} 
+          {t('cancel')} {/* Translated cancel button */}
         </Button>
         <Button
           onClick={handleDelete}
@@ -50,7 +50,7 @@ const DeleteImage = ({ open, handleClose, id }) => {
           variant="contained"
           disabled={loading}
         >
-          {loading ? t('deleting') : t('delete')} 
+          {loading ? t('deleting') : t('delete')} {/* Translated delete button */}
         </Button>
       </DialogActions>
     </Dialog>

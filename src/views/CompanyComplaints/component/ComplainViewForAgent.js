@@ -172,7 +172,7 @@ const ComplainDetailsPage = () => {
             }}
           >
             <Typography variant="h4" gutterBottom>
-              {t('Agent Information')}
+              {t('agent_information')}
             </Typography>
             <Divider sx={{ marginBottom: 2 }} />
             <Grid container spacing={2}>

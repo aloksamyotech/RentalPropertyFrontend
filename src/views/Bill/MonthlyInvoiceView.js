@@ -54,19 +54,19 @@ const printStyles = `
 
 const InvoiceDetails = ({ value }) => <Typography variant="subtitle1">{value}</Typography>;
 
-const InvoiceTable = ({ items }) => (
+const InvoiceTable = ({ items, t }) => (
   <TableContainer component={Paper} sx={{ marginY: 2, boxShadow: 3, borderRadius: 2 }}>
     <Table sx={{ minWidth: 650 }}>
       <TableHead>
         <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-          <TableCell><b>Description</b></TableCell>
-          <TableCell align="right"><b>Amount ({items?.companyId?.currencyCode})</b></TableCell>
+          <TableCell><b>{t('Description')}</b></TableCell>
+          <TableCell align="right"><b>{t('Amount')} ({items?.companyId?.currencyCode})</b></TableCell>
         </TableRow>
       </TableHead>
 
       <TableBody>
         <TableRow>
-          <TableCell>Rent Amount</TableCell>
+          <TableCell>{t('Rent Amount')}</TableCell>
           <TableCell align="right">{Number(items.rentAmount).toFixed(2)}</TableCell>
         </TableRow>
 
@@ -82,17 +82,17 @@ const InvoiceTable = ({ items }) => (
         </TableRow>
 
         <TableRow>
-          <TableCell><b>Total Amount</b></TableCell>
+          <TableCell><b>{t('Total Amount')}</b></TableCell>
           <TableCell align="right"><b>{items?.companyId?.currencyCode}  {Number(items.totalBillAmount).toFixed(2)}</b></TableCell>
         </TableRow>
 
         <TableRow>
-          <TableCell>GST Amount ({Number(items.gstpercent).toFixed(2)}%)</TableCell>
+          <TableCell>{t('GST Amount')} ({Number(items.gstpercent).toFixed(2)}%)</TableCell>
           <TableCell align="right">{Number(items.totalgst).toFixed(2)}</TableCell>
         </TableRow>
 
         <TableRow sx={{ backgroundColor: '#e0f7fa' }}>
-          <TableCell><b>Total Amount After GST</b></TableCell>
+          <TableCell><b>{t('Total Amount After GST')}</b></TableCell>
           <TableCell align="right"><b>{items?.companyId?.currencyCode}  {Number(items.totalBillAmountAfterGST).toFixed(2)}</b></TableCell>
         </TableRow>
       </TableBody>
@@ -236,7 +236,7 @@ const MonthlyInvoiceView = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <InvoiceTable items={invoiceData} />
+              <InvoiceTable items={invoiceData} t={t} />
             </Grid>
 
             <Grid item xs={12} sx={{ marginTop: '20px' }}>
@@ -257,7 +257,7 @@ const MonthlyInvoiceView = () => {
 
       <Grid item xs={12} sx={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }} className="no-print">
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-          {userRole === "companyAdmin"  && !isPaid && (
+          {userRole === "companyAdmin" && !isPaid && (
             <>
               <FormControl variant="outlined" size="small">
                 <InputLabel>{t("Payment Type")}</InputLabel>

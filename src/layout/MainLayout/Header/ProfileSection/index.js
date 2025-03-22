@@ -33,10 +33,12 @@ import { tokenPayload } from 'helper';
 
 // assets
 import { IconLogout, IconSettings, IconUser } from '@tabler/icons';
+import { useTranslation } from 'react-i18next';
 
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
+  const {t} = useTranslation();
   const payload = tokenPayload();
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
@@ -140,7 +142,7 @@ const ProfileSection = () => {
                   <Box sx={{ p: 2 }}>
                     <Stack>
                       <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">Good Morning,</Typography>
+                        <Typography variant="h4">{t('Wellcome')},</Typography>
                         <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
                           {payload.name}
                         </Typography>

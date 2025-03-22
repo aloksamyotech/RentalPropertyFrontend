@@ -147,12 +147,12 @@ const ComplainDetailsPage = () => {
             }}
           >
             <Typography variant="h4" gutterBottom>
-              {t(`${userType} Information`)}
+              {t('agent_information')}
             </Typography>
             <Divider sx={{ marginBottom: 2 }} />
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <Typography variant="h5">{t(`${userType} Name`)}</Typography>
+                <Typography variant="h5">{t('Agent Name')}</Typography>
                 <Typography>{userData?.tenantName || userData?.agentName || t('not_available')}</Typography>
               </Grid>
               <Grid item xs={6}>

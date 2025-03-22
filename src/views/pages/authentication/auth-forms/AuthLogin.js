@@ -12,6 +12,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  Divider,
   InputLabel,
   OutlinedInput,
   Typography,
@@ -39,6 +40,14 @@ const FirebaseLogin = ({ ...others }) => {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const handleCredentialClick = async (email, password, setFieldValue, handleSubmit) => {
+    setFieldValue('email', email);
+    setFieldValue('password', password);
+    setTimeout(() => {
+      handleSubmit();
+    }, 500);
   };
 
   return (
@@ -86,7 +95,7 @@ const FirebaseLogin = ({ ...others }) => {
           }
         }}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, touched, values,setFieldValue }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
             <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
               <InputLabel htmlFor="outlined-adornment-email-login">Email</InputLabel>
@@ -136,6 +145,29 @@ const FirebaseLogin = ({ ...others }) => {
                 </FormHelperText>
               )}
             </FormControl>
+
+            <Box sx={{ width: '100%' }}>
+              <Box
+                sx={{
+                  cursor: 'pointer',
+                  p: 2
+                }}
+                onClick={() => handleCredentialClick('admin@samyotech.com', '1234', setFieldValue, handleSubmit)}
+              >
+                <Typography variant="h5">Super Admin Credentials</Typography>
+              </Box>
+              <Divider />
+              <Box
+                sx={{
+                  cursor: 'pointer',
+                  p: 2
+                }}
+                onClick={() => handleCredentialClick('company.admin@gmail.com', '1234', setFieldValue, handleSubmit)}
+              >
+                <Typography variant="h5">Company Admin Credentials</Typography>
+              </Box>
+            </Box>
+
 
             {errors.submit && (
               <Box sx={{ mt: 3 }}>
