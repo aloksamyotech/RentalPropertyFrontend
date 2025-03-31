@@ -37,6 +37,7 @@ import GenerateMonthlyBill from 'views/Booking/CreateBill';
 import MonthlyInvoiceView from 'views/Bill/MonthlyInvoiceView';
 import BillA from 'views/Bill/indexA';
 import ComplainDetailsPageForAgent from 'views/Complaints/component/AgentComplainView';
+import ProfilePage from 'views/ProfilePage';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -111,6 +112,7 @@ const companyAdminRoutes = {
         { path: 'billC/view', element: <MonthlyInvoiceView/> },
         { path: 'agents', element: <Agents /> },
         { path: 'booking', element: <Booking /> },
+        { path: 'profile', element: <ProfilePage /> },
         { path: 'complain/view', element: <ComplainDetailsPage/> },
         { path: 'booking/view', element: <BookingDetailsPage/> },
         { path: 'Announcement', element: <Announcement /> },

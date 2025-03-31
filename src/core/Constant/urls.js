@@ -4,8 +4,9 @@ import Complaints from 'views/Complaints';
 
 const base = 'http://localhost:7200/api/v1';
 // const base = 'http://165.22.218.55:7202/api/v1';
+// const base = 'https://rentals.samyotech.in/api/v1';
 const imageBase = 'http://localhost:7200/';
-
+// const imageBase = 'https://rentals.samyotech.in/';
 export const urls = Object.freeze({
   // SuperAdmin
   user: {
@@ -31,7 +32,9 @@ export const urls = Object.freeze({
     delete: base + '/company/delete',
     complaintData: base + '/company/getComplaints',
     getCompanyById: base + '/company/getCompanyById',
-    changestatus: base+'/company/changestatus'
+    changestatus: base+'/company/changestatus',
+    addSmtpMailPassword: base+'/company/addMailPassword',
+    changeMailStatus: base + '/company/updateMailStatus'
   },
   propertyTypes: {
     create: base + '/types/createType',

@@ -26,6 +26,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import HomeIcon from '@mui/icons-material/Home';
+import ContactPageIcon from '@mui/icons-material/ContactPage';
 // constant
 const icons = {
   IconHome,
@@ -158,6 +159,14 @@ const companyAdminDashboard = {
       type: 'item',
       url: '/dashboard/announcement',
       icon: AnnouncementIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '11',
+      title: 'Company Profile',
+      type: 'item',
+      url: '/dashboard/profile',
+      icon: ContactPageIcon,
       breadcrumbs: false
     },
   ]
