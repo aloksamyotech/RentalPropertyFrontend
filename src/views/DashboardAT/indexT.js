@@ -7,9 +7,9 @@ import { Grid, Typography, Box, Avatar, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { gridSpacing } from 'store/constant';
 // import { getApi } from 'views/services/api';
-import TotalAgent from './TotalAgent'
-import TotalCompanies from './TotalCompanies';
-import TotalProperties from './TotalProperties';
+// import TotalAgent from './TotalAgent'
+// import TotalCompanies from './TotalCompanies';
+// import TotalProperties from './TotalProperties';
 import TotalTenants from './TotalTenants';
 import SingleBedIcon from '@mui/icons-material/SingleBed';
 import KingBedIcon from '@mui/icons-material/KingBed';
@@ -18,11 +18,13 @@ import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 import TotalVacantProperties from './TotalVacantProperty';
-import TotalComplains from './TotalComplains';
+// import TotalComplains from './TotalComplains';
 import TotalBooking from './TotalBooking';
-import TotalGrowthBarChart from './TotalGrowthBarChart';
+// import TotalGrowthBarChart from './TotalGrowthBarChart';
+import TotalServiceProvider from './TotalServiceProvider';
 import TotalPendingBill from './TotalPendingBills';
-import TotalPaidBill from './TotalPaidBill';
+// import PopularCard from './PopularCard';
+// import TotalPaidBill from './TotalPaidBill';
 
 const RoomTypeIcons = {
   single: <SingleBedIcon sx={{ fontSize: '2.5rem' }} />,
@@ -31,7 +33,7 @@ const RoomTypeIcons = {
   family: <KingBedIcon sx={{ fontSize: '2.5rem' }} />
 };
 
-const MainDashboard = () => {
+const TDashboard = () => {
   const { t } = useTranslation();  
   const theme = useTheme();
      const payload = tokenPayload();
@@ -53,6 +55,7 @@ const MainDashboard = () => {
   const [booking,setBooking] = useState([]);
   const [pendingBill,setPendingBill] = useState([]);
   const [paidBill,setPaidBill] = useState([]);
+  const [servideProvider,setServicePrvider] = useState([]);
 
 
   const fetchAgentData = async () => {
@@ -66,7 +69,7 @@ const MainDashboard = () => {
 
   const fetchBookingData = async () => {
     try {
-      const response = await getApi( urls.booking.allbooking, { id: payload.companyId });
+      const response = await getApi( urls.tenant.tenantBookingData, { id: payload._id });
       setBooking(response?.data);
     } catch (error) {
       console.log(error);
@@ -75,8 +78,17 @@ const MainDashboard = () => {
 
   const fetchPaidData = async () => {
     try {
-      const response = await getApi( urls.bill.paidBillCounts, { id: payload.companyId });
+      const response = await getApi( urls.bill.getBillByT, { id: payload._id });
       setPaidBill(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchServiceProviderData = async () => {
+    try {
+      const response = await getApi( urls.serviceProvider.getAll, { id: payload.companyId });
+      setServicePrvider(response?.data);
     } catch (error) {
       console.log(error);
     }
@@ -112,7 +124,7 @@ const MainDashboard = () => {
 
   const fetchTenantData = async () => {
     try {
-      const response = await getApi(urls.tenant.getAllTenants,{id: payload.companyId});
+      const response = await getApi(urls.tenant.getMyTenants,{id: payload._id});
       setTenant(response?.data);
     } catch (error) {
       console.log(error);
@@ -129,7 +141,7 @@ const MainDashboard = () => {
   };
   const fetchPendingBillData = async () => {
     try {
-      const response = await getApi(urls.bill.pendingBillCounts,{id: payload.companyId});
+      const response = await getApi(urls.bill.getBillForTPending,{id: payload._id});
       setPendingBill(response?.data);
     } catch (error) {
       console.log(error);
@@ -141,6 +153,7 @@ const MainDashboard = () => {
     fetchPaidData();
     fetchPropertyData();
     fetchPendingBillData();
+    fetchServiceProviderData();
     // fetchcustomerData();
     fetchTenantData();
     fetchVacantPropertyData();
@@ -181,32 +194,8 @@ const MainDashboard = () => {
       <Grid container spacing={gridSpacing}>
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
-            <Grid
-              item
-              lg={3}
-              md={6}
-              sm={6}
-              xs={12}
-              sx={{ cursor: 'pointer' }}
-              onClick={() => {
-                navigate('/dashboard/agents');
-              }}
-            >
-              <TotalAgent isLoading={isLoading} agent={agent} />
-            </Grid>
-            {/* <Grid
-              item
-              lg={3}
-              md={6}
-              sm={6}
-              xs={12}
-              sx={{ cursor: 'pointer' }}
-              onClick={() => {
-                navigate('/dashboard/customers');
-              }}
-            >
-              <TotalCompanies isLoading={isLoading} customerData={customerData} />
-            </Grid> */}
+           
+         
             <Grid
               item
               lg={3}
@@ -220,33 +209,8 @@ const MainDashboard = () => {
             >
               <TotalVacantProperties isLoading={isLoading} vacantPropertyData={vacantpropertyData} />
             </Grid>
-            <Grid
-              item
-              sm={6}
-              xs={12}
-              md={6}
-              lg={3}
-              sx={{ cursor: 'pointer' }}
-              onClick={() => {
-                navigate('/dashboard/property');
-              }}
-            >
-              <TotalProperties isLoading={isLoading} property={property} />
-            </Grid>
+         
 
-            <Grid
-              item
-              sm={6}
-              xs={12}
-              md={6}
-              lg={3}
-              sx={{ cursor: 'pointer' }}
-              onClick={() => {
-                navigate('/dashboard/companyComplaints');
-              }}
-            >
-              <TotalComplains isLoading={isLoading} complainData={complainData} />
-            </Grid>
 
             <Grid
               item
@@ -269,11 +233,24 @@ const MainDashboard = () => {
               lg={3}
               sx={{ cursor: 'pointer' }}
               onClick={() => {
+                navigate('/dashboard/booking');
+              }}
+            >
+              <TotalServiceProvider isLoading={isLoading} servideProvider={servideProvider} />
+            </Grid>
+            {/* <Grid
+              item
+              sm={6}
+              xs={12}
+              md={6}
+              lg={3}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
                 navigate('/dashboard/tenents');
               }}
             >
               <TotalTenants isLoading={isLoading} tenant={tenant} />
-            </Grid>
+            </Grid> */}
             <Grid
               item
               lg={3}
@@ -288,30 +265,18 @@ const MainDashboard = () => {
               <TotalPendingBill isLoading={isLoading} TotalPendingBill={pendingBill} />
             </Grid>
 
-            <Grid
-              item
-              lg={3}
-              md={6}
-              sm={6}
-              xs={12}
-              sx={{ cursor: 'pointer' }}
-              // onClick={() => {
-              //   navigate('/dashboard/billC');
-              // }}
-            >
-              <TotalPaidBill isLoading={isLoading} TotalPaidBill={paidBill} />
-            </Grid>
+       
           </Grid>
         </Grid>
 
         <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={12}>
-            <TotalGrowthBarChart isLoading={isLoading} />
+            {/* <TotalGrowthBarChart isLoading={isLoading} /> */}
           </Grid>
-          {/* <Grid item xs={12} md={4}>
-            <PopularCard isLoading={isLoading} />
-          </Grid> */}
+          <Grid item xs={12} md={4}>
+            {/* <PopularCard isLoading={isLoading} /> */}
+          </Grid>
         </Grid>
       </Grid>
 
@@ -413,4 +378,4 @@ const MainDashboard = () => {
   );
 };
 
-export default MainDashboard;
+export default TDashboard;

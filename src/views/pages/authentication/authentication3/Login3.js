@@ -1,16 +1,14 @@
-import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-import { Divider, Grid, Stack, Typography, useMediaQuery, Box } from '@mui/material';
+import { Divider, Grid, Stack, Typography, Box } from '@mui/material';
 import AuthWrapper1 from '../AuthWrapper1.js';
 import AuthCardWrapper from '../AuthCardWrapper.js';
 // import AuthLogin from '../auth-forms/AuthLogin.js';
 import Logo from 'layout/MainLayout/LogoSection';
-import AuthFooter from 'ui-component/cards/AuthFooter.js';
+
 import InventoryImage from 'assets/images/mklp.png';
 import FirebaseLogin from '../auth-forms/AuthLogin.js';
 const Login = () => {
   const theme = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <AuthWrapper1>
       <Grid container sx={{ minHeight: '100vh', backgroundColor: '#441572' }}>

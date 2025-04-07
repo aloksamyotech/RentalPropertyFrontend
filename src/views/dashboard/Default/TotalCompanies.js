@@ -90,18 +90,7 @@ const TotalCompanies = ({ isLoading, customerData }) => {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item sx={{ mb: 1.25 }}>
-                <Typography
-                  sx={{
-                    fontSize: '1rem',
-                    fontWeight: 500,
-                    color: theme.palette.primary.light,
-                    textAlign: 'center'
-                  }}
-                >
-                  {t('totalCustomers')}
-                </Typography>
-              </Grid>
+             
             </Grid>
           </Box>
         </CardWrapper>

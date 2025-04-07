@@ -15,11 +15,9 @@ import {
   Divider,
   InputLabel,
   OutlinedInput,
-  Typography,
-  useMediaQuery
+  Typography
 } from '@mui/material';
 import { Formik } from 'formik';
-import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { toast } from 'react-toastify';
 import Visibility from '@mui/icons-material/Visibility';
@@ -28,10 +26,6 @@ import { urls } from 'core/Constant/urls';
 
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
-  const scriptedRef = useScriptRef();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-  const customization = useSelector((state) => state.customization);
-  const [checked, setChecked] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
@@ -77,13 +71,13 @@ const FirebaseLogin = ({ ...others }) => {
               const Role = response.data.role;
 
               if (Role === 'admin') {
-                window.location.replace('/dashboard/default');
+                window.location.replace('/dashboard/SADashboard');
               } else if (Role === 'companyAdmin') {
                 window.location.replace('/dashboard/default');
               } else if (Role === 'tenant') {
-                window.location.replace('/dashboard/default');
+                window.location.replace('/dashboard/TDashboard');
               } else if (Role === 'agent') {
-                window.location.replace('/dashboard/default');
+                window.location.replace('/dashboard/ADashboard');
               }
             }
           } catch (error) {

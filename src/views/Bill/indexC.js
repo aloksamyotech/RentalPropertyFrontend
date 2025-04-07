@@ -21,28 +21,22 @@ import { Link } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import TableStyle from '../../ui-component/TableStyle';
 import { IconHome } from '@tabler/icons';
-import Iconify from '../../ui-component/iconify';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
 import { useNavigate } from 'react-router-dom';
-import MonthlyInvoiceView from './MonthlyInvoiceView';
 import DeleteBill from './billDelete';
-
 
 const BillC = () => {
   const { t } = useTranslation();
   const [openDelete, setOpenDelete] = useState(false);
-  const [openAdd, setOpenAdd] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
   const [billData, setBillData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [rowData, setRowData] = useState()
+  const [rowData, setRowData] = useState();
   const [currentRow, setCurrentRow] = useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const payload = tokenPayload();
   const userRole = payload.role;
 
@@ -66,7 +60,7 @@ const BillC = () => {
 
   useEffect(() => {
     fetchBillData();
-  }, [openAdd, openEdit, openDelete]);
+  }, [openDelete]);
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
@@ -78,20 +72,13 @@ const BillC = () => {
     setCurrentRow(null);
   };
 
-  
-
-  const handleCloseDeleteBill = () => setOpenDelete(false);
-
   const handleOpenDeleteBill = () => {
     setRowData(currentRow);
     setOpenDelete(true);
     handleClose();
   };
-  // const handleOpenDeleteBill = () => {
-  //   setOpenDelete(true);
-  //   handleClose();
-  // };
 
+  const handleCloseDeleteBill = () => setOpenDelete(false);
 
   const handleOpenView = () => {
     navigate(`/dashboard/billC/view?id=${currentRow._id}`);
@@ -106,7 +93,6 @@ const BillC = () => {
     </Typography>,
   ];
 
-
   const columns = [
     {
       field: 'serialNo',
@@ -114,24 +100,22 @@ const BillC = () => {
       width: 30,
       renderCell: (params) => {
         const rowIndex = billData.findIndex((row) => row._id === params.row._id);
-        return rowIndex + 1; 
-      }},
+        return rowIndex + 1;
+      },
+    },
     {
       field: 'tenantName',
       headerName: t('Tenant Name'),
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize',
-             renderCell: (params) => (
-                          <Button
-                            variant="text"
-                            color="primary"
-                            onClick={() =>
-                              navigate(`/dashboard/billC/view?id=${params.row._id}`) 
-                            }
-                          >
-                            {params.row.tenantName}  
-                          </Button>
-                        ),
+      renderCell: (params) => (
+        <Button
+          variant="text"
+          color="primary"
+          onClick={() => navigate(`/dashboard/billC/view?id=${params.row._id}`)}
+        >
+          {params.row.tenantName}
+        </Button>
+      ),
     },
     {
       field: 'propertyName',
@@ -152,19 +136,16 @@ const BillC = () => {
       field: 'totalBillAmount',
       headerName: t('Total Bill Amount'),
       flex: 1,
-      cellClassName: 'name-column--cell--capitalize',
     },
     {
       field: 'name',
-      headerName: t('Booking Creater'),
+      headerName: t('Booking Creator'),
       flex: 1,
-      cellClassName: 'name-column--cell--capitalize',
     },
     {
       field: 'status',
       headerName: t('Status'),
       flex: 1,
-      cellClassName: 'name-column--cell--capitalize',
       renderCell: (params) => (
         <Typography
           style={{
@@ -198,21 +179,16 @@ const BillC = () => {
               horizontal: 'left',
             }}
           >
-              <MenuItem onClick={handleOpenView}>
-                        <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
-                        {t('view')}
-                      </MenuItem>
-                      {userRole === "companyAdmin" && (
-  <MenuItem
-    onClick={handleOpenDeleteBill}
-    sx={{ color: 'red' }}
-    disableRipple
-  >
-    <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
-    {t('Delete')}
-  </MenuItem>
-)}
-
+            <MenuItem onClick={handleOpenView}>
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('view')}
+            </MenuItem>
+            {userRole === 'companyAdmin' && (
+              <MenuItem onClick={handleOpenDeleteBill} sx={{ color: 'red' }} disableRipple>
+                <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
+                {t('Delete')}
+              </MenuItem>
+            )}
           </Popover>
         </>
       ),
@@ -221,38 +197,36 @@ const BillC = () => {
 
   return (
     <>
-        <DeleteBill open={openDelete} handleClose={handleCloseDeleteBill} id={rowData?._id} />
-  
-    <Container>
-    <Grid item xs={12}>
-        <Card sx={{ p: 2, mb: 2 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {t('Bill Management')}
-            <Breadcrumbs separator="›" aria-label="breadcrumb">
-              {breadcrumbs}
-            </Breadcrumbs>
-          </Typography>
-        </Stack>
-      </Card>
-     
+      <DeleteBill open={openDelete} handleClose={handleCloseDeleteBill} id={rowData?._id} />
+
+      <Container>
+        <Grid item xs={12}>
+          <Card sx={{ p: 2, mb: 2 }}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+              <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                {t('Bill Management')}
+                <Breadcrumbs separator="›" aria-label="breadcrumb">
+                  {breadcrumbs}
+                </Breadcrumbs>
+              </Typography>
+            </Stack>
+          </Card>
         </Grid>
 
-      <TableStyle>
-        <Box width="100%">
-          <Card style={{ height: '600px', paddingTop: '15px' }}>
-            <DataGrid
-              rows={billData}
-              columns={columns}
-              // checkboxSelection
-              getRowId={(row) => row._id || row.id}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{ toolbar: { showQuickFilter: true } }}
-            />
-          </Card>
-        </Box>
-      </TableStyle>
-    </Container>
+        <TableStyle>
+          <Box width="100%">
+            <Card style={{ height: '600px', paddingTop: '15px' }}>
+              <DataGrid
+                rows={billData}
+                columns={columns}
+                getRowId={(row) => row._id || row.id}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{ toolbar: { showQuickFilter: true } }}
+              />
+            </Card>
+          </Box>
+        </TableStyle>
+      </Container>
     </>
   );
 };

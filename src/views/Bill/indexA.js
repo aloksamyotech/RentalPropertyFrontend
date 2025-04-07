@@ -18,9 +18,7 @@ import { getApi } from 'core/apis/api';
 import { Link } from 'react-router-dom';
 import TableStyle from '../../ui-component/TableStyle';
 import { IconHome } from '@tabler/icons';
-import Iconify from '../../ui-component/iconify';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
@@ -30,15 +28,10 @@ import { useNavigate } from 'react-router-dom';
 
 const BillA = () => {
   const { t } = useTranslation();
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openAdd, setOpenAdd] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
   const [billData, setBillData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
-  const [rowData, setRowData] = useState([]);
    const payload = tokenPayload();
-   const userRole = payload.role;
    const navigate = useNavigate();
 
 
@@ -77,21 +70,9 @@ const BillA = () => {
     navigate(`/dashboard/billC/view?id=${currentRow._id}`);
   };
 
-  const handleCloseDeleteCompany = () => setOpenDelete(false);
 
-  const handleOpenDeleteCompany = () => {
-    setRowData(currentRow);
-    setOpenDelete(true);
-    handleClose();
-  };
 
-  const handleCloseEditCompany = () => setOpenEdit(false);
 
-  const handleOpenEditCompany = () => {
-    setRowData(currentRow);
-    setOpenEdit(true);
-    handleClose();
-  };
 
   const breadcrumbs = [
     <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
@@ -118,8 +99,6 @@ const BillA = () => {
     //       </Typography>,
     //     ];
 
-  const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
 
   const columns = [
     {

@@ -6,7 +6,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { patchApi } from 'core/apis/api';

@@ -18,9 +18,6 @@ import { getApi } from 'core/apis/api';
 import { Link } from 'react-router-dom';
 import TableStyle from '../../ui-component/TableStyle';
 import { IconHome } from '@tabler/icons';
-import Iconify from '../../ui-component/iconify';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
@@ -35,9 +32,8 @@ const BillT = () => {
   const [billData, setBillData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
-  const [rowData, setRowData] = useState([]);
    const payload = tokenPayload();
-   const userRole = payload.role;
+   
    const navigate = useNavigate();
 
 
@@ -48,6 +44,7 @@ const BillT = () => {
         const billingDate = new Date(item.billingMonth);
         const formattedBillingMonth = `${billingDate.toLocaleString('default', { month: 'long' })} ${billingDate.getFullYear()}`; // Format as "Month Year"
   
+      
         return {
           ...item,
           tenantName: item.tenantId?.tenantName,
@@ -55,6 +52,7 @@ const BillT = () => {
           billingMonth: formattedBillingMonth,
         };
       });
+   
         setBillData(formattedData);
     };
 
@@ -71,6 +69,8 @@ const BillT = () => {
     setAnchorEl(null);
     setCurrentRow(null);
   };
+
+
 
   const handleOpenView = () => {
     navigate(`/dashboard/billC/view?id=${currentRow._id}`);
@@ -116,11 +116,36 @@ const BillT = () => {
     //         {t('View')}
     //       </Typography>,
     //     ];
+    // <Link key="bill" style={{ color: 'inherit', textDecoration: 'none' }}>
+    //   {t('Bill Management')}
+    // </Link>
+  // ];
+  
+
+    // const breadcrumbs = [
+    //       <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
+    //         <IconHome />
+    //       </Link>,
+    //       <Link underline="hover" key="property-management" to="/dashboard/booking" style={{ color: 'inherit' }}>
+    //         {t('Booking Management')}
+    //       </Link>,
+    //       <Typography key="view" color="text.primary">
+    //         {t('View')}
+    //       </Typography>,
+    //     ];
 
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = billData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      }},
     {
       field: 'serialNo',
       headerName: 'S.No.',
@@ -201,9 +226,11 @@ const BillT = () => {
             }}
           >
             {/* <MenuItem onClick={handleOpenEditCompany} disableRipple>
+            {/* <MenuItem onClick={handleOpenEditCompany} disableRipple>
               <EditIcon style={{ marginRight: '8px' }} />
               {t('Edit')}
             </MenuItem> */}
+          
              <MenuItem onClick={handleOpenView}>
                           <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
                           {t('view')}
@@ -247,6 +274,7 @@ const BillT = () => {
             <DataGrid
               rows={billData}
               columns={columns}
+              // checkboxSelection
               // checkboxSelection
               getRowId={(row) => row._id || row.id}
               slots={{ toolbar: GridToolbar }}
