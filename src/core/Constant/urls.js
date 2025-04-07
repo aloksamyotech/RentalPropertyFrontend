@@ -1,18 +1,21 @@
 /* eslint-disable prettier/prettier */
 
 import Complaints from 'views/Complaints';
-
 const base = 'http://localhost:7200/api/v1';
 // const base = 'http://165.22.218.55:7202/api/v1';
 // const base = 'https://rentals.samyotech.in/api/v1';
+// const base = 'http://165.22.218.55:7202/api/v1';
+// const base = 'https://rentals.samyotech.in/api/v1';
 const imageBase = 'http://localhost:7200/';
+// const imageBase = 'https://rentals.samyotech.in/';
 // const imageBase = 'https://rentals.samyotech.in/';
 export const urls = Object.freeze({
   // SuperAdmin
   user: {
     register: base + '/user/register',
     login: base + '/user/login',
-    update: base + '/user/update'
+    update: base + '/user/update',
+    
   },
   bill: {
     createBill: base + '/bill/createBill',
@@ -56,7 +59,7 @@ export const urls = Object.freeze({
     edit: base + '/owner/edit',
     ownerdata: base + '/owner/getAllOwner',
     ownerById: base + '/owner/getOwnerById',
-    getPropertyByOwnerId: base + '/owner/getPropertyByOwnerId'
+    getPropertyByOwnerId: base + '/owner/getPropertyByOwnerId',
   },
   agent: {
     create: base + '/agent/register',
@@ -64,7 +67,7 @@ export const urls = Object.freeze({
     agentdata: base + '/agent/getAllAgent',
     edit: base + '/agent/edit',
     delete: base + '/agent/delete',
-    getAgentById: base + '/agent/getAgentById'
+    getAgentById: base + '/agent/getAgentById',
   },
   property: {
     create: base + '/property/register',
@@ -78,6 +81,7 @@ export const urls = Object.freeze({
     uplaodImages: base + '/property/uploadImages',
     getAllImgByPropertyId: base + '/property/getAllImages',
     deleteImg: base + '/property/deleteImg',
+    
     image: imageBase
   },
   tenant: {
@@ -104,10 +108,6 @@ export const urls = Object.freeze({
     getBookingById: base + '/booking/getBookingById',
     propertyOnNotice: base + '/booking/propertyOnNotice'
   },
-  visitor: {
-    create: base + '/createvisitor',
-    getallvisitor: base + '/getallvisitor'
-  },
   Complaints: {
     create: base + '/complain/register',
     getComplain: base + '/complain/allComplain',
@@ -117,7 +117,7 @@ export const urls = Object.freeze({
     allComplainForCompany: base + '/complain/allComplainForCompany',
     addCommentToComplain: base + '/complain/addCommentToComplain',
     resolveComplain: base + '/complain/resolveComplain',
-    getAllComplainCompanyAgent: base + '/complain/getAllComplainCompanyAgent'
+    getAllComplainCompanyAgent: base + '/complain/getAllComplainCompanyAgent',
   },
   serviceProvider: {
     create: base + '/serviceProvider/register',

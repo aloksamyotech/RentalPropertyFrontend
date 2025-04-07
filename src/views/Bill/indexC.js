@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-no-undef */
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
@@ -36,7 +37,7 @@ const BillC = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [billData, setBillData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [rowData, setRowData] = useState()
+  const [rowData, setRowData] = useState();
   const [currentRow, setCurrentRow] = useState(null);
   const navigate = useNavigate()
   const payload = tokenPayload();
@@ -79,6 +80,11 @@ const BillC = () => {
   const handleCloseDeleteBill = () => setOpenDelete(false);
 
   const handleOpenDeleteBill = () => {
+  
+
+  const handleCloseDeleteBill = () => setOpenDelete(false);
+
+  const handleOpenDeleteBill = () => {
     setRowData(currentRow);
     setOpenDelete(true);
     handleClose();
@@ -88,7 +94,14 @@ const BillC = () => {
   //   handleClose();
   // };
 
+  // const handleOpenDeleteBill = () => {
+  //   setOpenDelete(true);
+  //   handleClose();
+  // };
 
+
+  const handleOpenView = () => {
+    navigate(`/dashboard/billC/view?id=${currentRow._id}`);
   const handleOpenView = () => {
     navigate(`/dashboard/billC/view?id=${currentRow._id}`);
   };
@@ -99,11 +112,20 @@ const BillC = () => {
     </Link>,
     <Typography key="company" color="text.primary">
       {t('Bill Management')}
+      {t('Bill Management')}
     </Typography>,
   ];
 
 
   const columns = [
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = billData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      }},
     {
       field: 'serialNo',
       headerName: 'S.No.',
@@ -140,6 +162,11 @@ const BillC = () => {
       flex: 1,
     },
     {
+      field: 'paymentType',
+      headerName: t('Payment Type'),
+      flex: 1,
+    },
+    {
       field: 'billingMonth',
       headerName: t('Billing Month'),
       flex: 1,
@@ -147,6 +174,12 @@ const BillC = () => {
     {
       field: 'totalBillAmount',
       headerName: t('Total Bill Amount'),
+      flex: 1,
+      cellClassName: 'name-column--cell--capitalize',
+    },
+    {
+      field: 'name',
+      headerName: t('Booking Creater'),
       flex: 1,
       cellClassName: 'name-column--cell--capitalize',
     },
@@ -168,6 +201,7 @@ const BillC = () => {
             fontWeight: 'bold',
           }}
         >
+          {params.row.status ? t('Paid') : t('Pending')}
           {params.row.status ? t('Paid') : t('Pending')}
         </Typography>
       ),
@@ -209,6 +243,21 @@ const BillC = () => {
   </MenuItem>
 )}
 
+              <MenuItem onClick={handleOpenView}>
+                        <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+                        {t('view')}
+                      </MenuItem>
+                      {userRole === "companyAdmin" && (
+  <MenuItem
+    onClick={handleOpenDeleteBill}
+    sx={{ color: 'red' }}
+    disableRipple
+  >
+    <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
+    {t('Delete')}
+  </MenuItem>
+)}
+
           </Popover>
         </>
       ),
@@ -219,7 +268,11 @@ const BillC = () => {
     <>
         <DeleteBill open={openDelete} handleClose={handleCloseDeleteBill} id={rowData?._id} />
   
+    <>
+        <DeleteBill open={openDelete} handleClose={handleCloseDeleteBill} id={rowData?._id} />
+  
     <Container>
+   
     <Grid item xs={12}>
         <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
@@ -234,12 +287,15 @@ const BillC = () => {
      
         </Grid>
 
+     
+
       <TableStyle>
         <Box width="100%">
           <Card style={{ height: '600px', paddingTop: '15px' }}>
             <DataGrid
               rows={billData}
               columns={columns}
+              // checkboxSelection
               // checkboxSelection
               getRowId={(row) => row._id || row.id}
               slots={{ toolbar: GridToolbar }}
@@ -250,7 +306,8 @@ const BillC = () => {
       </TableStyle>
     </Container>
     </>
+    </>
   );
 };
-
+  }}
 export default BillC;

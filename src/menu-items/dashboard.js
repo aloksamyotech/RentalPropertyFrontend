@@ -69,7 +69,7 @@ const superAdminDashboard = {
   ]
 };
 
-// Company Admin Dashboard
+// Company Admin company
 const companyAdminDashboard = {
   title: i18n.t('Company Admin Dashboard'),
   type: 'group',

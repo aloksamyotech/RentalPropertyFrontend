@@ -28,6 +28,7 @@ import OwnerDetails from 'views/Owner/Components/OwnerDetails';
 import TenentView from 'views/Tenants/component/TenentViews';
 import AgentView from 'views/Agents/components/AgentView';
 // import CreateBill from 'views/Booking/component/CreateBill';
+// import CreateBill from 'views/Booking/component/CreateBill';
 import Bill from 'views/Bill/indexC';
 import BillT from 'views/Bill/indexT';
 import ServiceProvider from 'views/ServiceProvider';
@@ -113,8 +114,10 @@ const companyAdminRoutes = {
         { path: 'serviceprovider', element: <ServiceProvider /> },
         { path: 'companyComplaints', element: <CompanyComplaints/> },
         { path: 'billC/view', element: <MonthlyInvoiceView/> },
+        { path: 'billC/view', element: <MonthlyInvoiceView/> },
         { path: 'agents', element: <Agents /> },
         { path: 'booking', element: <Booking /> },
+        { path: 'profile', element: <ProfilePage /> },
         { path: 'profile', element: <ProfilePage /> },
         { path: 'complain/view', element: <ComplainDetailsPage/> },
         { path: 'booking/view', element: <BookingDetailsPage/> },
@@ -151,6 +154,10 @@ const tenantRoutes = {
         { path: 'payment', element: <Payment /> },
         { path: 'serviceprovider', element: <ServiceProvider /> },
         { path: 'agents', element: <Agents /> },
+        { path: 'billC/view', element: <MonthlyInvoiceView/> },
+        // { path: 'billC', element: <Bill /> },
+        { path: 'property/view', element:<Propertyview/> },
+        { path: 'vacantproperty/view', element:<VacantPropertyView/>},
         { path: 'billC/view', element: <MonthlyInvoiceView/> },
         // { path: 'billC', element: <Bill /> },
         { path: 'property/view', element:<Propertyview/> },
@@ -195,11 +202,19 @@ const agentDashboardRoutes = {
         { path: 'tenant/view' , element:<TenentView/>},
         // { path: 'billT', element: <BillT /> },
         {path: 'billA', element :<BillA/>},
+        { path: 'property/view', element:<Propertyview/> },
+        { path: 'announcement', element: <Announcement /> },
+        { path: 'tenant/view' , element:<TenentView/>},
+        // { path: 'billT', element: <BillT /> },
+        {path: 'billA', element :<BillA/>},
         { path: 'serviceprovider', element: <ServiceProvider /> },
+        { path: 'billC/view', element: <MonthlyInvoiceView/> },
         { path: 'billC/view', element: <MonthlyInvoiceView/> },
         { path: 'vacantproperty', element:<VacantProperties /> },
         { path: 'agents', element: <Agents /> },
         { path: 'complaints', element: <Complaints /> },
+        { path: 'complain/agent/view', element: <ComplainDetailsPageForAgent/> },
+        { path: 'vacantProperty/view', element: <VacantPropertyView/> },
         { path: 'complain/agent/view', element: <ComplainDetailsPageForAgent/> },
         { path: 'vacantProperty/view', element: <VacantPropertyView/> },
         { path: 'booking/view', element: <BookingDetailsPage/> },
