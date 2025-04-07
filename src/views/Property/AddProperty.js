@@ -16,6 +16,7 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 import ClearIcon from '@mui/icons-material/Clear';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useFormik } from 'formik';
@@ -35,7 +36,8 @@ const AddProperty = ({ open, handleClose }) => {
   const [ownerName, setOwnerData] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [typeData, setTypeData] = useState([]);
-
+  const [loading, setIsLoading] = useState(false); 
+  const [currency, setCurrency] = useState();
   const payload = tokenPayload();
 
   const handleFileChange = (event) => {
@@ -59,13 +61,21 @@ const AddProperty = ({ open, handleClose }) => {
     setTypeData(response?.data || []);
   };
 
+  const fetchCurrencyData = async () => {
+    const response = await getApi(urls.company.getCompanyById, { id: payload._id });
+    setCurrency(response?.data.currencyCode || [] );
+  };
+
   const addProperty = async (values, resetForm) => {
+    setIsLoading(true);
+
     const formData = new FormData();
 
     formData.append('propertyname', values.propertyname);
     formData.append('typeId', values.typeId);
     formData.append('description', values.description);
     formData.append('rent', values.rent);
+    formData.append('area', values.area);
     formData.append('address', values.address);
     formData.append('zipcode', values.zipcode);
     formData.append('maplink', values.maplink);
@@ -79,14 +89,18 @@ const AddProperty = ({ open, handleClose }) => {
       const response = await postApi(urls.property.create, formData, { 'Content-Type': 'multipart/form-data' });
       if (response.success) {
         toast.success(t('Successfully registered property!'));
-        resetForm();
         setAttachments([]);
+        resetForm();
         handleClose();
       } else {
-        throw new Error();
+        toast.error(t('Failed to register property !'));
       }
     } catch {
       toast.error(t('Failed to register property!'));
+    } finally {
+      handleClose();
+      resetForm()
+      setIsLoading(false); 
     }
   };
 
@@ -94,14 +108,14 @@ const AddProperty = ({ open, handleClose }) => {
     if (open) {
       fetchOwnerData();
       fetchTypeData();
+      fetchCurrencyData();
     }
   }, [open]);
 
   const validationSchema = yup.object({
-    propertyname: yup
-      .string()
-      .max(50, t('Property Name must be at most 50 characters'))
-      .required(t('Property Name is required')),
+    propertyname: yup.string()
+    .max(50, t('Property Name must be at most 50 characters'))
+    .required(t('Property Name is required')),  
     typeId: yup.string().required(t('Type is required')),
     description: yup
       .string()
@@ -111,15 +125,25 @@ const AddProperty = ({ open, handleClose }) => {
       .number()
       .typeError(t('Rent must be a number'))
       .min(1, t('must be positive'))
-      .max(999999, t('Rent cannot exceed 6 digits'))
+      .max(9999999999, t('Rent cannot exceed 10 digits'))
       .test('is-positive', t('Rent must be greater than zero'), (value) => value > 0)
       .required(t('Rent is required')),
+    area: yup
+      .number()
+      .typeError(t('Area must be a number'))
+      .min(1, t('must be positive'))
+      .max(9999999999, t('Rent cannot exceed 10 digits'))
+      .test('is-positive', t('Area must be greater than zero'), (value) => value > 0)
+      .required(t('Area is required')),
     address: yup
       .string()
       .max(100, t('Address cannot exceed 100 characters'))
       .required(t('Address is required')),
-    zipcode: yup.string().required(t('Zip Code is required')),
-    maplink: yup.string().url(t('Must be a valid URL')).required(t('Google Map Link is required')),
+      zipcode: 
+      yup.string()
+      .matches(/^[0-9]{3,8}$/, t('Zipcode must be between 3 and 8 digits'))
+      .required(t('Zip Code is required')),
+        maplink: yup.string().url(t('Must be a valid URL')).required(t('Google Map Link is required')),
     ownerId: yup.string().required(t('Owner Name is required')),
   });
 
@@ -129,6 +153,7 @@ const AddProperty = ({ open, handleClose }) => {
       typeId: '',
       description: '',
       rent: '',
+      area:'',
       address: '',
       zipcode: '',
       maplink: '',
@@ -141,8 +166,6 @@ const AddProperty = ({ open, handleClose }) => {
     },
   });
 
-    const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
-
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -151,7 +174,7 @@ const AddProperty = ({ open, handleClose }) => {
       </DialogTitle>
 
       <DialogContent dividers>
-        <form onSubmit={throttledSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Name')}</FormLabel>
@@ -216,21 +239,52 @@ const AddProperty = ({ open, handleClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Rent')}</FormLabel>
+  <FormLabel>{t('Rent per Month')}</FormLabel>
+  <TextField
+    id="rent"
+    name="rent"
+    type="number"
+    size="small"
+    fullWidth
+    value={formik.values.rent}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Only allow numbers and prevent adding if more than 8 digits
+      if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+        formik.handleChange(e);
+      }
+    }}
+    error={formik.touched.rent && Boolean(formik.errors.rent)}
+    helperText={formik.touched.rent && formik.errors.rent}
+    InputProps={{
+      endAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
+    }}
+  />
+</Grid>
+
+
+
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Area per square feet')}</FormLabel>
               <TextField
-                id="rent"
-                name="rent"
+                id="area"
+                name="area"
                 type="number"
                 size="small"
                 fullWidth
-                value={formik.values.rent}
-                onChange={formik.handleChange}
-                error={formik.touched.rent && Boolean(formik.errors.rent)}
-                helperText={formik.touched.rent && formik.errors.rent}
+                value={formik.values.area}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+                    formik.handleChange(e);
+                  }
+                }}
+                error={formik.touched.area && Boolean(formik.errors.area)}
+                helperText={formik.touched.area && formik.errors.area}
               />
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Box mb={1}>
                 <FormLabel>{t('Property Images')}</FormLabel>
               </Box>
@@ -259,7 +313,7 @@ const AddProperty = ({ open, handleClose }) => {
                   />
                 ))}
               </Box>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <FormLabel>{t('Description')}</FormLabel>
@@ -296,6 +350,7 @@ const AddProperty = ({ open, handleClose }) => {
               <TextField
                 id="zipcode"
                 name="zipcode"
+                type="number"
                 size="small"
                 fullWidth
                 value={formik.values.zipcode}
@@ -323,8 +378,8 @@ const AddProperty = ({ open, handleClose }) => {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={throttledSubmit} variant="contained" color="primary">
-          {t('Save')}
+        <Button onClick={formik.handleSubmit} variant="contained" color="primary"   disabled={loading} >
+           {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {

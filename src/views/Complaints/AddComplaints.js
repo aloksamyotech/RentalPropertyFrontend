@@ -49,9 +49,10 @@ const AddComplaints = ({ open, handleClose }) => {
   const validationSchema = yup.object({
     propertyId: yup.string().required(t('Property is required')),
     concernTopic: yup
-      .string()
-      .max(30, t('Topic cannot exceed 30 characters'))
-      .required(t('Topic is required')),
+    .string()
+    .matches(/^[A-Za-z0-9 ]*$/, t('Topic can only contain letters, numbers, and spaces'))
+    .max(30, t('Topic cannot exceed 30 characters'))
+    .required(t('Topic is required')),  
     description: yup
       .string()
       .max(200, t('Description cannot exceed 200 characters'))
@@ -68,22 +69,32 @@ const AddComplaints = ({ open, handleClose }) => {
     onSubmit: async (values, { resetForm }) => {
       const complaintData = {
         ...values,
-        AgentId: payload.reporterId,
         companyId: payload.companyId,
-        tenantId: payload._id,
       };
 
+      if (payload.role === 'agent') {
+        complaintData.agentId = payload._id;
+      } else if (payload.role === 'tenant') {
+        complaintData.tenantId = payload._id;
+      }
+
       try {
+        setLoading(true);
+        const startTime = Date.now();
         const response = await postApi(urls.Complaints.create, complaintData);
         if (response.success) {
+          const elapsedTime = Date.now() - startTime;
+          const remainingTime = Math.max(0, 1000 - elapsedTime);
+          setTimeout(() => {
+            setLoading(false);
+            handleClose();
+          }, remainingTime);
           toast.success(t('Complaint successfully registered!'));
           resetForm();
-          setTimeout(() => {
-            handleClose();
-          }, 200);
         }
       } catch (err) {
         console.error(err);
+        setLoading(false);
         toast.error(t('Something went wrong!'));
       }
     },
@@ -167,8 +178,9 @@ const AddComplaints = ({ open, handleClose }) => {
           onClick={formik.handleSubmit}
           variant="contained"
           color="primary"
+          disabled={loading} 
         >
-          {t('Save')}
+          {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {

@@ -24,10 +24,12 @@ import AddIcon from '@mui/icons-material/Add';
 import { useCallback } from 'react';
 
 const GenerateMonthlyBill = ({ open, handleClose, data }) => {
+
   const { t } = useTranslation();
   const payload = tokenPayload();
   const [property, setProperty] = useState(null);
   const [tenant, setTenant] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (data?.propertyId) setProperty(data.propertyId);
@@ -38,43 +40,66 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
     return Number(units) * Number(rate);
   };
 
+  const totalgst = (rate, units, rent, extraCharges, gstpercent ) => {
+    const totalAmount = calculateTotalBill(rate, units, rent, extraCharges);
+    const totalgst = (gstpercent/100 ) * totalAmount;
+    return Number(totalgst);
+  };
+
   const calculateTotalBill = (rate, units, rent, extraCharges) => {
     const totalElectricity = calculateElectricityBill(units, rate);
     const totalExtraCharges = extraCharges.reduce((sum, charge) => sum + Number(charge.price), 0);
     return Number(rent) + totalElectricity + totalExtraCharges;
   };
 
+  const calculationAmountAfterGst = (rate, units, rent, extraCharges, gstpercent) => {
+     const totalBill = calculateTotalBill(rate, units, rent, extraCharges);
+     const gstAmount =  totalgst(rate, units, rent, extraCharges, gstpercent);
+     return Number(totalBill) + Number(gstAmount);
+  };
+
+
   const validationSchema = yup.object({
     tenantId: yup.string().required(t('Tenant is required')),
     propertyId: yup.string().required(t('Property is required')),
     billingMonth: yup.date().required(t('Billing Month is required')),
-    rentAmount: yup.number().required(t('Rent Amount is required')).min(0, t('Rent Amount cannot be negative')),
+    rentAmount: yup.number().required(t('Rent Amount is required'))
+    .min(0, t('Rent Amount cannot be negative')) 
+    .max(1000000, t('Rent Amount cannot exceed ')),
     extraCharges: yup.array().of(
       yup.object({
         serviceName: yup.string(),
-        price: yup.number().min(0, t('Price cannot be negative')),
+        price: yup.number().min(0, t('Price cannot be negative')).max(10000, t('Price cannot exceed 1000')),
       })
     ),
-    electricityUnit: yup.number().required(t('Electricity Bill Unit is required')).min(0, t('Electricity Bill Unit cannot be negative')),
-    electricityRate: yup.number().required(t('Rate of Electricity Bill Unit is required')).positive(t('Electricity Rate must be positive')),
+    gstpercent: yup
+    .number()
+    .required(t('GST Percent is required'))
+    .min(0, t('GST Percent cannot be negative'))
+    .max(100, t('GST Percent cannot exceed 100')),
+      // electricityUnit: yup.number().min(0, t('Electricity Bill Unit cannot be negative')),
+    // electricityRate: yup.number().positive(t('Electricity Rate must be positive')),
     note: yup.string(),
   });
 
   const initialValues = {
     tenantId: tenant?._id || '',
     propertyId: property?._id || '',
+    bookingId: data._id || '',
     billingMonth: data?.billingMonth ? new Date(data.billingMonth).toISOString().split('T')[0] : '',
-    rentAmount: data?.rentAmount,
+    rentAmount: data?.rentAmount||"...",
     extraCharges: Array.isArray(data?.extraCharges) ? data.extraCharges : [],
-    electricityUnit: data?.electricityUnit || 0, 
-    electricityRate: data?.electricityRate || 0,
+    electricityUnit:  0, 
+    electricityRate:  0,
+    gstpercent: 18 || 0,
     electricityBillAmount: 0,
     totalBillAmount: 0,
+    totalgst: 0,
+    totalBillAmountAfterGST: 0,
     note: data?.note || '',
+    createdBy: data.createdBy
   };
 
-    // const debounceSubmit = useCallback(debounce(formik.onSubmit, 500), [formik.handleSubmit]);
-  
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -85,36 +110,59 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
         </div>
       </DialogTitle>
       <DialogContent dividers>
-        <Formik
+      <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={async (values, { resetForm }) => {
+            setLoading(true);
+            const startTime = Date.now();
+            
             const updatedValues = {
               ...values,
               companyId: payload.companyId,
-              createdBy: payload._id,
+              bookingId: data._id,
+              createdBy: values.createdBy,
               billingMonth: new Date(values.billingMonth).toISOString().split('T')[0],
               rentAmount: Number(values.rentAmount),
               extraAmount: values.extraCharges.reduce((sum, charge) => sum + Number(charge.price), 0),
-              electricityBillAmount: calculateElectricityBill(values.electricityUnit, values.electricityRate),
+              // electricityBillAmount: calculateElectricityBill(values.electricityUnit, values.electricityRate),
+              gstpercent: values.gstpercent,
               totalBillAmount: calculateTotalBill(
                 values.electricityRate,
                 values.electricityUnit,
                 values.rentAmount,
                 values.extraCharges
               ),
+              totalgst: totalgst(
+                values.electricityRate,
+                values.electricityUnit,
+                values.rentAmount,
+                values.extraCharges,
+                values.gstpercent
+              ),
+              totalBillAmountAfterGST: calculationAmountAfterGst(
+                values.electricityRate,
+                values.electricityUnit,
+                values.rentAmount,
+                values.extraCharges,
+                values.gstpercent
+              ),
             };
 
             try {
               const response = await postApi(urls.bill.createBill, updatedValues);
               if (response.success) {
+                const elapsedTime = Date.now() - startTime;
+                const remainingTime = Math.max(0, 1000 - elapsedTime);
+                setTimeout(() => {
+                  setLoading(false);
+                  handleClose();
+                }, remainingTime);
                 toast.success(t('billGeneratedSuccessfully'));
                 resetForm();
-                handleClose();
-              } else {
-                toast.error(t('failedToGenerateBill'));
               }
             } catch (error) {
+              setLoading(false);
               toast.error(t('failedToGenerateBill'));
             }
           }}
@@ -130,6 +178,22 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
               values.electricityUnit,
               values.rentAmount,
               values.extraCharges
+            );
+
+            const totalBillAmountAfterGST = calculationAmountAfterGst(
+              values.electricityRate,
+              values.electricityUnit,
+              values.rentAmount,
+              values.extraCharges,
+              values.gstpercent
+            );
+
+            const totalgstAmount = totalgst(
+              values.electricityRate,
+              values.electricityUnit,
+              values.rentAmount,
+              values.extraCharges,
+              values.gstpercent
             );
 
             return (
@@ -164,7 +228,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="h6">{t('Extra Charges')}</Typography>
+                    <Typography >{t('Extra Charges')}</Typography>
                     <FieldArray name="extraCharges">
                       {({ push, remove }) => (
                         <div>
@@ -243,6 +307,20 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
+                    <FormLabel>{t('Enter Gst in %')}</FormLabel>
+                    <Field
+                      as={TextField}
+                      name="gstpercent"
+                      type="number"
+                      size="small"
+                      fullWidth
+                      error={touched.gstpercent && errors.gstpercent}
+                      helperText={touched.gstpercent && errors.gstpercent}
+                      required
+                    />
+                  </Grid>
+
+                  {/* <Grid item xs={12} sm={6}>
                     <FormLabel>{t('Electricity Bill Unit')}</FormLabel>
                     <Field
                       as={TextField}
@@ -279,7 +357,7 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                       fullWidth
                       disabled
                     />
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item xs={12} sm={6}>
                     <FormLabel>{t('Billing Month')}</FormLabel>
@@ -317,10 +395,32 @@ const GenerateMonthlyBill = ({ open, handleClose, data }) => {
                       disabled
                     />
                   </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <FormLabel>{t('Total GST')}</FormLabel>
+                    <TextField
+                      value={totalgstAmount}
+                      type="number"
+                      size="small"
+                      fullWidth
+                      disabled
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <FormLabel>{t('Total Amount After GST')}</FormLabel>
+                    <TextField
+                      value={totalBillAmountAfterGST}
+                      type="number"
+                      size="small"
+                      fullWidth
+                      disabled
+                    />
+                  </Grid>
                 </Grid>
 
                 <DialogActions>
-                  <Button type="submit" variant="contained" color="secondary">
+                  <Button type="submit" variant="contained" color="secondary" disabled={loading}>
                     {t('Generate Bill')}
                   </Button>
                   <Button

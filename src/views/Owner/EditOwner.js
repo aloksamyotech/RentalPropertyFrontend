@@ -30,10 +30,8 @@ import { debounce, throttle } from 'lodash';
 const EditOwner = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const [ownerName, setOwnerData] = useState([]);
-    const [loading , setIsLoading] = useState(false);
+  const [loading , setIsLoading] = useState(false);
   
-
-  // const company = JSON.parse(localStorage.getItem('companyData')); 
   const payload = tokenPayload();
 
   useEffect(() => {
@@ -45,7 +43,6 @@ const EditOwner = ({ open, handleClose, data }) => {
   const fetchOwnerData = async () => {
     try {
       const response = await getApi(urls.owner.ownerdata, { id: payload.companyId });
-      console.log('Fetched Owner Data:', response.data);
       setOwnerData(response.data);
     } catch (err) {
       console.error('Error fetching owner data:', err);
@@ -55,28 +52,24 @@ const EditOwner = ({ open, handleClose, data }) => {
 
   const editProperty = async (values, resetForm) => {
     setIsLoading(true);
-    const startTime = Date.now();
+    // const startTime = Date.now();
     const updatedValues = { ...values, companyId: payload._id };
 
     try {
       const response = await updateApi(urls.owner.edit, updatedValues, { id: data._id });
 
       if (response.success) {
-          const elapsedTime = Date.now() - startTime;
-                        const remainingTime = Math.max(0, 500 - elapsedTime);
-                        setTimeout(() => {
-                          setIsLoading(false);
-                          handleClose();
-                        }, remainingTime);
                         toast.success(t('Owner updated successfully!'));
+                        handleClose();
                         resetForm();
-      } else {
-        toast.error(t('Failed to update property!'));
       }
     } catch (err) {
       console.error('Error updating property:', err);
-      setIsLoading(false);
       toast.error(t('Something went wrong!'));
+    } finally {
+      handleClose();
+      resetForm();
+      setIsLoading(false); 
     }
   };
 
@@ -163,7 +156,12 @@ const EditOwner = ({ open, handleClose, data }) => {
                  type="number"
                 fullWidth
                 value={formik.values.phoneNo}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+                    formik.handleChange(e);
+                  }
+                }}
                 error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
                 helperText={formik.touched.phoneNo && formik.errors.phoneNo}
               />
@@ -192,7 +190,7 @@ const EditOwner = ({ open, handleClose, data }) => {
           type="submit"
           disabled={loading}
         >
-          {t('Save')}
+               {loading ? t('Saving...') : t('Save')} 
         </Button>
         <Button
           onClick={() => {

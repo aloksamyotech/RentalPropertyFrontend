@@ -10,6 +10,7 @@ import {
   Typography,
   Box,
   Breadcrumbs,
+  Button,
   Card,
   Popover,
   MenuItem,
@@ -48,7 +49,7 @@ const TenantBooking = () => {
       const formattedData = response.data.map((item) => ({
         ...item,
         tenantName: item.tenantId?.tenantName || 'N/A',
-        propertyName: item.propertyId?.propertyname || 'N/A',
+        propertyname: item.propertyId?.propertyname || 'N/A',
         startingDate: item.startingDate
           ? new Date(item.startingDate).toLocaleDateString()
           : 'N/A',
@@ -83,7 +84,30 @@ const TenantBooking = () => {
   }, []);
 
   const columns = [
-    { field: 'propertyName', headerName: t('Property Name'), flex: 1 },
+    {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = bookingData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      },
+    },
+    // { field: 'propertyname', headerName: t('Property Name'), flex: 1,
+    //    renderCell: (params) => (
+    //                 <Button
+    //                   variant="text"
+    //                   color="primary"
+    //                   onClick={() =>
+    //                     navigate(`/dashboard/property/view?id=${params.row._id}`) 
+    //                   }
+    //                 >
+    //                   {params.row.propertyname}  
+    //                 </Button>
+    //               ),
+    //  },
+     { field: 'propertyname', headerName: t('Property Name'), flex: 1 },
+
     { field: 'tenantName', headerName: t('Tenant Name'), flex: 1 },
     { field: 'startingDate', headerName: t('Starting Date'), flex: 1 },
     { field: 'endingDate', headerName: t('Ending Date'), flex: 1 },
@@ -112,7 +136,7 @@ const TenantBooking = () => {
               <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
               {t('View')}
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               onClick={() => {
                 handleClose();
               }}
@@ -131,7 +155,7 @@ const TenantBooking = () => {
             >
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               {t('Delete')}
-            </MenuItem>
+            </MenuItem> */}
           </Popover>
         </>
       ),
@@ -172,7 +196,7 @@ const TenantBooking = () => {
             <DataGrid
               rows={bookingData}
               columns={columns}
-              checkboxSelection
+              // checkboxSelection
               getRowId={(row) => row._id}
               slots={{ toolbar: GridToolbar }}
               slotProps={{ toolbar: { showQuickFilter: true } }}

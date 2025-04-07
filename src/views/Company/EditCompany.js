@@ -11,6 +11,8 @@ import {
   Typography,
   DialogActions,
   DialogContent,
+  Select,
+  MenuItem,
   DialogTitle,
 } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -24,11 +26,17 @@ import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
 import { useCallback } from 'react';
 import { debounce, throttle } from 'lodash';
-
+import currencyCodes from 'currency-codes';
 
 const EditComplain = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const [companyData, setCompanyData] = useState([]);
+  const [loading, setLoading] = useState(false);
+    const currencyOptions = currencyCodes.data.map((currency) => ({
+      code: currency.code,
+      name: currency.currency,
+    }));
+
   const payload = tokenPayload();
 
   useEffect(() => {
@@ -40,7 +48,7 @@ const EditComplain = ({ open, handleClose, data }) => {
   const fetchComplainData = async () => {
     try {
       const response = await getApi(urls.property.propertydata, { id: payload.companyId });
-        setCompanyData(response.data);
+      setCompanyData(response.data);
     } catch (err) {
       console.error('Error fetching property data:', err);
       toast.error(t('failedToFetchPropertyData'));
@@ -48,6 +56,7 @@ const EditComplain = ({ open, handleClose, data }) => {
   };
 
   const editCompany = async (values, resetForm) => {
+    setLoading(true);  
     try {
       const response = await updateApi(urls?.company?.edit, values, { id: data._id });
 
@@ -55,52 +64,57 @@ const EditComplain = ({ open, handleClose, data }) => {
         toast.success(t('companyUpdatedSuccessfully'));
         resetForm();
         handleClose();
-      } else {
-        toast.error(t('failedToUpdateCompany'));
       }
     } catch (err) {
       console.error('Error updating company:', err);
       toast.error(t('somethingWentWrong'));
+    } finally {
+      setLoading(false); 
+      resetForm();
+      handleClose();
     }
   };
 
   const validationSchema = yup.object({
-      companyName: yup
+     companyName: yup
           .string()
-          .max(50, t('Owner Name cannot exceed 50 characters'))
-          .required(t('Owner Name is required')),
-        email: yup
-          .string()
-          .email(t('Invalid email address'))
-          .required(t('Email is required')),
-        phoneNo: yup
-          .string()
-          .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
-          .required(t('Phone Number is required')),
-        address: yup
-          .string()
-          .max(80, t('Address cannot exceed 80 characters'))
-          .required(t('Address is required'))
+          .matches(/^[A-Za-z\s]+$/, t('Company Name can only contain letters and spaces'))
+          .max(50, t('Company Name cannot exceed 50 characters'))
+          .required(t('Company Name is required')),
+       email: yup
+         .string()
+         .email(t('Invalid email address'))
+         .required(t('Email is required')),
+       phoneNo: yup
+         .string()
+         .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
+         .required(t('Phone Number is required')),
+       address: yup
+         .string()
+         .max(80, t('Address cannot exceed 80 characters'))
+         .required(t('Address is required')),
+       password: yup.string().required(t('Password is required')),
+       currencyCode: yup.string().required(t('Currency is required')),
+       gstnumber: yup
+         .string()
+         .max(15, t("Gst number cannot exceed 15 character."))
   });
 
   const formik = useFormik({
-
     initialValues: {
       companyName: data?.companyName || '',
       email: data?.email || '',
       phoneNo: data?.phoneNo || '',
-      address: data?.address || ''
+      address: data?.address || '',
+      currencyCode: data?.currencyCode || '',
+      gstnumber: data?.gstnumber || ''
     },
     enableReinitialize: true,
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log(values,"vlaues")
       editCompany(values, resetForm);
     },
   });
-
-    const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
-  
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -111,66 +125,106 @@ const EditComplain = ({ open, handleClose, data }) => {
         </div>
       </DialogTitle>
       <DialogContent dividers>
-        <form onSubmit={throttledSubmit}>
-                  <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
-                    <Grid item xs={12} sm={6}>
-                      <FormLabel>{t('Company Name')}</FormLabel>
-                      <TextField
-                        id="companyName"
-                        name="companyName"
-                        size="small"
-                        fullWidth
-                        value={formik.values.companyName}
-                        onChange={formik.handleChange}
-                        error={formik.touched.companyName && Boolean(formik.errors.companyName)}
-                        helperText={formik.touched.companyName && formik.errors.companyName}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <FormLabel>{t('Email')}</FormLabel>
-                      <TextField
-                        id="email"
-                        name="email"
-                        size="small"
-                        fullWidth
-                        value={formik.values.email}
-                        onChange={formik.handleChange}
-                        error={formik.touched.email && Boolean(formik.errors.email)}
-                        helperText={formik.touched.email && formik.errors.email}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <FormLabel>{t('Phone No')}</FormLabel>
-                      <TextField
-                        id="phoneNo"
-                        name="phoneNo"
-                        size="small"
-                        fullWidth
-                        value={formik.values.phoneNo}
-                        onChange={formik.handleChange}
-                        error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
-                        helperText={formik.touched.phoneNo && formik.errors.phoneNo}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <FormLabel>{t('Address')}</FormLabel>
-                      <TextField
-                        id="address"
-                        name="address"
-                        size="small"
-                        fullWidth
-                        value={formik.values.address}
-                        onChange={formik.handleChange}
-                        error={formik.touched.address && Boolean(formik.errors.address)}
-                        helperText={formik.touched.address && formik.errors.address}
-                      />
-                    </Grid>
-                  </Grid>
-                </form>
+        <form onSubmit={formik.handleSubmit}>
+          <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Company Name')}</FormLabel>
+              <TextField
+                id="companyName"
+                name="companyName"
+                size="small"
+                fullWidth
+                value={formik.values.companyName}
+                onChange={formik.handleChange}
+                error={formik.touched.companyName && Boolean(formik.errors.companyName)}
+                helperText={formik.touched.companyName && formik.errors.companyName}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Email')}</FormLabel>
+              <TextField
+                id="email"
+                name="email"
+                size="small"
+                fullWidth
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Phone No')}</FormLabel>
+              <TextField
+                id="phoneNo"
+                name="phoneNo"
+                size="small"
+                type="number"
+                fullWidth
+                value={formik.values.phoneNo}
+                onChange={formik.handleChange}
+                error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
+                helperText={formik.touched.phoneNo && formik.errors.phoneNo}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Address')}</FormLabel>
+              <TextField
+                id="address"
+                name="address"
+                size="small"
+                fullWidth
+                value={formik.values.address}
+                onChange={formik.handleChange}
+                error={formik.touched.address && Boolean(formik.errors.address)}
+                helperText={formik.touched.address && formik.errors.address}
+              />
+            </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormLabel>{t('currency_code')}</FormLabel>
+                  <Select
+                    id="currencyCode"
+                    name="currencyCode"
+                    size="small"
+                    fullWidth
+                    value={formik.values.currencyCode}
+                    onChange={formik.handleChange}
+                    error={formik.touched.currencyCode && Boolean(formik.errors.currencyCode)}
+                  >
+                  <MenuItem value="" disabled>
+                    {t('select_currency_code')}
+                  </MenuItem>
+                  {currencyOptions.map((currency) => (
+                  <MenuItem key={currency.code} value={currency.code}>
+                      {`${currency.code} - ${currency.name}`}
+                  </MenuItem>
+                  ))}
+                </Select>
+              </Grid>
+               <Grid item xs={12} sm={6}>
+                              <FormLabel>{t('GST Number')}</FormLabel>
+                              <TextField
+                                id="gstnumber"
+                                name="gstnumber"
+                                size="small"
+                                fullWidth
+                                value={formik.values.gstnumber}
+                                onChange={formik.handleChange}
+                                error={formik.touched.gstnumber && Boolean(formik.errors.gstnumber)}
+                                helperText={formik.touched.gstnumber && formik.errors.gstnumber}
+                              />
+                            </Grid>
+          </Grid>
+        </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={throttledSubmit} variant="contained" color="primary">
-          {t('save')}
+        <Button
+          onClick={formik.handleSubmit}
+          variant="contained"
+          color="primary"
+          disabled={loading}  // Disable button when loading is true
+        >
+          {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {

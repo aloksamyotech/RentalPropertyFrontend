@@ -19,18 +19,21 @@ import { toast } from 'react-toastify';
 import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { useCallback } from 'react';
-import { debounce, throttle } from 'lodash';
-
+import { useState } from 'react';
+import {Select,MenuItem} from '@mui/material';
+import currencyCodes from 'currency-codes';
 
 const AddCompany = (props) => {
   const { t } = useTranslation();
   const { open, handleClose } = props;
+  const [loading , setLoading] = useState(false);
 
   const validationSchema = yup.object({
     companyName: yup
-      .string()
-      .max(50, t('Owner Name cannot exceed 50 characters'))
-      .required(t('Owner Name is required')),
+       .string()
+       .matches(/^[A-Za-z\s]+$/, t('Company Name can only contain letters and spaces'))
+       .max(50, t('Company Name cannot exceed 50 characters'))
+       .required(t('Company Name is required')),
     email: yup
       .string()
       .email(t('Invalid email address'))
@@ -44,6 +47,10 @@ const AddCompany = (props) => {
       .max(80, t('Address cannot exceed 80 characters'))
       .required(t('Address is required')),
     password: yup.string().required(t('Password is required')),
+    currencyCode: yup.string().required(t('Currency is required')),
+    gstnumber: yup
+      .string()
+      .max(15, t("Gst number cannot exceed 15 character."))
   });
 
   const initialValues = {
@@ -52,21 +59,27 @@ const AddCompany = (props) => {
     phoneNo: '',
     address: '',
     password: '',
+    currencyCode:'',
+    gstnumber:''
   };
 
   const AddCompany = async (values, resetForm) => {
+    setLoading(true);
     try {
       const response = await postApi(urls.company.create, values);
 
-      if (response.success === true) toast.success(t('Successfully registered'));
-      resetForm();
-      setTimeout(() => {
+      if (response.success){
+        toast.success(t(' Company Successfully registered'));
         handleClose();
-      }, 200);
-    } catch (err) {
-      console.error(err);
-      toast.error(t('Something went wrong!'));
-    }
+        resetForm();
+      }
+       } catch {
+         toast.error(t('Failed to register Company!'));
+      } finally {
+         handleClose();
+         resetForm()
+         setLoading(false); 
+      }
   };
 
   const formik = useFormik({
@@ -74,12 +87,14 @@ const AddCompany = (props) => {
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       values.email = values.email.toLowerCase();
-      console.log(values);
       AddCompany(values, resetForm);
     },
   });
 
-  const throttledSubmit = useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
+  const currencyOptions = currencyCodes.data.map((currency) => ({
+    code: currency.code,
+    name: currency.currency,
+  }));
 
   return (
     <div>
@@ -96,7 +111,7 @@ const AddCompany = (props) => {
         </DialogTitle>
 
         <DialogContent dividers>
-          <form onSubmit={throttledSubmit}>
+          <form onSubmit={formik.handleSubmit}>
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
               <Grid item xs={12} sm={6}>
                 <FormLabel>{t('Company Name')}</FormLabel>
@@ -116,6 +131,7 @@ const AddCompany = (props) => {
                 <TextField
                   id="email"
                   name="email"
+                  type='email'
                   size="small"
                   fullWidth
                   value={formik.values.email}
@@ -129,6 +145,7 @@ const AddCompany = (props) => {
                 <TextField
                   id="phoneNo"
                   name="phoneNo"
+                  type="number"
                   size="small"
                   fullWidth
                   value={formik.values.phoneNo}
@@ -164,12 +181,47 @@ const AddCompany = (props) => {
                   helperText={formik.touched.password && formik.errors.password}
                 />
               </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormLabel>{t('currency_code')}</FormLabel>
+                <Select
+                  id="currencyCode"
+                  name="currencyCode"
+                  size="small"
+                  fullWidth
+                  value={formik.values.currencyCode}
+                  onChange={formik.handleChange}
+                  error={formik.touched.currencyCode && Boolean(formik.errors.currencyCode)}
+                >
+                  <MenuItem value="" disabled>
+                  {t('select_currency_code')}
+                  </MenuItem>
+                  {currencyOptions.map((currency) => (
+                    <MenuItem key={currency.code} value={currency.code}>
+                      {`${currency.code} - ${currency.name}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormLabel>{t('GST Number')}</FormLabel>
+                <TextField
+                  id="gstnumber"
+                  name="gstnumber"
+                  size="small"
+                  fullWidth
+                  value={formik.values.gstnumber}
+                  onChange={formik.handleChange}
+                  error={formik.touched.gstnumber && Boolean(formik.errors.gstnumber)}
+                  helperText={formik.touched.gstnumber && formik.errors.gstnumber}
+                />
+              </Grid>
             </Grid>
           </form>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" onClick={throttledSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
-            {t('Save')}
+          <Button type="submit" variant="contained" onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary" disable={loading}>
+          {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
             type="button"

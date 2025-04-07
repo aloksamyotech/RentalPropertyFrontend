@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
-import { Stack, Button, Container, Typography, Box, Link, Breadcrumbs, Card, Popover, MenuItem, IconButton } from '@mui/material';
+import { Stack, Button, Container, Typography, Box, Breadcrumbs, Card, Popover, MenuItem, IconButton } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useNavigate, useLocation } from 'react-router';
 import Iconify from '../../ui-component/iconify';
@@ -22,6 +22,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { tokenPayload } from 'helper';
 import EditServiceProvider from './EditSerivceProvider';
 import DeleteServiceProvider from './DeleteServiceProvider';
+import { Link } from 'react-router-dom';
 
 const payload = tokenPayload();
 const userRole = payload?.role;
@@ -42,7 +43,7 @@ const ServiceProvider = () => {
   const fetchServiceData = async () => {
     try {
       const response = await getApi(urls.serviceProvider.getAll, { id: payload.companyId });
-      console.log(response.data);
+
       if (response?.data) {
         setServiceData(response.data);
       } else {
@@ -79,19 +80,26 @@ const ServiceProvider = () => {
     handleClose();
   };
 
-  const handleOpenView = () => {
-    navigate(`/dashboard/property/view?id=${currentRow._id}`);
-  };
+
 
   const handleCloseEditProperty = () => setOpenEdit(false);
   const handleCloseDeleteProperty = () => setOpenDelete(false);
 
   const columns = [
     {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = serviceData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      },
+    },
+    {
       field: 'name',
       headerName: t('Service Provider Name'),  
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
+      // cellClassName: 'name-column--cell name-column--cell--capitalize'
     },
     {
       field: 'phoneNo',
@@ -145,12 +153,12 @@ const ServiceProvider = () => {
   }
 
   const breadcrumbs = [
-    <Link key="1" to="/" underline="hover" color="inherit">
+    <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
       <IconHome />
     </Link>,
-    <Link key="2" to="/dashboard/serviceprovider" underline="hover" color="inherit">
-      {t('Service Providers')}  
-    </Link>,
+    <Typography key="serviceprovider" to="/dashboard/serviceprovider" color="text.primary">
+      {t('Service Providers')}
+    </Typography>
   ];
 
   const handleOpenAdd = () => setOpenAdd(true);
@@ -171,9 +179,12 @@ const ServiceProvider = () => {
                 {breadcrumbs}
               </Breadcrumbs>
             </Typography>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              {t('Add Service Provider')}  
-            </Button>
+
+            {userRole !== "tenant" && (
+  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
+    {t('Add Service Provider')}
+  </Button>
+)}
           </Stack>
         </Card>
 
@@ -183,7 +194,7 @@ const ServiceProvider = () => {
               <DataGrid
                 rows={serviceData}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row._id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

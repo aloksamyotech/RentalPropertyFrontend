@@ -26,9 +26,9 @@ import { useCallback } from 'react';
 import { debounce, throttle } from 'lodash';
 
 const AddOwner = (props) => {
-  const { t } = useTranslation(); // Initialize useTranslation hook
+  const { t } = useTranslation(); 
   const { open, handleClose } = props;
-    const [loading , setIsLoading] = useState(false);
+  const [loading , setIsLoading] = useState(false);
   
 
   const validationSchema = yup.object({
@@ -61,26 +61,22 @@ const AddOwner = (props) => {
 
   const AddOwner = async (values, resetForm) => {
     setIsLoading(true);
-    const startTime = Date.now();
     values.companyId = payload.companyId;
 
     try {
       const response = await postApi(urls.owner.create, values);
       if (response.success) {
-       const elapsedTime = Date.now() - startTime;
-                       const remainingTime = Math.max(0, 500 - elapsedTime);
-                       setTimeout(() => {
-                         setIsLoading(false);
-                         handleClose();
-                       }, remainingTime);
-                       toast.success(t('Owner added successfully!'));
-                       resetForm();
-                            } else {
-                               toast.error(t('Failed to add owner!'));
-                             }
+          toast.success(t('Owner added successfully!'));
+          handleClose();
+          resetForm();
+      }
     } catch (err) {
       setIsLoading(false);
       toast.error(t('Something went wrong!'));
+    } finally {
+      handleClose();
+      resetForm()
+      setIsLoading(false); 
     }
   };
 
@@ -148,7 +144,12 @@ const AddOwner = (props) => {
                   type="number"
                   fullWidth
                   value={formik.values.phoneNo}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+                      formik.handleChange(e);
+                    }
+                  }}
                   error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
                   helperText={formik.touched.phoneNo && formik.errors.phoneNo}
                   inputProps={{ maxLength: 10 }} 
@@ -177,7 +178,7 @@ const AddOwner = (props) => {
         </DialogContent>
         <DialogActions>
           <Button type="submit" variant="contained"   disabled={loading} onClick={formik.handleSubmit} style={{ textTransform: 'capitalize' }} color="secondary">
-            {t('Save')}
+          {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
             type="button"

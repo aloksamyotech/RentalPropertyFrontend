@@ -22,11 +22,9 @@ const DeleteCompany = ({ open, handleClose, id }) => {
     try {
       const result = await patchApi(urls.company.delete, { isDeleted: true }, { id });
 
-      if (result?.status === 200 || result?.success) {
+      if (result?.success) {
         toast.success(t('companyDeletedSuccessfully')); 
         handleClose(); 
-      } else {
-        toast.error(t('cannotDeletecompany')); 
       }
     } catch (error) {
       console.error('Error deleting Company:', error);
@@ -35,9 +33,6 @@ const DeleteCompany = ({ open, handleClose, id }) => {
       setLoading(false);
     }
   };
-
-    // const handleDelete = useCallback(debounce(handleDeleteRequest, 500),[]);
-    
 
   return (
     <Dialog open={open} onClose={handleClose}>

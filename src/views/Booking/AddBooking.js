@@ -21,6 +21,7 @@ import { toast } from 'react-toastify';
 import { urls } from 'core/Constant/urls';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
+import { data } from 'currency-codes';
 
 const AddBooking = (props) => {
   const { t } = useTranslation();
@@ -33,13 +34,20 @@ const AddBooking = (props) => {
     tenantId: yup.string().required(t('Tenant is required')),
     propertyId: yup.string().required(t('Property is required')),
     startingDate: yup.date().required(t('Starting Date is required')),
-    // endingDate: yup.date().required(t('Ending Date is required')),
-    endingDate: yup.date().required(t('Ending Date is required'))
-    .test('is-greater', t('Ending Date must be greater than Starting Date'), function(value) {
-      const { startingDate } = this.parent;
-      return new Date(startingDate) <= new Date(value);
-    }),
-    rentAmount: yup.number().required(t('Rent Amount is required')),
+    endingDate: yup
+      .date()
+      .required(t('Ending Date is required'))
+      .test('is-greater', t('Ending Date must be greater than Starting Date'), function(value) {
+        const { startingDate } = this.parent;
+        return new Date(startingDate) < new Date(value); 
+      })
+      .test('is-not-same', t('Ending Date must not be the same as Starting Date'), function(value) {
+        const { startingDate } = this.parent;
+        return new Date(startingDate).getTime() !== new Date(value).getTime(); 
+      }),
+  rentAmount: yup.number().required(t('Rent Amount is required'))
+    .min(0, t('Rent Amount cannot be negative')) 
+    .max(1000000, t('Rent Amount cannot exceed 1000000')),
     advanceAmount: yup.number()
     .typeError(t('Rent must be a number'))
     .min(1, t('must be positive'))
@@ -58,7 +66,6 @@ const AddBooking = (props) => {
 
   const payload = tokenPayload();
 
-  // Fetch tenant data
   const fetchTenantData = async () => {
     setLoading(true);
     try {
@@ -73,7 +80,6 @@ const AddBooking = (props) => {
   };
   
 
-  // Fetch property data
   const fetchPropertyData = async () => {
     setLoading(true);
     try {
@@ -96,25 +102,24 @@ const AddBooking = (props) => {
 
   const addBooking = async (values, resetForm) => {
     setLoading(true);
-    const startTime = Date.now();
     values.companyId = payload.companyId;
     values.createdBy = payload._id;
+
     try {
       const response = await postApi(urls.booking.create, values);
       if (response.success) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 1000 - elapsedTime);
-        setTimeout(() => {
-          setLoading(false);
-          handleClose();
-        }, remainingTime);
         toast.success(t('Booking successfully created'));
         resetForm();
+        handleClose();
       }
     } catch (err) {
       console.error(err);
       setLoading(false);
       toast.error(t('Something went wrong!'));
+    } finally {
+      handleClose();
+      resetForm()
+      setLoading(false);
     }
   };
 
@@ -122,7 +127,6 @@ const AddBooking = (props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      console.log(values)
       addBooking(values, resetForm);
     },
   });
@@ -264,7 +268,7 @@ const AddBooking = (props) => {
 
           <DialogActions>
             <Button type="submit" variant="contained" disabled={loading} color="secondary" style={{ textTransform: 'capitalize' }}>
-              {t('Save')}
+            {loading ? t('Saving...') : t('Save')} 
             </Button>
             <Button
               type="button"

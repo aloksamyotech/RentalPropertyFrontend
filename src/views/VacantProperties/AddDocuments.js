@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
 import * as React from 'react';
 import Button from '@mui/material/Button';
@@ -12,16 +13,18 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { FormLabel } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 // import { apipost } from '../../service/api';
 
 const AddDocuments = (props) => {
+  const { t } = useTranslation();
   const { open, handleClose } = props;
   //   const userid = localStorage.getItem('user_id');
 
   // -----------  validationSchema
   const validationSchema = yup.object({
-    file: yup.string().required('File is required'),
-    fileName: yup.string().required('File Name is required')
+    file: yup.string().required(t('fileRequired')),
+    fileName: yup.string().required(t('fileNameRequired'))
   });
 
   // -----------   initialValues
@@ -54,12 +57,12 @@ const AddDocuments = (props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values) => {
-      console.log('AddDocument', values);
       handleClose();
-      toast.success('Add Documents upload successfully');
+      toast.success(t('documentUploadSuccess'));
       //   fileUpload(values);
     }
   });
+
   return (
     <div>
       <Dialog open={open} aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description">
@@ -70,7 +73,7 @@ const AddDocuments = (props) => {
             justifyContent: 'space-between'
           }}
         >
-          <Typography variant="h6">Add Documents </Typography>
+          <Typography variant="h6">{t('addDocuments')}</Typography>
           <Typography>
             <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
           </Typography>
@@ -80,7 +83,7 @@ const AddDocuments = (props) => {
           <form encType="multipart/form-data">
             <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
               <Grid item xs={12} sm={12} md={12}>
-                <FormLabel>Upload File</FormLabel>
+                <FormLabel>{t('uploadFile')}</FormLabel>
                 <TextField
                   id="file"
                   name="file"
@@ -100,7 +103,7 @@ const AddDocuments = (props) => {
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
-                <FormLabel>FileName</FormLabel>
+                <FormLabel>{t('fileName')}</FormLabel>
                 <TextField
                   id="fileName"
                   name="fileName"
@@ -121,9 +124,8 @@ const AddDocuments = (props) => {
             variant="contained"
             onClick={formik.handleSubmit}
             style={{ textTransform: 'capitalize' }}
-            // startIcon={<FiSave />}
           >
-            Save
+            {t('save')}
           </Button>
           <Button
             type="reset"
@@ -135,7 +137,7 @@ const AddDocuments = (props) => {
               handleClose();
             }}
           >
-            Cancel
+            {t('cancel')}
           </Button>
         </DialogActions>
       </Dialog>

@@ -17,6 +17,7 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 import ClearIcon from '@mui/icons-material/Clear';
 import { updateApi, getApi } from 'core/apis/api'; // Ensure getApi is imported
 import PropTypes from 'prop-types';
@@ -30,101 +31,114 @@ import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
 import { useCallback } from 'react';
 import { debounce, throttle } from 'lodash';
-
 const EditProperty = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const [ownerData, setOwnerData] = useState([]);
-  const [attachments, setAttachments] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
   const [typeData, setTypeData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currency, setCurrency] = useState();
   const payload = tokenPayload();
 
   useEffect(() => {
     if (open) {
       fetchOwnerData();
       fetchTypeData();
+      fetchCurrencyData();
     }
   }, [open]);
-  console.log(ownerData,"ownerData");
+
+  useEffect(() => {
+    if (data && data.files) {
+      setExistingImages(data.files);
+    }
+  }, [data]);
 
   const fetchOwnerData = async () => {
-      const response = await getApi(urls.owner.ownerdata, { id: payload._id });
-      setOwnerData(response.data);
+    const response = await getApi(urls.owner.ownerdata, { id: payload._id });
+    setOwnerData(response.data);
   };
 
   const fetchTypeData = async () => {
-      const response = await getApi(urls.propertyTypes.getdata, { id: payload._id });
-      setTypeData(response.data);
+    const response = await getApi(urls.propertyTypes.getdata, { id: payload._id });
+    setTypeData(response.data);
+  };
+
+  const fetchCurrencyData = async () => {
+    const response = await getApi(urls.company.getCompanyById, { id: payload._id });
+    setCurrency(response?.data.currencyCode || []);
   };
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
-    setAttachments((prev) => [...prev, ...files]);
+    setNewImages((prev) => [...prev, ...files]);
   };
 
   const handleFileRemove = (filename) => {
-    setAttachments((prev) => prev.filter((file) => file.name !== filename));
+    setNewImages((prev) => prev.filter((file) => file.name !== filename));
   };
 
-  // const editProperty = async (values, resetForm) => {
-  //   const formData = new FormData();
-  //   Object.keys(values).forEach((key) => {
-  //     if (key !== 'files') formData.append(key, values[key]);
-  //   });
-  //   attachments.forEach((file) => formData.append('files', file));
-  //   formData.append('companyId', payload._id);
+  const handleExistingImageRemove = (url) => {
+    setExistingImages((prev) => prev.filter((image) => image !== url));
+  };
 
-  //   try {
-  //     const response = await updateApi(urls.property.editdata, formData,{ id: data._id }, { 'Content-Type': 'multipart/form-data' });
+  const editProperty = async (values, resetForm) => {
+    setLoading(true);
+    const formData = new FormData();
 
-  //     if (response.success) {
-  //       toast.success(t('Property updated successfully!'));
-  //       resetForm();
-  //       setTimeout(handleClose, 200);
-  //     } else {
-  //       toast.error(t('Failed to update property!'));
-  //     }
-  //   } catch (err) {
-  //     toast.error(t('Something went wrong!'));
-  //   }
-  // };
-   const editProperty = async (values, resetForm) => {
-      const formData = new FormData();
-  
-      formData.append('propertyname', values.propertyname);
-      formData.append('typeId', values.typeId);
-      formData.append('description', values.description);
-      formData.append('rent', values.rent);
-      formData.append('address', values.address);
-      formData.append('zipcode', values.zipcode);
-      formData.append('maplink', values.maplink);
-      formData.append('ownerId', values.ownerId);
-      attachments.forEach((files) => {
-        formData.append('files', files);
-      });
-      formData.append('companyId', payload._id);
-  
-      try {
-            const response = await updateApi(urls.property.editdata, formData,{ id: data._id }, { 'Content-Type': 'multipart/form-data' });
-      
-            if (response.success) {
-              toast.success(t('Property updated successfully!'));
-              resetForm();
-              setTimeout(handleClose, 200);
-            } else {
-              toast.error(t('Failed to update property!'));
-            }
-          } catch (err) {
-            toast.error(t('Something went wrong!'));
-          }
-    };
+    // Append form values
+    formData.append('propertyname', values.propertyname);
+    formData.append('typeId', values.typeId);
+    formData.append('description', values.description);
+    formData.append('rent', values.rent);
+    formData.append('address', values.address);
+    formData.append('zipcode', values.zipcode);
+    formData.append('maplink', values.maplink);
+    formData.append('ownerId', values.ownerId);
+
+    // Append new images (files)
+    newImages.forEach((file) => {
+      formData.append('files', file);
+    });
+
+    // Append existing images (URLs)
+    formData.append('existingImages', JSON.stringify(existingImages));
+
+    // Append company ID
+    formData.append('companyId', payload._id);
+
+    try {
+      const response = await updateApi(
+        urls.property.editdata,
+        formData,
+        { id: data._id },
+        { 'Content-Type': 'multipart/form-data' }
+      );
+
+      if (response.success) {
+        toast.success(t('Property updated successfully!'));
+        resetForm();
+        handleClose();
+      }
+    } catch (err) {
+      toast.error(t('Something went wrong!'));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const validationSchema = yup.object({
-    propertyname: yup.string().max(50, t('Property Name must be at most 50 characters')).required(t('Property Name is required')),
-    typeId: yup.string().required(t('Type is required')),
+     propertyname: yup.string()
+     .max(50, t('Property Name must be at most 50 characters'))
+     .required(t('Property Name is required')),  
+      typeId: yup.string().required(t('Type is required')),
     description: yup.string().max(200, t('Description cannot exceed 200 characters')).required(t('Description is required')),
-    rent: yup.number().min(100, t('Rent must be at least 3 digits')).max(999999, t('Rent cannot exceed 6 digits')).required(t('Rent is required')),
+    rent: yup.number().min(100, t('Rent must be at least 3 digits')).max(9999999999, t('Rent cannot exceed 10 digits')).required(t('Rent is required')),
     address: yup.string().max(100, t('Address cannot exceed 100 characters')).required(t('Address is required')),
-    zipcode: yup.string().required(t('Zip Code is required')),
+    zipcode: yup.string()
+    .matches(/^[0-9]{3,8}$/, t('Zipcode must be between 3 and 8 digits'))
+    .required(t('Zip Code is required')),
     maplink: yup.string().url(t('Must be a valid URL')).required(t('Google Map Link is required')),
     ownerId: yup.string().required(t('Owner Id is required')),
   });
@@ -135,20 +149,17 @@ const EditProperty = ({ open, handleClose, data }) => {
       typeId: data?.typeId || '',
       description: data?.description || '',
       rent: data?.rent || '',
+      area: data?.area || '',
       address: data?.address || '',
       zipcode: data?.zipcode || '',
       maplink: data?.maplink || '',
       ownerId: data?.ownerId || '',
-      files: data?.attachments || [], 
+      files: data?.files || [],
     },
     enableReinitialize: true,
     validationSchema,
     onSubmit: (values, { resetForm }) => editProperty(values, resetForm),
   });
-
-      // const throttledSubmit = useCallback(throttle(formik.handleSubmit, 10000), [formik.handleSubmit]);
-        
-      const throttledSubmit =  useCallback(debounce(formik.handleSubmit, 500), [formik.handleSubmit]);
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -159,7 +170,7 @@ const EditProperty = ({ open, handleClose, data }) => {
         </div>
       </DialogTitle>
       <DialogContent dividers>
-      <form onSubmit={throttledSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Name')}</FormLabel>
@@ -225,9 +236,8 @@ const EditProperty = ({ open, handleClose, data }) => {
                 </Typography>
               )}
             </Grid>
-
             <Grid item xs={12} sm={6}>
-              <FormLabel>{t('Rent')}</FormLabel>
+              <FormLabel>{t('Rent per Month')}</FormLabel>
               <TextField
                 id="rent"
                 name="rent"
@@ -238,10 +248,28 @@ const EditProperty = ({ open, handleClose, data }) => {
                 onChange={formik.handleChange}
                 error={formik.touched.rent && Boolean(formik.errors.rent)}
                 helperText={formik.touched.rent && formik.errors.rent}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
+                }}
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Area per square feet')}</FormLabel>
+              <TextField
+                id="area"
+                name="area"
+                type="number"
+                size="small"
+                fullWidth
+                value={formik.values.area}
+                onChange={formik.handleChange}
+                error={formik.touched.area && Boolean(formik.errors.area)}
+                helperText={formik.touched.area && formik.errors.area}
+              />
+            </Grid>
+
+            {/* <Grid item xs={12}>
               <Box mb={1}>
                 <FormLabel>{t('Property Images')}</FormLabel>
               </Box>
@@ -259,8 +287,19 @@ const EditProperty = ({ open, handleClose, data }) => {
                   overflowY: 'auto',
                   marginTop: 1,
                 }}
-              >
-                {attachments.map((file, index) => (
+              > */}
+                {/* Display existing images */}
+                {/* {existingImages.map((url, index) => (
+                  <Chip
+                    key={index}
+                    sx={{ background: 'blue', color: 'white' }}
+                    label={url}
+                    onDelete={() => handleExistingImageRemove(url)}
+                    deleteIcon={<CloseIcon />}
+                  />
+                ))} */}
+                {/* Display new images */}
+                {/* {newImages.map((file, index) => (
                   <Chip
                     key={index}
                     sx={{ background: 'green', color: 'white' }}
@@ -270,7 +309,7 @@ const EditProperty = ({ open, handleClose, data }) => {
                   />
                 ))}
               </Box>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <FormLabel>{t('Description')}</FormLabel>
@@ -307,6 +346,7 @@ const EditProperty = ({ open, handleClose, data }) => {
               <TextField
                 id="zipcode"
                 name="zipcode"
+                type='number'
                 size="small"
                 fullWidth
                 value={formik.values.zipcode}
@@ -334,12 +374,13 @@ const EditProperty = ({ open, handleClose, data }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={throttledSubmit}
+          onClick={formik.handleSubmit}
           variant="contained"
           color="primary"
           type="submit"
+          disabled={loading}
         >
-          {t('Save')}
+          {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {

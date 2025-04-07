@@ -66,7 +66,6 @@ const FirebaseRegister = ({ ...others }) => {
     setLevel(strengthColor(temp));
   };
 
-
   useEffect(() => {
     changePassword('123456');
   }, []);

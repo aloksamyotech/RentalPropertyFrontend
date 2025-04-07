@@ -14,31 +14,22 @@ import { urls } from 'core/Constant/urls';
 
 const DeleteTenant = ({ open, handleClose, id }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
-    setLoading(true); // Start loading
-    const startTime = Date.now();
+    setLoading(true);
     try {
       const result = await patchApi(urls.tenant.delete, { isDeleted: true }, { id });
 
       if (result?.success) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 1000 - elapsedTime);
-        setTimeout(() => {
-          setLoading(false);
-          handleClose();
           toast.success(t('tenant_deleted_successfully')); 
-        
-        }, remainingTime);
-      } else {
-        toast.error(t('cannot_delete_tenant')); 
-        setLoading(false);
+          handleClose()
       }
     } catch (error) {
       console.error('Error deleting tenant:', error);
       toast.error(t('cannot_delete_tenant_error'));
+      setLoading(false); 
+    } finally {
       setLoading(false); 
     }
   };

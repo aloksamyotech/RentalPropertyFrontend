@@ -30,30 +30,32 @@ const AddAgents = (props) => {
 
   const AddAgent = async (values, resetForm) => {
     setIsLoading(true);
-    const startTime = Date.now();
+    // const startTime = Date.now();
     values.companyId = payload._id;
     try {
       const response = await postApi(urls.agent.create, values);
-      if (response.data.success === true) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 500 - elapsedTime);
-        setTimeout(() => {
-          setIsLoading(false);
-          handleClose();
-        }, remainingTime);
+      if (response.data.success) {
         toast.success(t('Successfully registered Agent'));
+        handleClose();
         resetForm();
       }
     } catch (err) {
       console.error(err);
       setIsLoading(false);
       toast.error(t('Registration failed'));
+    } finally {
+      handleClose();
+      resetForm();
+      setIsLoading(false); 
     }
   };
 
   const validationSchema = yup.object({
-    agentName: yup.string().max(50, t('Agent Name cannot exceed 50 characters')).required(t('Agent Name is required')),
-    email: yup.string().email(t('Invalid email address')).required(t('Email is required')),
+    agentName: yup.string()
+    .matches(/^[A-Za-z\s]*$/, t('Agent Name cannot contain special characters or numbers'))
+    .max(50, t('Agent Name cannot exceed 50 characters'))
+    .required(t('Agent Name is required')),
+      email: yup.string().email(t('Invalid email address')).required(t('Email is required')),
     phoneNo: yup
       .string()
       .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
@@ -119,10 +121,16 @@ const AddAgents = (props) => {
               <TextField
                 id="phoneNo"
                 name="phoneNo"
+                type="number"
                 size="small"
                 fullWidth
                 value={formik.values.phoneNo}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 10 && /^[0-9]*$/.test(value)) {
+                    formik.handleChange(e);
+                  }
+                }}
                 error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
                 helperText={formik.touched.phoneNo && formik.errors.phoneNo}
               />
@@ -157,7 +165,7 @@ const AddAgents = (props) => {
           </Grid>
           <DialogActions>
             <Button type="submit" variant="contained" disabled={loading} color="secondary">
-              {t('Save')}
+            {loading ? t('Saving...') : t('Save')} 
             </Button>
             <Button
               type="button"

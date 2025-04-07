@@ -15,35 +15,36 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
-import { postApi } from 'core/apis/api'; // Import postApi
+import { postApi } from 'core/apis/api'; 
+import { useState } from 'react';
 import { urls } from 'core/Constant/urls';
-import { useCallback } from 'react';
-import { debounce } from 'lodash';
 
 const AddAnnouncement = (props) => {
   const { t } = useTranslation();
   const { open, handleClose } = props;
+  const [loading, setLoading] = useState(false);
+  
   const payload = tokenPayload();
 
-  // API call function
   const AddAnnouncement = async (values, resetForm) => {
+    setLoading(true);
     const data = { ...values, companyId: payload.companyId };
 
     try {
       const response = await postApi(urls.Announcement.create, data);
 
       if (response.success) {
-        toast.success(t('announcementAdded')); // Success message
-        resetForm(); // Reset the form
-        setTimeout(() => {
-          handleClose(); // Close the dialog
-        }, 200);
-      } else {
-        toast.error(response.message || t('errorOccurred'));
+               toast.success(t('announcementAdded'));
+               resetForm();
+               handleClose();
+              
       }
     } catch (err) {
-      console.error("Error:", err);
       toast.error(err.message || t('errorOccurred'));
+    } finally {
+      handleClose();
+      resetForm()
+      setLoading(false); 
     }
   };
 
@@ -118,8 +119,8 @@ const AddAnnouncement = (props) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" color="primary">
-            {t('save')}
+          <Button type="submit" variant="contained" color="primary"  disabled={loading}>
+          {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
             onClick={() => {

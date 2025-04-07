@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -21,29 +21,28 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
-import { useCallback } from 'react';
-import { throttle } from 'lodash';
 
 const EditPropertyTypes = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const payload = tokenPayload();
+  const [loading, setLoading] = useState(false);
 
   const EditPropertyType = async (values, resetForm) => {
-    const updatedValues = { ...values, companyId: payload._id };
-
+    setLoading(true);
     try {
+      const updatedValues = { ...values, companyId: payload._id };
       const response = await updateApi(urls.propertyTypes.edit, updatedValues, { id: data._id });
 
       if (response.success) {
         toast.success(t('Property type updated successfully!'));
         resetForm();
         handleClose();
-      } else {
-        toast.error(t('Failed to update property!'));
       }
     } catch (error) {
       console.error('Error updating property:', error);
       toast.error(t('An unexpected error occurred!'));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,7 +53,7 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
       .required(t('Property Type Name is required')),
     description: yup
       .string()
-      .max(200, t('Description cannot exceed 200 characters'))
+      .max(200, t('Description cannot exceed 200 characters')),
   });
 
   const formik = useFormik({
@@ -64,13 +63,11 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
     },
     enableReinitialize: true,
     validationSchema,
-    onSubmit: (values, { resetForm }) => {
-      EditPropertyType(values, resetForm);
+    onSubmit: async (values, { resetForm }) => {
+      await EditPropertyType(values, resetForm);
     },
   });
 
-  const throttledSubmit = useCallback(throttle(formik.handleSubmit, 4000), [formik.handleSubmit]);
-  
   return (
     <Dialog
       open={open}
@@ -87,7 +84,7 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
         </div>
       </DialogTitle>
       <DialogContent dividers id="edit-property-dialog-description">
-        <form onSubmit={throttledSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Property Type Name')}</FormLabel>
@@ -120,12 +117,13 @@ const EditPropertyTypes = ({ open, handleClose, data }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={throttledSubmit}
+          onClick={formik.handleSubmit}
           variant="contained"
           color="primary"
           type="submit"
+          disabled={loading}
         >
-          {t('Save')}
+          {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {

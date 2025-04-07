@@ -21,10 +21,13 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { tokenPayload } from 'helper';
 import { Link } from 'react-router-dom';
 
+
 const Property = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+
+
   const queryParams = new URLSearchParams(location.search);
   const [openAdd, setOpenAdd] = useState(false);
   const [propertyData, setPropertyData] = useState([]);
@@ -34,12 +37,18 @@ const Property = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState([]);
   const payload = tokenPayload();
+  const userRole = payload?.role;
 
   const fetchPropertyData = async () => {
     try {
       const response = await getApi(urls.property.propertyDataAll, { id: payload.companyId });
       if (response?.data) {
-        setPropertyData(response.data);
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          propertyType: item?.typeId?.name,
+        }));
+        
+        setPropertyData(formattedData);
       } else {
         setPropertyData([]);
       }
@@ -83,14 +92,34 @@ const Property = () => {
 
   const columns = [
     {
+      field: 'serialNo',
+      headerName: 'S.No.',
+      width: 30,
+      renderCell: (params) => {
+        const rowIndex = propertyData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1; 
+      },
+    },
+    {
       field: 'propertyname',
       headerName: t('Property Name'),
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+          renderCell: (params) => (
+              <Button
+                variant="text"
+                color="primary"
+                onClick={() =>
+                  navigate(`/dashboard/property/view?id=${params.row._id}`) 
+                }
+              >
+                {params.row.propertyname}  
+              </Button>
+            ),
     },
     {
-      field: 'description',
-      headerName: t('Description'),
+      field: 'propertyType',
+      headerName: t('Property Type'),
       flex: 1
     },
     {
@@ -142,17 +171,21 @@ const Property = () => {
               horizontal: 'left'
             }}
           >
-            <MenuItem onClick={handleOpenEditProperty}>
+              {userRole === 'companyAdmin' && (
+            <>
+              <MenuItem onClick={handleOpenEditProperty}>
               <EditIcon style={{ marginRight: '8px' }} />
               {t('Edit')}
-            </MenuItem>
-            <MenuItem onClick={handleOpenView}>
-              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
-              {t('view')}
             </MenuItem>
             <MenuItem onClick={handleOpenDeleteProperty} sx={{ color: 'red' }}>
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               {t('Delete')}
+            </MenuItem>
+            </>
+          )}
+            <MenuItem onClick={handleOpenView}>
+              <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('view')}
             </MenuItem>
           </Popover>
         </>
@@ -199,9 +232,10 @@ const Property = () => {
                 {breadcrumbs}
               </Breadcrumbs>
             </Typography>
+            {userRole === 'companyAdmin' &&(
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
               {t('Add Property')}
-            </Button>
+            </Button>)}
           </Stack>
         </Card>
 
@@ -211,7 +245,7 @@ const Property = () => {
               <DataGrid
                 rows={propertyData}
                 columns={columns}
-                checkboxSelection
+                // checkboxSelection
                 getRowId={(row) => row._id}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true } }}

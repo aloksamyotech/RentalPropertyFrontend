@@ -70,14 +70,21 @@ const EditComplain = ({ open, handleClose, data }) => {
 
   // Edit Complaint
   const editComplain = async (values, resetForm) => {
-    // try {
+      setLoading(true);
+      const startTime = Date.now();
       const response = await updateApi(urls.Complaints.editComlplain, values, { id: data._id });
 
       if (response.success) {
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 1000 - elapsedTime);
+        setTimeout(() => {
+          setLoading(false);
+          handleClose();
+        }, remainingTime);
         toast.success(t('complaintUpdatedSuccessfully'));
         resetForm();
-        handleClose();
       } else {
+        setLoading(false);
         toast.error(t('failedToUpdateComplaint'));
       }
     // } catch (err) {
@@ -203,8 +210,7 @@ const EditComplain = ({ open, handleClose, data }) => {
           variant="contained"
           color="primary"
           disabled={loading}
-        >
-          {loading ? <CircularProgress size={24} /> : t('save')}
+        >  {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {

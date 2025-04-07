@@ -12,13 +12,12 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  Divider,
   InputLabel,
   OutlinedInput,
-  Typography,
-  useMediaQuery
+  Typography
 } from '@mui/material';
 import { Formik } from 'formik';
-import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { toast } from 'react-toastify';
 import Visibility from '@mui/icons-material/Visibility';
@@ -27,10 +26,6 @@ import { urls } from 'core/Constant/urls';
 
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
-  const scriptedRef = useScriptRef();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-  const customization = useSelector((state) => state.customization);
-  const [checked, setChecked] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
@@ -39,6 +34,14 @@ const FirebaseLogin = ({ ...others }) => {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const handleCredentialClick = async (email, password, setFieldValue, handleSubmit) => {
+    setFieldValue('email', email);
+    setFieldValue('password', password);
+    setTimeout(() => {
+      handleSubmit();
+    }, 500);
   };
 
   return (
@@ -60,7 +63,6 @@ const FirebaseLogin = ({ ...others }) => {
           try {
             const loginUrl = values.email === 'admin@samyotech.com' ? urls.user.login : urls.company.login;
           
-
             const response = await postApi(loginUrl, values);
 
             if (response.success === true) {
@@ -69,13 +71,13 @@ const FirebaseLogin = ({ ...others }) => {
               const Role = response.data.role;
 
               if (Role === 'admin') {
-                window.location.replace('/dashboard/default');
+                window.location.replace('/dashboard/SADashboard');
               } else if (Role === 'companyAdmin') {
                 window.location.replace('/dashboard/default');
               } else if (Role === 'tenant') {
-                window.location.replace('/dashboard/default');
+                window.location.replace('/dashboard/TDashboard');
               } else if (Role === 'agent') {
-                window.location.replace('/dashboard/default');
+                window.location.replace('/dashboard/ADashboard');
               }
             }
           } catch (error) {
@@ -87,7 +89,7 @@ const FirebaseLogin = ({ ...others }) => {
           }
         }}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, touched, values,setFieldValue }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
             <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
               <InputLabel htmlFor="outlined-adornment-email-login">Email</InputLabel>
@@ -137,6 +139,29 @@ const FirebaseLogin = ({ ...others }) => {
                 </FormHelperText>
               )}
             </FormControl>
+
+            <Box sx={{ width: '100%' }}>
+              <Box
+                sx={{
+                  cursor: 'pointer',
+                  p: 2
+                }}
+                onClick={() => handleCredentialClick('admin@samyotech.com', '1234', setFieldValue, handleSubmit)}
+              >
+                <Typography variant="h5">Super Admin Credentials</Typography>
+              </Box>
+              <Divider />
+              <Box
+                sx={{
+                  cursor: 'pointer',
+                  p: 2
+                }}
+                onClick={() => handleCredentialClick('company.admin@gmail.com', '1234', setFieldValue, handleSubmit)}
+              >
+                <Typography variant="h5">Company Admin Credentials</Typography>
+              </Box>
+            </Box>
+
 
             {errors.submit && (
               <Box sx={{ mt: 3 }}>

@@ -21,13 +21,17 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
+import { useState } from 'react';
 import { tokenPayload } from 'helper';
 
 const EditAnnouncement = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const payload = tokenPayload();
+    const [loading, setLoading] = useState(false);
+  
 
   const handleEditAnnouncement = async (values, resetForm) => {
+    setLoading(true);
     const updatedValues = { ...values, companyId: payload._id, id: data._id };
 
     try {
@@ -36,13 +40,16 @@ const EditAnnouncement = ({ open, handleClose, data }) => {
       if (response.success) {
         toast.success(t('Announcement updated successfully!'));
         resetForm();
-        setTimeout(handleClose, 200);
-      } else {
-        toast.error(response.message || t('Failed to update announcement!'));
+        handleClose();
       }
     } catch (err) {
       console.error('Error updating announcement:', err);
+      setLoading(false);
       toast.error(err.message || t('Something went wrong!'));
+    } finally {
+      handleClose();
+      resetForm()
+      setLoading(false); 
     }
   };
 
@@ -116,8 +123,8 @@ const EditAnnouncement = ({ open, handleClose, data }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" color="primary">
-            {t('save')}
+          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          {loading ? t('Saving...') : t('Save')} 
           </Button>
           <Button
             onClick={() => {

@@ -27,56 +27,36 @@ const AnnouncementViewPage = () => {
     fetchAnnouncement();
   }, [announcementId]);
 
-  // const breadcrumbs = [
-  //   <Link key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
-  //     <IconHome />
-  //   </Link>,
-  //   <Link key="agents" to="/dashboard/agents" style={{ color: 'inherit' }}>
-  //     {t('agent_management')}
-  //   </Link>,
-  //   <Typography key="view" color="text.primary">
-  //     {t('view')}
-  //   </Typography>,
-  // ];
   const breadcrumbs = [
     <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
       <IconHome />
     </Link>,
     <Link key="agents" to="/dashboard/announcement" style={{ color: 'inherit' }}>
-       {t('announcementManagement')}
+      {t('announcementManagement')}
     </Link>,
     <Typography key="announcement" color="text.primary">
       {t('view')}
     </Typography>,
   ];
 
+  // Function to format date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString(); // Formats to a readable date and time
+  };
 
   return (
     <Container>
-      {/* <Card sx={{ p: 2, mb: 2 }}>
+      <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-          <Typography variant="h4">{t('announcement_details')}</Typography>
-          <Breadcrumbs separator="›" aria-label="breadcrumb">
-            <Link to="/dashboard/default" style={{ color: 'inherit' }}>
-              <IconHome />
-            </Link>
-            <Link to="/dashboard/announcements" style={{ color: 'inherit' }}>
-              {t('Announcements')}
-            </Link>
-            <Typography color="text.primary">{t('View')}</Typography>
-          </Breadcrumbs>
+          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {t('announcement_details')}
+            <Breadcrumbs separator="›" aria-label="breadcrumb">
+              {breadcrumbs}
+            </Breadcrumbs>
+          </Typography>
         </Stack>
-      </Card> */}
-        <Card sx={{ p: 2, mb: 2 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-              <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              {t('announcement_details')}
-                <Breadcrumbs separator="›" aria-label="breadcrumb">
-                  {breadcrumbs}
-                </Breadcrumbs>
-              </Typography>
-            </Stack>
-          </Card>
+      </Card>
 
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={3}>
@@ -93,8 +73,13 @@ const AnnouncementViewPage = () => {
               <Typography variant="h4" gutterBottom sx={{ pb: 2 }}>
                 {announcement?.topic || t('not_available')}
               </Typography>
-              <Typography variant="body1">
-                {announcement?.details || t('not_available')} 
+              <Typography variant="body1" sx={{ pb: 2 }}>
+                {announcement?.details || t('not_available')}
+              </Typography>
+
+              {/* Display the creation date and time */}
+              <Typography variant="body2" color="textSecondary">
+                {t('created_on')}: {announcement?.createdAt ? formatDate(announcement.createdAt) : t('not_available')}
               </Typography>
             </Paper>
           </Grid>

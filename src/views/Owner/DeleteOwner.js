@@ -17,35 +17,26 @@ import { debounce } from 'lodash';
 
 const DeleteOwner = ({ open, handleClose, id }) => {
   const { t } = useTranslation(); 
-  const navigate = useNavigate(); 
 
   const [loading, setLoading] = useState(false); 
 
-  // Handler to delete the owner with debouncing to avoid multiple submissions
   const handleDeleteRequest = async () => {
     setLoading(true);
-    const startTime = Date.now();
 
     try {
       const result = await patchApi(urls.owner.delete, { isDeleted: true }, { id });
 
       if (result?.success) {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, 500 - elapsedTime);
-        setTimeout(() => {
-          setLoading(false);
-          handleClose();
-        }, remainingTime);
-
-        toast.success(t('Owner Deleted Successfully')); 
-      } else {
-        toast.error(t('cannot delete owner')); 
-        setLoading(false);
+ 
+        toast.success(t('Owner Deleted Successfully'));
+        handleClose();
       }
     } catch (error) {
       console.error('Error deleting owner:', error);
-      toast.error(t('cannot delete owner')); 
-      setLoading(false);
+      toast.error(t('cannot delete owner'));
+    } finally {
+      handleClose();
+      setLoading(false); 
     }
   };
 

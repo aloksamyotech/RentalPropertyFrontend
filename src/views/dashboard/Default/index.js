@@ -20,6 +20,9 @@ import { tokenPayload } from 'helper';
 import TotalVacantProperties from './TotalVacantProperty';
 import TotalComplains from './TotalComplains';
 import TotalBooking from './TotalBooking';
+import TotalGrowthBarChart from './TotalGrowthBarChart';
+import TotalPendingBill from './TotalPendingBills';
+import TotalPaidBill from './TotalPaidBill';
 
 const RoomTypeIcons = {
   single: <SingleBedIcon sx={{ fontSize: '2.5rem' }} />,
@@ -48,7 +51,8 @@ const MainDashboard = () => {
   const [vacantpropertyData,setVacantpropertyData] = useState([]);
   const [complainData,setComplainData] = useState([]);
   const [booking,setBooking] = useState([]);
-  
+  const [pendingBill,setPendingBill] = useState([]);
+  const [paidBill,setPaidBill] = useState([]);
 
 
   const fetchAgentData = async () => {
@@ -64,6 +68,15 @@ const MainDashboard = () => {
     try {
       const response = await getApi( urls.booking.allbooking, { id: payload.companyId });
       setBooking(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchPaidData = async () => {
+    try {
+      const response = await getApi( urls.bill.paidBillCounts, { id: payload.companyId });
+      setPaidBill(response?.data);
     } catch (error) {
       console.log(error);
     }
@@ -88,14 +101,14 @@ const MainDashboard = () => {
     }
   };
 
-  const fetchcustomerData = async () => {
-    try {
-      const response = await getApi(`api/customer/viewallcustomer/${hotel?.hotelId}`);
-      setcustomerData(response?.data?.customerData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchcustomerData = async () => {
+  //   try {
+  //     const response = await getApi(`api/customer/viewallcustomer/${hotel?.hotelId}`);
+  //     setcustomerData(response?.data?.customerData);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const fetchTenantData = async () => {
     try {
@@ -114,11 +127,21 @@ const MainDashboard = () => {
       console.log(error);
     }
   };
+  const fetchPendingBillData = async () => {
+    try {
+      const response = await getApi(urls.bill.pendingBillCounts,{id: payload.companyId});
+      setPendingBill(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     fetchAgentData();
+    fetchPaidData();
     fetchPropertyData();
-    fetchcustomerData();
+    fetchPendingBillData();
+    // fetchcustomerData();
     fetchTenantData();
     fetchVacantPropertyData();
     fetchComplainData();
@@ -171,7 +194,7 @@ const MainDashboard = () => {
             >
               <TotalAgent isLoading={isLoading} agent={agent} />
             </Grid>
-            <Grid
+            {/* <Grid
               item
               lg={3}
               md={6}
@@ -183,7 +206,7 @@ const MainDashboard = () => {
               }}
             >
               <TotalCompanies isLoading={isLoading} customerData={customerData} />
-            </Grid>
+            </Grid> */}
             <Grid
               item
               lg={3}
@@ -251,10 +274,48 @@ const MainDashboard = () => {
             >
               <TotalTenants isLoading={isLoading} tenant={tenant} />
             </Grid>
+            <Grid
+              item
+              lg={3}
+              md={6}
+              sm={6}
+              xs={12}
+              sx={{ cursor: 'pointer' }}
+              // onClick={() => {
+              //   navigate('/dashboard/billC');
+              // }}
+            >
+              <TotalPendingBill isLoading={isLoading} TotalPendingBill={pendingBill} />
+            </Grid>
+
+            <Grid
+              item
+              lg={3}
+              md={6}
+              sm={6}
+              xs={12}
+              sx={{ cursor: 'pointer' }}
+              // onClick={() => {
+              //   navigate('/dashboard/billC');
+              // }}
+            >
+              <TotalPaidBill isLoading={isLoading} TotalPaidBill={paidBill} />
+            </Grid>
           </Grid>
         </Grid>
 
         <Grid item xs={12}>
+        <Grid container spacing={gridSpacing}>
+          <Grid item xs={12}>
+            <TotalGrowthBarChart isLoading={isLoading} />
+          </Grid>
+          {/* <Grid item xs={12} md={4}>
+            <PopularCard isLoading={isLoading} />
+          </Grid> */}
+        </Grid>
+      </Grid>
+
+        {/* <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
             <Grid item xs={12} md={12}>
               <Typography variant="h5" sx={{ marginBottom: '10px' }}>
@@ -300,7 +361,6 @@ const MainDashboard = () => {
                                         height: '53px'
                                       }}
                                     >
-                                      {/* {RoomTypeIcons[room.roomType.toLowerCase()]} */}
                                     </Avatar>
                                   </Grid>
                                 </Grid>
@@ -347,7 +407,7 @@ const MainDashboard = () => {
               )}
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   );

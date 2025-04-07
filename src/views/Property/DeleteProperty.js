@@ -5,19 +5,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
-import { debounce, throttle } from 'lodash';
-import { useCallback } from 'react';
 
 const DeleteProperty = ({ open, handleClose, id }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -25,23 +20,18 @@ const DeleteProperty = ({ open, handleClose, id }) => {
     try {
       const result = await patchApi(urls.property.delete, { isDeleted: true }, { id });
 
-      if (result?.status === 200 || result?.success) {
+      if (result?.success) {
         toast.success(t('Property Deleted Successfully'));
-        // navigate('/dashboard/property');
         handleClose();
-      } else {
-        toast.error(t('cannot delete property'));
       }
     } catch (error) {
       console.error('Error deleting property:', error);
       toast.error(t('cannotDeleteProperty'));
+      setLoading(false);
     } finally {
       setLoading(false);
     }
   };
-
-  // const handleDelete = useCallback(debounce(handleDeleteRequest, 500),[]);
-  
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -57,7 +47,7 @@ const DeleteProperty = ({ open, handleClose, id }) => {
           onClick={handleDelete}
           color="error"
           variant="contained"
-          disabled={loading} 
+          disabled={loading}
         >
           {loading ? t('deleting') : t('delete')}
         </Button>
