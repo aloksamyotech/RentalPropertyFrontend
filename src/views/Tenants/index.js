@@ -36,10 +36,12 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import { useNavigate } from 'react-router';
 import TabList from '@mui/lab/TabList';
+import BulkUploadTenant from './BulkUpload';
 
 const Tenants = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [openBulkUploadDialog, setOpenBulkUploadDialog] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
@@ -68,6 +70,15 @@ const Tenants = () => {
     } catch (error) {
       setTenantData([]);
     }
+  };
+
+  const bulkDialogOpen = () => {
+    setOpenBulkUploadDialog(true);
+    // setRowData(currentRow); 
+  };
+  // Handle closing the bulk upload dialog
+  const handleBulkDialogClose = () => {
+    setOpenBulkUploadDialog(false); 
   };
 
   useEffect(() => {
@@ -137,11 +148,11 @@ const Tenants = () => {
                             color="primary"
                             onClick={() =>
                               navigate(`/dashboard/tenant/view?id=${params.row._id}`) 
-                            }
-                          >
-                            {params.row.tenantName}  
-                          </Button>
-                        ),
+            }
+          >
+          {params.row.tenantName}  
+        </Button>
+      ),
       
     },
     {
@@ -162,7 +173,7 @@ const Tenants = () => {
     },
     {
       field: 'isOccupied',
-      headerName: t('Status'),
+      headerName: t('Occupied/unOccupied'),
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -235,54 +246,82 @@ const Tenants = () => {
       <Addtenents open={openAdd} handleClose={handleCloseAdd} />
       <EditTenant open={openEdit} handleClose={handleCloseEditTenant} data={rowData} />
       <DeleteTenant open={openDelete} handleClose={handleCloseDeleteTenantDialog} id={rowData?._id} />
+      <BulkUploadTenant
+  open={openBulkUploadDialog}
+  data={payload} 
+  onClose={handleBulkDialogClose}
+/>
       <Container>
         <Card sx={{ p: 2, mb: 2 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-            <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              {t('Tenants Management')}
-              <Breadcrumbs separator="›" aria-label="breadcrumb">
-                {breadcrumbs}
-              </Breadcrumbs>
-            </Typography>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              {t('Add Tenants')}
-            </Button>
-          </Stack>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2} width="100%">
+  <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+    {t('Tenants Management')}
+    <Breadcrumbs separator="›" aria-label="breadcrumb">
+      {breadcrumbs}
+    </Breadcrumbs>
+  </Typography>
+  <Box sx={{ marginLeft: 'auto', display: 'flex', gap: 2 }}>
+    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
+      {t('Add Tenants')}
+    </Button>
+    <Button variant="contained" color="primary" onClick={bulkDialogOpen}>
+      {t('Bulk Upload Tenants')}
+    </Button>
+  </Box>
+</Stack>
         </Card>
         <TableStyle>
-          <Box width="100%">
-            <Card style={{ height: '600px', paddingTop: '15px' }}>
-              <TabContext value={value}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                  <TabList onChange={handleChange} aria-label="Tenant tabs">
-                    <Tab label={t('My Tenants')} value="1" />
-                    {userRole === 'companyAdmin' && <Tab label={t('All Tenants')} value="2" />}
-                  </TabList>
-                </Box>
-                <TabPanel value="1">
-                  <DataGrid
-                    rows={tenantData}
-                    columns={columns}
-                    getRowId={(row) => row._id || row.id}
-                    slots={{ toolbar: GridToolbar }}
-                    slotProps={{ toolbar: { showQuickFilter: true } }}
-                  />
-                </TabPanel>
-                {userRole === 'companyAdmin' && (
-                  <TabPanel value="2">
-                    <DataGrid
-                      rows={tenantData}
-                      columns={columns}
-                      getRowId={(row) => row._id || row.id}
-                      slots={{ toolbar: GridToolbar }}
-                      slotProps={{ toolbar: { showQuickFilter: true } }}
-                    />
-                  </TabPanel>
-                )}
-              </TabContext>
-            </Card>
-          </Box>
-        </TableStyle>
+  <Box width="100%">
+    <Card style={{ paddingTop: '15px' }}>
+      <TabContext value={value}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList onChange={handleChange} aria-label="Tenant tabs">
+            <Tab label={t('My Tenants')} value="1" />
+            {userRole === 'companyAdmin' && <Tab label={t('All Tenants')} value="2" />}
+          </TabList>
+        </Box>
+        <div style={{ height: '600px', display: 'flex', flexDirection: 'column' }}>
+          <TabPanel value="1" style={{ flex: 1, overflow: 'hidden' }}>
+            <DataGrid
+              rows={tenantData}
+              columns={columns}
+              getRowId={(row) => row._id || row.id}
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{ toolbar: { showQuickFilter: true } }}
+              sx={{
+                '& .MuiDataGrid-virtualScroller': {
+                  overflow: 'auto',
+                },
+                '& .MuiDataGrid-main': {
+                  height: '100%',
+                },
+              }}
+            />
+          </TabPanel>
+          {userRole === 'companyAdmin' && (
+            <TabPanel value="2" style={{ flex: 1, overflow: 'hidden' }}>
+              <DataGrid
+                rows={tenantData}
+                columns={columns}
+                getRowId={(row) => row._id || row.id}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{ toolbar: { showQuickFilter: true } }}
+                sx={{
+                  '& .MuiDataGrid-virtualScroller': {
+                    overflow: 'auto',
+                  },
+                  '& .MuiDataGrid-main': {
+                    height: '100%',
+                  },
+                }}
+              />
+            </TabPanel>
+          )}
+        </div>
+      </TabContext>
+    </Card>
+  </Box>
+</TableStyle>
       </Container>
     </>
   );

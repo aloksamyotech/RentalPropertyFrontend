@@ -21,12 +21,10 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { tokenPayload } from 'helper';
 import { Link } from 'react-router-dom';
 
-
 const Property = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-
 
   const queryParams = new URLSearchParams(location.search);
   const [openAdd, setOpenAdd] = useState(false);

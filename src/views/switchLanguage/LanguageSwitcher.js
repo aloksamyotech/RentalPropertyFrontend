@@ -9,7 +9,7 @@ const LanguageSwitcher = () => {
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
-    window.location.reload(); // This will reload the page after language change
+    window.location.reload(); 
   };
 
   return (
@@ -22,7 +22,7 @@ const LanguageSwitcher = () => {
           </InputLabel>
           <Select
             labelId="language-select-label"
-            defaultValue={i18n.language}
+            defaultValue={i18n.language || 'en'}
             onChange={(e) => changeLanguage(e.target.value)}
             label="Language"
           >
