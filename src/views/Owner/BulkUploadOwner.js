@@ -21,15 +21,16 @@ import { useTranslation } from 'react-i18next';
 import SampleFile from '../../assets/samplefile/Owner.xlsx';
 
 const BulkUploadOwner = ({ open, onClose, data }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(); 
 
+  
   const validationSchema = yup.object({
     files: yup
       .mixed()
-      .required(t('Please insert an Excel file'))
+      .required(t('Please insert an Excel file')) 
       .test(
         'accepted',
-        t('Please insert a valid Excel file'),
+        t('Please insert a valid Excel file'), 
         (value) => {
           if (!value) return false;
           const allowedFormats = [
@@ -42,8 +43,9 @@ const BulkUploadOwner = ({ open, onClose, data }) => {
       ),
   });
 
-  console.log(data,"DATA")
+  console.log(data, "DATA");
 
+  // Formik setup
   const formik = useFormik({
     initialValues: {
       file: null,

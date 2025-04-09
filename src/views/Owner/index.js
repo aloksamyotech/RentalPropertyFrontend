@@ -211,7 +211,7 @@ const Owner = () => {
         color="primary" 
         onClick={bulkDialogOpen}
       >
-        {t('Bulk Upload Owners')} {/* Changed from "Tenants" to "Owners" */}
+        {t('Bulk Upload Owners')} 
       </Button>
     </Stack>
   </Stack>
