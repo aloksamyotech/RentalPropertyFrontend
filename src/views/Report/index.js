@@ -1,0 +1,116 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react/prop-types */
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
+import { Stack, Button, Container, Typography, Box, Breadcrumbs, Card } from '@mui/material';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import Iconify from '../../ui-component/iconify';
+import TableStyle from '../../ui-component/TableStyle';
+import { IconHome } from '@tabler/icons';
+import { useTranslation } from 'react-i18next';
+import { urls } from 'core/Constant/urls';
+import { getApi } from 'core/apis/api';
+import { tokenPayload } from 'helper';
+
+const payload = tokenPayload();
+const userRole = payload?.role;
+
+const Reports = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const [reportData, setReportData] = useState([]);
+
+  const fetchReportData = async () => {
+    try {
+      const response = await getApi(urls.Subscribe.getAllSubscription);
+      setReportData(response?.data || []);
+    } catch (error) {
+      setReportData([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchReportData();
+  }, []);
+
+  const columns = [
+    {
+      field: 'serialNo',
+      headerName: t('S.No.'),
+      width: 80,
+      renderCell: (params) => {
+        const rowIndex = reportData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1;
+      },
+    },
+    {
+      field: 'title',
+      headerName: t('Order Date'),
+      flex: 1,
+    },
+    {
+      field: 'noOfDays',
+      headerName: t('Company Name'),
+      flex: 1,
+    },
+    {
+      field: 'amount',
+      headerName: t('Subscription Plan'),
+      flex: 1,
+    },
+    {
+      field: 'discount',
+      headerName: t('Discount (%)'),
+      flex: 1,
+    },
+    {
+      field: 'discription',
+      headerName: t('Description'),
+      flex: 1,
+    },
+  ];
+
+  const breadcrumbs = [
+    <Link key="home" to="/dashboard/SADashboard" style={{ color: 'inherit', textDecoration: 'none' }}>
+      <IconHome />
+    </Link>,
+    <Typography key="reports" color="text.primary">
+      {t('Reports')}
+    </Typography>,
+  ];
+
+  return (
+    <Container>
+      <Card sx={{ p: 2, mb: 2 }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {t('Subscription Reports')}
+            <Breadcrumbs separator="›" aria-label="breadcrumb">
+              {breadcrumbs}
+            </Breadcrumbs>
+          </Typography>
+
+      
+        </Stack>
+      </Card>
+
+      <TableStyle>
+        <Box width="100%">
+          <Card sx={{ height: 600, pt: 2 }}>
+            <DataGrid
+              rows={reportData}
+              columns={columns}
+              getRowId={(row) => row._id}
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{ toolbar: { showQuickFilter: true } }}
+            />
+          </Card>
+        </Box>
+      </TableStyle>
+    </Container>
+  );
+};
+
+export default Reports;
