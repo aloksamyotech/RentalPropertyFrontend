@@ -1,13 +1,12 @@
 /* eslint-disable prettier/prettier */
-
 import Complaints from 'views/Complaints';
 const base = 'http://localhost:7200/api/v1';
 // const base = 'http://165.22.218.55:7202/api/v1';
-// const base = 'https://rentals.samyotech.in/api/v1';
+// const base = 'https://rentals.samyotech.in'
 // const base = 'http://165.22.218.55:7202/api/v1';
 // const base = 'https://rentals.samyotech.in/api/v1';
-const imageBase = 'http://localhost:7200/';
-// const imageBase = 'https://rentals.samyotech.in/';
+// const imageBase = 'http://localhost:7200/';
+const imageBase = 'https://rentals.samyotech.in/';
 // const imageBase = 'https://rentals.samyotech.in/';
 export const urls = Object.freeze({
   // SuperAdmin
@@ -60,6 +59,7 @@ export const urls = Object.freeze({
     ownerdata: base + '/owner/getAllOwner',
     ownerById: base + '/owner/getOwnerById',
     getPropertyByOwnerId: base + '/owner/getPropertyByOwnerId',
+    bulkUploadOwner: base + '/owner/bulkUploadOwner'
   },
   agent: {
     create: base + '/agent/register',
@@ -81,7 +81,6 @@ export const urls = Object.freeze({
     uplaodImages: base + '/property/uploadImages',
     getAllImgByPropertyId: base + '/property/getAllImages',
     deleteImg: base + '/property/deleteImg',
-    
     image: imageBase
   },
   tenant: {
@@ -97,7 +96,8 @@ export const urls = Object.freeze({
     tenantDocs: base + '/tenant/tenantDoc',
     getAllDocByTenantId: base + '/tenant/getAllDocs',
     deleteDocs: base + '/tenant/deleteDoc',
-    image: imageBase
+    image: imageBase,
+    bulkUpload: base + '/tenant/bulkUploadTenants'
   },
   booking: {
     create: base + '/booking/create',

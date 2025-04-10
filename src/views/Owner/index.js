@@ -30,18 +30,19 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { tokenPayload } from 'helper';
+import BulkUploadOwner from './BulkUploadOwner';
+
 
 const Owner = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [openBulkUploadDialog, setOpenBulkUploadDialog] = useState(false);
   const [dialogState, setDialogState] = useState({ add: false, edit: false, delete: false });
   const [rowData, setRowData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [ownerData, setOwnerData] = useState([]);
-   const payload = tokenPayload();
-  // const company = JSON.parse(localStorage.getItem('companyData'));
+  const payload = tokenPayload();
 
-  // Fetch owner data
   const fetchOwnerData = async () => {
     try {
       const response = await getApi(urls.owner.ownerdata, { id: payload.companyId });
@@ -56,10 +57,17 @@ const Owner = () => {
     fetchOwnerData();
   }, [dialogState]);
 
-  // Dialog Handlers
   const openDialog = (type, row = null) => {
     setRowData(row);
     setDialogState((prev) => ({ ...prev, [type]: true }));
+  };
+
+  const bulkDialogOpen = () => {
+    setOpenBulkUploadDialog(true);
+  };
+
+  const handleBulkDialogClose = () => {
+    setOpenBulkUploadDialog(false); 
   };
 
   const closeDialog = (type) => {
@@ -71,8 +79,6 @@ const Owner = () => {
     navigate(`/dashboard/owner/view?id=${rowData._id}`);
   };
 
-
-  // Popover Handlers
   const handlePopoverOpen = (event, row) => {
     setAnchorEl(event.currentTarget);
     setRowData(row);
@@ -176,30 +182,40 @@ const Owner = () => {
 
   return (
     <>
-      {/* Dialog Components */}
+  
       <AddOwner open={dialogState.add} handleClose={() => closeDialog('add')} />
       <EditOwner open={dialogState.edit} handleClose={() => closeDialog('edit')} data={rowData} />
       <DeleteOwner open={dialogState.delete} handleClose={() => closeDialog('delete')} id={rowData?._id} />
-
+      <BulkUploadOwner open={openBulkUploadDialog} data={payload} onClose={handleBulkDialogClose} />
       <Container>
         {/* Breadcrumbs and Header */}
         <Card sx={{ p: 2, mb: 2 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-            <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              {t('Landlord/Owner Management')} 
-              <Breadcrumbs separator="›" aria-label="breadcrumb">
-                {breadcrumbs}
-              </Breadcrumbs>
-            </Typography>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={() => openDialog('add')}
-            >
-              {t('Add Owner')}
-            </Button>
-          </Stack>
-        </Card>
+  <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%">
+    <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      {t('Landlord/Owner Management')} 
+      <Breadcrumbs separator="›" aria-label="breadcrumb">
+        {breadcrumbs}
+      </Breadcrumbs>
+    </Typography>
+    
+    <Stack direction="row" spacing={2}>
+      <Button
+        variant="contained"
+        startIcon={<Iconify icon="eva:plus-fill" />}
+        onClick={() => openDialog('add')}
+      >
+        {t('Add Owner')}
+      </Button>
+      <Button 
+        variant="contained" 
+        color="primary" 
+        onClick={bulkDialogOpen}
+      >
+        {t('Bulk Upload Owners')} 
+      </Button>
+    </Stack>
+  </Stack>
+</Card>
 
         {/* Data Table */}
         <TableStyle>

@@ -40,6 +40,7 @@ const EditProperty = ({ open, handleClose, data }) => {
   const [loading, setLoading] = useState(false);
   const [currency, setCurrency] = useState();
   const payload = tokenPayload();
+  console.log(data,"data")
 
   useEffect(() => {
     if (open) {
@@ -88,24 +89,21 @@ const EditProperty = ({ open, handleClose, data }) => {
     const formData = new FormData();
 
     // Append form values
-    formData.append('propertyname', values.propertyname);
-    formData.append('typeId', values.typeId);
-    formData.append('description', values.description);
-    formData.append('rent', values.rent);
-    formData.append('address', values.address);
-    formData.append('zipcode', values.zipcode);
-    formData.append('maplink', values.maplink);
-    formData.append('ownerId', values.ownerId);
+    formData.append('propertyname', values?.propertyname);
+    formData.append('typeId', values?.typeId);
+    formData.append('description', values?.description);
+    formData.append('rent', values?.rent);
+    formData.append('address', values?.address);
+    formData.append('zipcode', values?.zipcode);
+    formData.append('maplink', values?.maplink);
+    formData.append('ownerId', values?.ownerId);
 
-    // Append new images (files)
     newImages.forEach((file) => {
       formData.append('files', file);
     });
 
-    // Append existing images (URLs)
     formData.append('existingImages', JSON.stringify(existingImages));
 
-    // Append company ID
     formData.append('companyId', payload._id);
 
     try {
@@ -146,7 +144,7 @@ const EditProperty = ({ open, handleClose, data }) => {
   const formik = useFormik({
     initialValues: {
       propertyname: data?.propertyname || '',
-      typeId: data?.typeId || '',
+      typeId: data?.typeId?._id || '',
       description: data?.description || '',
       rent: data?.rent || '',
       area: data?.area || '',

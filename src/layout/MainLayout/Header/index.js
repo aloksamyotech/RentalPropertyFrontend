@@ -93,11 +93,11 @@ const Header = ({ handleLeftDrawerToggle }) => {
                 fontWeight: 600,
                 fontSize: '1.4rem',
                 color: theme.palette.primary.main,
-                transition: 'color 0.3s ease-in-out, transform 0.3s ease-in-out', // Added transition for scale
+                transition: 'color 0.3s ease-in-out, transform 0.3s ease-in-out', 
                 '&:hover': {
                   color: theme.palette.primary.dark,
                   cursor: 'pointer',
-                  transform: 'scale(1.05)', // Slightly enlarges text on hover
+                  transform: 'scale(1.05)', 
                 },
               }}
             >

@@ -100,7 +100,6 @@ const Agents = () => {
         </Button>
       ),
     },
-    
     { field: 'email', headerName: t('email'), flex: 1 },
     { field: 'phoneNo', headerName: t('phoneNo'), flex: 1 },
     { field: 'address', headerName: t('address'), flex: 1 },
