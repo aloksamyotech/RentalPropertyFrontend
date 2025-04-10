@@ -43,7 +43,6 @@ const BulkUploadOwner = ({ open, onClose, data }) => {
       ),
   });
 
-  console.log(data, "DATA");
 
   // Formik setup
   const formik = useFormik({
