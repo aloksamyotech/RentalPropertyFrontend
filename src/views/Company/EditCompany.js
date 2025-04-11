@@ -11,9 +11,9 @@ import {
   Typography,
   DialogActions,
   DialogContent,
+  DialogTitle,
   Select,
   MenuItem,
-  DialogTitle,
 } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { updateApi, getApi } from 'core/apis/api';
@@ -24,80 +24,35 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
-import { useCallback } from 'react';
-import { debounce, throttle } from 'lodash';
 import currencyCodes from 'currency-codes';
 
-const EditComplain = ({ open, handleClose, data }) => {
+const EditCompany = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
-  const [companyData, setCompanyData] = useState([]);
   const [loading, setLoading] = useState(false);
-    const currencyOptions = currencyCodes.data.map((currency) => ({
-      code: currency.code,
-      name: currency.currency,
-    }));
-
   const payload = tokenPayload();
 
-  useEffect(() => {
-    if (open) {
-      fetchComplainData();
-    }
-  }, [open]);
-
-  const fetchComplainData = async () => {
-    try {
-      const response = await getApi(urls.property.propertydata, { id: payload.companyId });
-      setCompanyData(response.data);
-    } catch (err) {
-      console.error('Error fetching property data:', err);
-      toast.error(t('failedToFetchPropertyData'));
-    }
-  };
-
-  const editCompany = async (values, resetForm) => {
-    setLoading(true);  
-    try {
-      const response = await updateApi(urls?.company?.edit, values, { id: data._id });
-
-      if (response.success) {
-        toast.success(t('companyUpdatedSuccessfully'));
-        resetForm();
-        handleClose();
-      }
-    } catch (err) {
-      console.error('Error updating company:', err);
-      toast.error(t('somethingWentWrong'));
-    } finally {
-      setLoading(false); 
-      resetForm();
-      handleClose();
-    }
-  };
+  const currencyOptions = currencyCodes.data.map((currency) => ({
+    code: currency.code,
+    name: currency.currency,
+  }));
 
   const validationSchema = yup.object({
-     companyName: yup
-          .string()
-          .matches(/^[A-Za-z\s]+$/, t('Company Name can only contain letters and spaces'))
-          .max(50, t('Company Name cannot exceed 50 characters'))
-          .required(t('Company Name is required')),
-       email: yup
-         .string()
-         .email(t('Invalid email address'))
-         .required(t('Email is required')),
-       phoneNo: yup
-         .string()
-         .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
-         .required(t('Phone Number is required')),
-       address: yup
-         .string()
-         .max(80, t('Address cannot exceed 80 characters'))
-         .required(t('Address is required')),
-       password: yup.string().required(t('Password is required')),
-       currencyCode: yup.string().required(t('Currency is required')),
-       gstnumber: yup
-         .string()
-         .max(15, t("Gst number cannot exceed 15 character."))
+    companyName: yup
+      .string()
+      .matches(/^[A-Za-z\s]+$/, t('Company Name can only contain letters and spaces'))
+      .max(50, t('Company Name cannot exceed 50 characters'))
+      .required(t('Company Name is required')),
+    email: yup.string().email(t('Invalid email address')).required(t('Email is required')),
+    phoneNo: yup
+      .string()
+      .matches(/^[0-9]{10}$/, t('Phone Number must be exactly 10 digits'))
+      .required(t('Phone Number is required')),
+    address: yup
+      .string()
+      .max(80, t('Address cannot exceed 80 characters'))
+      .required(t('Address is required')),
+    currencyCode: yup.string().required(t('Currency is required')),
+    gstnumber: yup.string().max(15, t('GST number cannot exceed 15 characters')),
   });
 
   const formik = useFormik({
@@ -107,12 +62,27 @@ const EditComplain = ({ open, handleClose, data }) => {
       phoneNo: data?.phoneNo || '',
       address: data?.address || '',
       currencyCode: data?.currencyCode || '',
-      gstnumber: data?.gstnumber || ''
+      gstnumber: data?.gstnumber || '',
     },
     enableReinitialize: true,
     validationSchema,
-    onSubmit: (values, { resetForm }) => {
-      editCompany(values, resetForm);
+    onSubmit: async (values, { resetForm }) => {
+      setLoading(true);
+      try {
+        const response = await updateApi(urls.company.edit, values, { id: data._id });
+        if (response.success) {
+          toast.success(t('Company updated successfully'));
+          resetForm();
+          handleClose();
+        } else {
+          toast.error(t('Update failed'));
+        }
+      } catch (err) {
+        console.error('Error updating company:', err);
+        toast.error(t('Something went wrong'));
+      } finally {
+        setLoading(false);
+      }
     },
   });
 
@@ -120,13 +90,13 @@ const EditComplain = ({ open, handleClose, data }) => {
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
       <DialogTitle>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6">{t('editComplaint')}</Typography>
+          <Typography variant="h6">{t('Edit Company')}</Typography>
           <ClearIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
         </div>
       </DialogTitle>
       <DialogContent dividers>
         <form onSubmit={formik.handleSubmit}>
-          <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 5, md: 4 }}>
+          <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <FormLabel>{t('Company Name')}</FormLabel>
               <TextField
@@ -180,40 +150,40 @@ const EditComplain = ({ open, handleClose, data }) => {
                 helperText={formik.touched.address && formik.errors.address}
               />
             </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormLabel>{t('currency_code')}</FormLabel>
-                  <Select
-                    id="currencyCode"
-                    name="currencyCode"
-                    size="small"
-                    fullWidth
-                    value={formik.values.currencyCode}
-                    onChange={formik.handleChange}
-                    error={formik.touched.currencyCode && Boolean(formik.errors.currencyCode)}
-                  >
-                  <MenuItem value="" disabled>
-                    {t('select_currency_code')}
-                  </MenuItem>
-                  {currencyOptions.map((currency) => (
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('Currency')}</FormLabel>
+              <Select
+                id="currencyCode"
+                name="currencyCode"
+                size="small"
+                fullWidth
+                value={formik.values.currencyCode}
+                onChange={formik.handleChange}
+                error={formik.touched.currencyCode && Boolean(formik.errors.currencyCode)}
+              >
+                <MenuItem value="" disabled>
+                  {t('Select Currency')}
+                </MenuItem>
+                {currencyOptions.map((currency) => (
                   <MenuItem key={currency.code} value={currency.code}>
-                      {`${currency.code} - ${currency.name}`}
+                    {`${currency.code} - ${currency.name}`}
                   </MenuItem>
-                  ))}
-                </Select>
-              </Grid>
-               <Grid item xs={12} sm={6}>
-                              <FormLabel>{t('GST Number')}</FormLabel>
-                              <TextField
-                                id="gstnumber"
-                                name="gstnumber"
-                                size="small"
-                                fullWidth
-                                value={formik.values.gstnumber}
-                                onChange={formik.handleChange}
-                                error={formik.touched.gstnumber && Boolean(formik.errors.gstnumber)}
-                                helperText={formik.touched.gstnumber && formik.errors.gstnumber}
-                              />
-                            </Grid>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormLabel>{t('GST Number')}</FormLabel>
+              <TextField
+                id="gstnumber"
+                name="gstnumber"
+                size="small"
+                fullWidth
+                value={formik.values.gstnumber}
+                onChange={formik.handleChange}
+                error={formik.touched.gstnumber && Boolean(formik.errors.gstnumber)}
+                helperText={formik.touched.gstnumber && formik.errors.gstnumber}
+              />
+            </Grid>
           </Grid>
         </form>
       </DialogContent>
@@ -222,7 +192,7 @@ const EditComplain = ({ open, handleClose, data }) => {
           onClick={formik.handleSubmit}
           variant="contained"
           color="primary"
-          disabled={loading}  // Disable button when loading is true
+          disabled={loading}
         >
           {loading ? t('Saving...') : t('Save')}
         </Button>
@@ -234,23 +204,25 @@ const EditComplain = ({ open, handleClose, data }) => {
           variant="outlined"
           color="error"
         >
-          {t('cancel')}
+          {t('Cancel')}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-EditComplain.propTypes = {
+EditCompany.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   data: PropTypes.shape({
-    propertyId: PropTypes.shape({
-      _id: PropTypes.string,
-    }),
-    concernTopic: PropTypes.string,
-    description: PropTypes.string,
-  }),
+    _id: PropTypes.string,
+    companyName: PropTypes.string,
+    email: PropTypes.string,
+    phoneNo: PropTypes.string,
+    address: PropTypes.string,
+    currencyCode: PropTypes.string,
+    gstnumber: PropTypes.string,
+  }).isRequired,
 };
 
-export default EditComplain;
+export default EditCompany;

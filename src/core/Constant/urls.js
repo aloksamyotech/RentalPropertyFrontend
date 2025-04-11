@@ -131,5 +131,12 @@ export const urls = Object.freeze({
     editAnnouncement: base + '/announcement/editAnnouncement',
     delete: base + '/announcement/delete',
     getAnnouncementById: base + '/announcement/getAnnouncementById'
+  },
+  Subscribe: {
+    create: base + '/subscription/register',
+    getAllSubscription: base + '/subscription/getSubscription',
+    edit : base +'/subscription/edit',
+    delete: base + '/subscription/delete',
+    
   }
 });

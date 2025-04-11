@@ -19,16 +19,18 @@ import {
 } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { getApi, patchApi } from 'core/apis/api';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import TableStyle from '../../ui-component/TableStyle';
 import { IconHome } from '@tabler/icons';
 import AddCompany from './AddCompany';
 import Iconify from '../../ui-component/iconify';
+import { Navigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 import { urls } from 'core/Constant/urls';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditCompany from './EditCompany';
 import DeleteCompany from './DeleteCompany';
 import Switch from '@mui/material/Switch';
@@ -41,6 +43,7 @@ const label = { inputProps: { 'aria-label': 'Switch demo' } };
 const Company = () => {
  
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [openDelete, setOpenDelete] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
@@ -89,6 +92,10 @@ const Company = () => {
   const handleClose = () => {
     setAnchorEl(null);
     setCurrentRow(null);
+  };
+
+  const handleOpenView = () => {
+    navigate(`/dashboard/company/view?id=${currentRow._id}`);
   };
 
   const handleCloseDeleteCompany = () => setOpenDelete(false);
@@ -216,6 +223,10 @@ const Company = () => {
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               {t('Delete')}
             </MenuItem>
+                     <MenuItem onClick={handleOpenView}>
+                                      <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
+                                      {t('view')}
+                            </MenuItem>
           </Popover>
         </>
       ),

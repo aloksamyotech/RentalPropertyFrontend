@@ -1,8 +1,8 @@
 {
-  "name": "berry-free-material-react-cra",
+  "name": "Rental Property Management",
   "version": "3.3.2",
   "private": true,
-  "homepage": "https://berrydashboard.io/",
+  "homepage": "https://rental.samyotech.in/",
   "dependencies": {
     "@emotion/cache": "^11.9.3",
     "@emotion/react": "^11.9.3",

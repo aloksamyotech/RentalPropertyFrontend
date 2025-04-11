@@ -44,6 +44,10 @@ import ADashboard from 'views/DashboardAT/indexA';
 import TDashboard from 'views/DashboardAT/indexT';
 import SADashboard from 'views/DashboardAT/indexSA';
 import BillC from 'views/Bill/indexC';
+import Subsciption from 'views/Subscription';
+import CompanyView from 'views/Company/components/view';
+import SubsciptionCards from 'views/SubscriptionCompany';
+import Reports from 'views/Report';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -76,8 +80,11 @@ const superAdminRoutes = {
       path: 'dashboard',
       children: [
         { path: 'SADashboard', element: <SADashboard /> },
+        { path: 'Subsciption', element: <Subsciption /> },
+        { path: 'company/view', element: <CompanyView /> },
         { path: 'company', element: <Company /> },
         { path: 'property', element: <Property /> },
+        { path: 'reports', element: <Reports /> },
         { path: 'tenents', element: <Tenents /> },
         { path: 'payment', element: <Payment /> },
         { path: 'agents', element: <Agents /> },
@@ -107,6 +114,8 @@ const companyAdminRoutes = {
         { path: 'default', element: <DashboardDefault /> },
         { path: 'property', element: <Property /> },
         { path: 'propertyTypes', element: <PropertyTypes /> },
+
+        { path: 'subcriptionCards', element: <SubsciptionCards /> },
         { path: 'tenents', element: <Tenents /> },
         { path: 'announcement', element: <Announcement /> },
         { path: 'payment', element: <Payment /> },

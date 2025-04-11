@@ -65,6 +65,22 @@ const superAdminDashboard = {
       url: '/dashboard/company',
       icon: icons.IconFileInvoice,
       breadcrumbs: false
+    },
+    {
+      id: '2',
+      title: i18n.t('Subscription'),
+      type: 'item',
+      url: '/dashboard/Subsciption',
+      icon: icons.IconFileInvoice,
+      breadcrumbs: false
+    },
+    {
+      id: '3',
+      title: i18n.t('Reports'),
+      type: 'item',
+      url: '/dashboard/reports',
+      icon: icons.IconFileInvoice,
+      breadcrumbs: false
     }
   ]
 };
@@ -167,6 +183,14 @@ const companyAdminDashboard = {
       title: i18n.t('Company Profile'),
       type: 'item',
       url: '/dashboard/profile',
+      icon: ContactPageIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '12',
+      title: i18n.t('Subscription Plan'),
+      type: 'item',
+      url: '/dashboard/subcriptionCards',
       icon: ContactPageIcon,
       breadcrumbs: false
     },
