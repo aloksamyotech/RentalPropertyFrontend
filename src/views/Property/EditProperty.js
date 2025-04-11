@@ -40,7 +40,6 @@ const EditProperty = ({ open, handleClose, data }) => {
   const [loading, setLoading] = useState(false);
   const [currency, setCurrency] = useState();
   const payload = tokenPayload();
-  console.log(data,"data")
 
   useEffect(() => {
     if (open) {

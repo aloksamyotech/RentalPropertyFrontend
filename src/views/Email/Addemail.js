@@ -59,8 +59,6 @@ const AddEmails = (props) => {
     validationSchema,
     enableReinitialize: true,
     onSubmit: async (values, { resetForm }) => {
-      // addClaim(values);
-      console.log('EmailValues', values);
       handleClose();
       formik.resetForm();
       toast.success('Email Add successfully');

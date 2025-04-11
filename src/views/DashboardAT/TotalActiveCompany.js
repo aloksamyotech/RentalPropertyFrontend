@@ -57,7 +57,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ==============================|| DASHBOARD - TOTAL leads CARD ||============================== //
 
-const TotalBooking = ({ isLoading, booking }) => {
+const TotalActiveCompany = ({ isLoading, activeCompany }) => {
   const {t} = useTranslation();
   const theme = useTheme();
 
@@ -77,7 +77,7 @@ const TotalBooking = ({ isLoading, booking }) => {
               <Grid item>
                 <Grid container alignItems="center" justifyContent="center" position="top">
                   <Grid item>
-                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{booking?.length}</Typography>
+                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{activeCompany?.length}</Typography>
                   </Grid>
                   <Grid item>
                     <Avatar
@@ -102,7 +102,7 @@ const TotalBooking = ({ isLoading, booking }) => {
                     textAlign: 'center'
                   }}
                 >
-                  {t('Total Bookings')}
+                  {t('Total Active Company')}
                 </Typography>
               </Grid>
             </Grid>
@@ -113,12 +113,12 @@ const TotalBooking = ({ isLoading, booking }) => {
   );
 };
 
-TotalBooking.propTypes = {
+TotalActiveCompany.propTypes = {
   isLoading: PropTypes.bool
 };
-TotalBooking.propTypes = {
+TotalActiveCompany.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   roomData: PropTypes.array
 };
 
-export default TotalBooking;
+export default TotalActiveCompany;

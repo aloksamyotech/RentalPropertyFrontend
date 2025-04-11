@@ -23,6 +23,7 @@ import TotalBooking from './TotalBooking';
 import TotalGrowthBarChart from './TotalGrowthBarChart';
 import TotalPendingBill from './TotalPendingBills';
 import TotalPaidBill from './TotalPaidBill';
+import PopularCard from './PopularCard';
 
 const RoomTypeIcons = {
   single: <SingleBedIcon sx={{ fontSize: '2.5rem' }} />,
@@ -101,15 +102,6 @@ const MainDashboard = () => {
     }
   };
 
-  // const fetchcustomerData = async () => {
-  //   try {
-  //     const response = await getApi(`api/customer/viewallcustomer/${hotel?.hotelId}`);
-  //     setcustomerData(response?.data?.customerData);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const fetchTenantData = async () => {
     try {
       const response = await getApi(urls.tenant.getAllTenants,{id: payload.companyId});
@@ -148,12 +140,10 @@ const MainDashboard = () => {
     fetchBookingData();
   }, [openReserveRoom]);
 
-  // Function to handle dialog closing
   const handleCloseReservationDialog = () => {
     setOpenReserveRoom(false);
   };
 
-  // Function for active room reservation click
   const fetchReservationIdForActiveRooms = async (roomNo) => {
     try {
       const response = await getApi(`api/room/activroomreservationid/${roomNo}`);
@@ -163,7 +153,6 @@ const MainDashboard = () => {
     }
   };
 
-  // Room click handling
   const handleRoomClick = (roominfo) => {
     setTimeout(() => {
       if (roominfo.bookingStatus === 'active') {
@@ -306,12 +295,12 @@ const MainDashboard = () => {
 
         <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
-          <Grid item xs={12}>
+          <Grid item xs={8}>
             <TotalGrowthBarChart isLoading={isLoading} />
           </Grid>
-          {/* <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={4}>
             <PopularCard isLoading={isLoading} />
-          </Grid> */}
+          </Grid>
         </Grid>
       </Grid>
 

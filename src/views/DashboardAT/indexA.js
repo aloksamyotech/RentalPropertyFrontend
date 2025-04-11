@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 import TotalVacantProperties from './TotalVacantProperty';
 // import TotalComplains from './TotalComplains';
-import TotalBooking from './TotalBooking';
+import TotalBooking from './TotalSubcription';
 // import TotalGrowthBarChart from './TotalGrowthBarChart';
 import TotalPendingBill from './TotalPendingBills';
 // import PopularCard from './PopularCard';
@@ -33,9 +33,9 @@ const RoomTypeIcons = {
 };
 
 const ADashboard = () => {
-  const { t } = useTranslation();  
+  const { t } = useTranslation();
   const theme = useTheme();
-     const payload = tokenPayload();
+  const payload = tokenPayload();
   const [isLoading, setLoading] = useState(true);
   const [openReserveRoom, setOpenReserveRoom] = useState(false);
   const [roomPropsData, setRoomPropsData] = useState([]);
@@ -49,16 +49,15 @@ const ADashboard = () => {
   const [tenant, setTenant] = useState([]);
   const [customerData, setcustomerData] = useState([]);
   const [property, setProperty] = useState([]);
-  const [vacantpropertyData,setVacantpropertyData] = useState([]);
-  const [complainData,setComplainData] = useState([]);
-  const [booking,setBooking] = useState([]);
-  const [pendingBill,setPendingBill] = useState([]);
-  const [paidBill,setPaidBill] = useState([]);
-
+  const [vacantpropertyData, setVacantpropertyData] = useState([]);
+  const [complainData, setComplainData] = useState([]);
+  const [booking, setBooking] = useState([]);
+  const [pendingBill, setPendingBill] = useState([]);
+  const [paidBill, setPaidBill] = useState([]);
 
   const fetchAgentData = async () => {
     try {
-      const response = await getApi( urls.agent.agentdata, { id: payload.companyId });
+      const response = await getApi(urls.agent.agentdata, { id: payload.companyId });
       setAgent(response?.data);
     } catch (error) {
       console.log(error);
@@ -67,7 +66,7 @@ const ADashboard = () => {
 
   const fetchBookingData = async () => {
     try {
-      const response = await getApi( urls.booking.bookingdata, { id: payload._id });
+      const response = await getApi(urls.booking.bookingdata, { id: payload._id });
       setBooking(response?.data);
     } catch (error) {
       console.log(error);
@@ -76,7 +75,7 @@ const ADashboard = () => {
 
   const fetchPaidData = async () => {
     try {
-      const response = await getApi( urls.bill.paidBillCounts, { id: payload.companyId });
+      const response = await getApi(urls.bill.paidBillCounts, { id: payload.companyId });
       setPaidBill(response?.data);
     } catch (error) {
       console.log(error);
@@ -85,17 +84,16 @@ const ADashboard = () => {
 
   const fetchVacantPropertyData = async () => {
     try {
-      const response = await getApi( urls.property.getVacantProperty, { id: payload.companyId });
+      const response = await getApi(urls.property.getVacantProperty, { id: payload.companyId });
       setVacantpropertyData(response?.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-
   const fetchPropertyData = async () => {
     try {
-      const response = await getApi(urls.property.propertyDataAll, {id: payload.companyId});
+      const response = await getApi(urls.property.propertyDataAll, { id: payload.companyId });
       setProperty(response?.data);
     } catch (error) {
       console.log(error);
@@ -113,7 +111,7 @@ const ADashboard = () => {
 
   const fetchTenantData = async () => {
     try {
-      const response = await getApi(urls.tenant.getMyTenants,{id: payload._id});
+      const response = await getApi(urls.tenant.getMyTenants, { id: payload._id });
       setTenant(response?.data);
     } catch (error) {
       console.log(error);
@@ -122,7 +120,7 @@ const ADashboard = () => {
 
   const fetchComplainData = async () => {
     try {
-      const response = await getApi(urls.Complaints.allComplainForCompany,{id: payload.companyId});
+      const response = await getApi(urls.Complaints.allComplainForCompany, { id: payload.companyId });
       setComplainData(response?.data);
     } catch (error) {
       console.log(error);
@@ -130,7 +128,7 @@ const ADashboard = () => {
   };
   const fetchPendingBillData = async () => {
     try {
-      const response = await getApi(urls.bill.getAllUnpaidBillForAgent,{id: payload._id});
+      const response = await getApi(urls.bill.getAllUnpaidBillForAgent, { id: payload._id });
       setPendingBill(response?.data);
     } catch (error) {
       console.log(error);
@@ -182,8 +180,6 @@ const ADashboard = () => {
       <Grid container spacing={gridSpacing}>
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
-           
-         
             <Grid
               item
               lg={3}
@@ -197,8 +193,6 @@ const ADashboard = () => {
             >
               <TotalVacantProperties isLoading={isLoading} vacantPropertyData={vacantpropertyData} />
             </Grid>
-         
-
 
             <Grid
               item
@@ -239,21 +233,19 @@ const ADashboard = () => {
             >
               <TotalPendingBill isLoading={isLoading} TotalPendingBill={pendingBill} />
             </Grid>
-
-       
           </Grid>
         </Grid>
 
         <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item xs={12}>
-            {/* <TotalGrowthBarChart isLoading={isLoading} /> */}
-          </Grid>
-          <Grid item xs={12} md={4}>
-            {/* <PopularCard isLoading={isLoading} /> */}
+          <Grid container spacing={gridSpacing}>
+            <Grid item xs={12}>
+              {/* <TotalGrowthBarChart isLoading={isLoading} /> */}
+            </Grid>
+            <Grid item xs={12} md={4}>
+              {/* <PopularCard isLoading={isLoading} /> */}
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
 
         {/* <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>

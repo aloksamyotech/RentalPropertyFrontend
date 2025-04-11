@@ -48,6 +48,7 @@ import Subsciption from 'views/Subscription';
 import CompanyView from 'views/Company/components/view';
 import SubsciptionCards from 'views/SubscriptionCompany';
 import Reports from 'views/Report';
+import TotalTable from 'views/DashboardAT/TotalTable';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -81,6 +82,7 @@ const superAdminRoutes = {
       children: [
         { path: 'SADashboard', element: <SADashboard /> },
         { path: 'Subsciption', element: <Subsciption /> },
+        // { path: 'totaltable', element: <TotalTable /> },
         { path: 'company/view', element: <CompanyView /> },
         { path: 'company', element: <Company /> },
         { path: 'property', element: <Property /> },
@@ -114,7 +116,6 @@ const companyAdminRoutes = {
         { path: 'default', element: <DashboardDefault /> },
         { path: 'property', element: <Property /> },
         { path: 'propertyTypes', element: <PropertyTypes /> },
-
         { path: 'subcriptionCards', element: <SubsciptionCards /> },
         { path: 'tenents', element: <Tenents /> },
         { path: 'announcement', element: <Announcement /> },
