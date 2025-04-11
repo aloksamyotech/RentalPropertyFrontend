@@ -14,6 +14,7 @@ export const urls = Object.freeze({
     register: base + '/user/register',
     login: base + '/user/login',
     update: base + '/user/update',
+    adminDashboard: base + '/company/totalData'
     
   },
   bill: {
@@ -43,7 +44,10 @@ export const urls = Object.freeze({
     getCompanyById: base + '/company/getCompanyById',
     changestatus: base+'/company/changestatus',
     addSmtpMailPassword: base+'/company/addMailPassword',
-    changeMailStatus: base + '/company/updateMailStatus'
+    changeMailStatus: base + '/company/updateMailStatus',
+    addSubcriptionPlan: base + '/company/addSubcriptionPlan',
+    getSubcriptionDetails: base + '/company/getCompananySubcription',
+    activeCompany: base + '/company/totalActiveCompany'
   },
   propertyTypes: {
     create: base + '/types/createType',

@@ -57,7 +57,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ==============================|| DASHBOARD - TOTAL leads CARD ||============================== //
 
-const TotalServiceProvider = ({ isLoading, servideProvider }) => {
+const TotalSubcription = ({ isLoading, SubscriptionData }) => {
   const {t} = useTranslation();
   const theme = useTheme();
 
@@ -77,7 +77,7 @@ const TotalServiceProvider = ({ isLoading, servideProvider }) => {
               <Grid item>
                 <Grid container alignItems="center" justifyContent="center" position="top">
                   <Grid item>
-                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{servideProvider?.length}</Typography>
+                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{SubscriptionData?.length}</Typography>
                   </Grid>
                   <Grid item>
                     <Avatar
@@ -102,7 +102,7 @@ const TotalServiceProvider = ({ isLoading, servideProvider }) => {
                     textAlign: 'center'
                   }}
                 >
-                  {t('Total Service Provider')}
+                  {t('Total Subcription Plan')}
                 </Typography>
               </Grid>
             </Grid>
@@ -113,12 +113,12 @@ const TotalServiceProvider = ({ isLoading, servideProvider }) => {
   );
 };
 
-TotalServiceProvider.propTypes = {
+TotalSubcription.propTypes = {
   isLoading: PropTypes.bool
 };
-TotalServiceProvider.propTypes = {
+TotalSubcription.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   roomData: PropTypes.array
 };
 
-export default TotalServiceProvider;
+export default TotalSubcription;

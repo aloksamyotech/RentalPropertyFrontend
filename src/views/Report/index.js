@@ -24,7 +24,8 @@ const Reports = () => {
 
   const fetchReportData = async () => {
     try {
-      const response = await getApi(urls.Subscribe.getAllSubscription);
+      const response = await getApi(urls.company.getSubcriptionDetails);
+      console.log(response,"responece")
       setReportData(response?.data || []);
     } catch (error) {
       setReportData([]);
@@ -36,39 +37,51 @@ const Reports = () => {
   }, []);
 
   const columns = [
+    // {
+    //   field: 'serialNo',
+    //   headerName: t('S.No.'),
+    //   width: 80,
+    //   renderCell: (params) => {
+    //     const rowIndex = reportData.findIndex((row) => row._id === params.row._id);
+    //     return rowIndex + 1;
+    //   },
+    // },
     {
-      field: 'serialNo',
-      headerName: t('S.No.'),
-      width: 80,
-      renderCell: (params) => {
-        const rowIndex = reportData.findIndex((row) => row._id === params.row._id);
-        return rowIndex + 1;
-      },
-    },
-    {
-      field: 'title',
+      field: 'subcriptionBuyDate',
       headerName: t('Order Date'),
       flex: 1,
+      valueGetter: (params) =>
+        params.row.subcriptionBuyDate
+          ? new Date(params.row.subcriptionBuyDate).toLocaleDateString('en-IN', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            })
+          : '-'
     },
+    
     {
-      field: 'noOfDays',
+      field: 'companyName',
       headerName: t('Company Name'),
       flex: 1,
     },
     {
-      field: 'amount',
+      field: 'subcriptionId.title',
       headerName: t('Subscription Plan'),
       flex: 1,
+      valueGetter: (params) => params.row.subcriptionId?.title || '-',
     },
     {
-      field: 'discount',
+      field: 'subcriptionId.discount',
       headerName: t('Discount (%)'),
       flex: 1,
+      valueGetter: (params) => params.row.subcriptionId?.discount || '-',
     },
     {
-      field: 'discription',
-      headerName: t('Description'),
+      field: 'amount',
+      headerName: t('Amount'),
       flex: 1,
+      valueGetter: (params) => params.row.subcriptionId?.amount || '-',
     },
   ];
 
@@ -100,7 +113,7 @@ const Reports = () => {
         <Box width="100%">
           <Card sx={{ height: 600, pt: 2 }}>
             <DataGrid
-              rows={reportData}
+             rows={reportData.filter((item) => item.subcriptionId)}
               columns={columns}
               getRowId={(row) => row._id}
               slots={{ toolbar: GridToolbar }}

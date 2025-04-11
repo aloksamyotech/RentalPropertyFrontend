@@ -21,7 +21,6 @@ import chartData from './chart-data/total-growth-bar-chart';
 import { getApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
-import { useTranslation } from 'react-i18next';
 
 const status = [
   {
@@ -45,7 +44,6 @@ const TotalGrowthBarChart = ({ isLoading }) => {
   const [value, setValue] = useState('year');
   const [salesData, setSalesData] = useState([]);
   const [yearlySale, setYearlySale] = useState([]);
-  const {t} = useTranslation();
 
   const [year, setYear] = useState(new Date().getFullYear().toString()); 
   const theme = useTheme();
@@ -65,14 +63,15 @@ const TotalGrowthBarChart = ({ isLoading }) => {
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
-        const amount = await getApi(urls?.bill?.monthlyRentRevenue, { companyId: token.companyId, year: year });
-        if (amount.success && Array.isArray(amount.data) && amount.data.length === 12) {
-          setSalesData(amount?.data);
+        const resource = await getApi(urls?.user.adminDashboard);
+        if (resource.success && Array.isArray(resource.data)) {
+          setSalesData(resource.data); 
         }
       } catch (error) {
         console.error('Error fetching sales data:', error);
       }
     };
+    
 
     const fetchTotalYearlySalesData = async () => {
       try {
@@ -127,7 +126,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
 
   const chartSeries = [
     {
-      name: 'Total Revenue ',
+      name: 'Totals',
       data: salesData.length > 0 ? salesData.map((item) => item) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     },
     // {
@@ -156,7 +155,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                 <Grid item>
                   <Grid container direction="column" spacing={1}>
                     <Grid item>
-                      <Typography variant="subtitle2">{t('Total Revenue')}</Typography>
+                      <Typography variant="subtitle2">Company Statics</Typography>
                     </Grid>
                     <Grid item>
                       <Typography variant="h3">{yearlySale.total_sales_amount}</Typography>

@@ -59,10 +59,7 @@ const Complaints = () => {
 
   const handleCloseEditComplain = () => setOpenEdit(false);
 
-  // const handleOpenView = () => {
-  //   console.log(currentRow,"currentRow")
-  //   navigate(`/dashboard/complain/tenant/view?id=${currentRow._id}&reporterName=${currentRow.reporterName}`);
-  // };
+
 
   const handleOpenView = () => {
     const userRole = payload?.role;

@@ -185,8 +185,8 @@ const Subsciption = () => {
       <Container>
         <Card sx={{ p: 2, mb: 2 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              {t('Subscriptions')}
+          <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {t('Subcription Plan')}
               <Breadcrumbs separator="›" aria-label="breadcrumb">
                 {breadcrumbs}
               </Breadcrumbs>

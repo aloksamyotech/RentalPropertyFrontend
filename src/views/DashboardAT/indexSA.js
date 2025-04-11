@@ -19,12 +19,15 @@ import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 import TotalVacantProperties from './TotalVacantProperty';
 // import TotalComplains from './TotalComplains';
-import TotalBooking from './TotalBooking';
-// import TotalGrowthBarChart from './TotalGrowthBarChart';
-import TotalServiceProvider from './TotalServiceProvider';
+import TotalBooking from './TotalSubcription';
+import TotalGrowthBarChart from './TotalGrowthBarChart';
+import TotalServiceProvider from './TotalActiveCompany';
 import TotalPendingBill from './TotalPendingBills';
 import TotalCompany from './TotalCompany';
-// import PopularCard from './PopularCard';
+import TotalSubcription from './TotalSubcription';
+import TotalActiveCompany from './TotalActiveCompany';
+// import TotalTable from './TotalTable';
+import PopularCard from './PopularCard';
 // import TotalPaidBill from './TotalPaidBill';
 
 const RoomTypeIcons = {
@@ -35,9 +38,9 @@ const RoomTypeIcons = {
 };
 
 const SADashboard = () => {
-  const { t } = useTranslation();  
+  const { t } = useTranslation();
   const theme = useTheme();
-     const payload = tokenPayload();
+  const payload = tokenPayload();
   const [isLoading, setLoading] = useState(true);
   const [openReserveRoom, setOpenReserveRoom] = useState(false);
   const [roomPropsData, setRoomPropsData] = useState([]);
@@ -50,20 +53,20 @@ const SADashboard = () => {
   const [agent, setAgent] = useState([]);
   const [company, setCompany] = useState([]);
   const [tenant, setTenant] = useState([]);
-  const [customerData, setcustomerData] = useState([]);
+  const [SubscriptionData, setSubcriptionData] = useState([]);
   const [property, setProperty] = useState([]);
-  const [vacantpropertyData,setVacantpropertyData] = useState([]);
-  const [complainData,setComplainData] = useState([]);
+  const [vacantpropertyData, setVacantpropertyData] = useState([]);
+  const [complainData, setComplainData] = useState([]);
   // const [booking,setBooking] = useState([]);
-  const [pendingBill,setPendingBill] = useState([]);
-  const [paidBill,setPaidBill] = useState([]);
-  const [servideProvider,setServicePrvider] = useState([]);
+  const [pendingBill, setPendingBill] = useState([]);
+  const [paidBill, setPaidBill] = useState([]);
+  const [activeCompany, setTotalActiveComapny] = useState([]);
 
 
-  const fetchAgentData = async () => {
+  const fetchSubcriptionData = async () => {
     try {
-      const response = await getApi( urls.agent.agentdata, { id: payload.companyId });
-      setAgent(response?.data);
+      const response = await getApi(urls.Subscribe.getAllSubscription);
+      setSubcriptionData(response?.data);
     } catch (error) {
       console.log(error);
     }
@@ -71,7 +74,7 @@ const SADashboard = () => {
 
   const fetchCompanyData = async () => {
     try {
-      const response = await getApi( urls.company.companydata, { id: payload.companyId });
+      const response = await getApi(urls.company.companydata, { id: payload.companyId });
       setCompany(response?.data);
     } catch (error) {
       console.log(error);
@@ -89,7 +92,7 @@ const SADashboard = () => {
 
   const fetchPaidData = async () => {
     try {
-      const response = await getApi( urls.bill.getBillByT, { id: payload._id });
+      const response = await getApi(urls.bill.getBillByT, { id: payload._id });
       setPaidBill(response?.data);
     } catch (error) {
       console.log(error);
@@ -98,7 +101,7 @@ const SADashboard = () => {
 
   const fetchServiceProviderData = async () => {
     try {
-      const response = await getApi( urls.serviceProvider.getAll, { id: payload.companyId });
+      const response = await getApi(urls.serviceProvider.getAll, { id: payload.companyId });
       setServicePrvider(response?.data);
     } catch (error) {
       console.log(error);
@@ -107,17 +110,16 @@ const SADashboard = () => {
 
   const fetchVacantPropertyData = async () => {
     try {
-      const response = await getApi( urls.property.getVacantProperty, { id: payload.companyId });
+      const response = await getApi(urls.property.getVacantProperty, { id: payload.companyId });
       setVacantpropertyData(response?.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-
   const fetchPropertyData = async () => {
     try {
-      const response = await getApi(urls.property.propertyDataAll, {id: payload.companyId});
+      const response = await getApi(urls.property.propertyDataAll, { id: payload.companyId });
       setProperty(response?.data);
     } catch (error) {
       console.log(error);
@@ -133,10 +135,10 @@ const SADashboard = () => {
   //   }
   // };
 
-  const fetchTenantData = async () => {
+  const fetchTotalActiveCompany = async () => {
     try {
-      const response = await getApi(urls.tenant.getMyTenants,{id: payload._id});
-      setTenant(response?.data);
+      const response = await getApi(urls.company.activeCompany);
+      setTotalActiveComapny(response?.data);
     } catch (error) {
       console.log(error);
     }
@@ -144,7 +146,7 @@ const SADashboard = () => {
 
   const fetchComplainData = async () => {
     try {
-      const response = await getApi(urls.Complaints.allComplainForCompany,{id: payload.companyId});
+      const response = await getApi(urls.Complaints.allComplainForCompany, { id: payload.companyId });
       setComplainData(response?.data);
     } catch (error) {
       console.log(error);
@@ -152,7 +154,7 @@ const SADashboard = () => {
   };
   const fetchPendingBillData = async () => {
     try {
-      const response = await getApi(urls.bill.getBillForTPending,{id: payload._id});
+      const response = await getApi(urls.bill.getBillForTPending, { id: payload._id });
       setPendingBill(response?.data);
     } catch (error) {
       console.log(error);
@@ -161,13 +163,14 @@ const SADashboard = () => {
 
   useEffect(() => {
     fetchCompanyData();
-    fetchAgentData();
+    // fetchAgentData();
     fetchPaidData();
     fetchPropertyData();
-    fetchPendingBillData();
+    fetchTotalActiveCompany();
     fetchServiceProviderData();
     // fetchcustomerData();
-    fetchTenantData();
+    fetchSubcriptionData();
+    // fetchTenantData();
     fetchVacantPropertyData();
     fetchComplainData();
     // fetchBookingData();
@@ -176,16 +179,6 @@ const SADashboard = () => {
   // Function to handle dialog closing
   const handleCloseReservationDialog = () => {
     setOpenReserveRoom(false);
-  };
-
-  // Function for active room reservation click
-  const fetchReservationIdForActiveRooms = async (roomNo) => {
-    try {
-      const response = await getApi(`api/room/activroomreservationid/${roomNo}`);
-      navigate(`/dashboard/reservation/view/${response?.data[0]?.reservationId}`);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   // Room click handling
@@ -206,8 +199,6 @@ const SADashboard = () => {
       <Grid container spacing={gridSpacing}>
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
-           
-         
             <Grid
               item
               lg={3}
@@ -222,10 +213,20 @@ const SADashboard = () => {
               <TotalCompany isLoading={isLoading} company={company} />
             </Grid>
 
-         
-
-
-            {/* <Grid
+            <Grid
+              item
+              sm={6}
+              xs={12}
+              md={6}
+              lg={3}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                navigate('/dashboard/SubscriptionData');
+              }}
+            >
+              <TotalSubcription isLoading={isLoading} SubscriptionData={SubscriptionData} />
+            </Grid>
+            <Grid
               item
               sm={6}
               xs={12}
@@ -236,21 +237,8 @@ const SADashboard = () => {
                 navigate('/dashboard/booking');
               }}
             >
-              <TotalBooking isLoading={isLoading} booking={booking} />
-            </Grid> */}
-            {/* <Grid
-              item
-              sm={6}
-              xs={12}
-              md={6}
-              lg={3}
-              sx={{ cursor: 'pointer' }}
-              onClick={() => {
-                navigate('/dashboard/booking');
-              }}
-            >
-              <TotalServiceProvider isLoading={isLoading} servideProvider={servideProvider} />
-            </Grid> */}
+              <TotalActiveCompany isLoading={isLoading} activeCompany={activeCompany} />
+            </Grid>
             {/* <Grid
               item
               sm={6}
@@ -271,27 +259,27 @@ const SADashboard = () => {
               sm={6}
               xs={12}
               sx={{ cursor: 'pointer' }} */}
-              {/* // onClick={() => { */}
-              {/* //   navigate('/dashboard/billC');
+            {/* // onClick={() => { */}
+            {/* //   navigate('/dashboard/billC');
               // }} */}
             {/* >
               <TotalPendingBill isLoading={isLoading} TotalPendingBill={pendingBill} />
             </Grid> */}
-
-       
           </Grid>
         </Grid>
 
         <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item xs={12}>
-            {/* <TotalGrowthBarChart isLoading={isLoading} /> */}
-          </Grid>
-          <Grid item xs={12} md={4}>
-            {/* <PopularCard isLoading={isLoading} /> */}
+          <Grid container spacing={gridSpacing}>
+            <Grid item xs={8}>
+              <TotalGrowthBarChart isLoading={isLoading} />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <PopularCard isLoading={isLoading} />
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+
+        {/* <TotalTable/> */}
 
         {/* <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>

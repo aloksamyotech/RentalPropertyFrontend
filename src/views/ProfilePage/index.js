@@ -111,7 +111,7 @@ const ProfilePage = () => {
     setSelectedImage(null);
   };
 
-  console.log(CompanyData,"companyData")
+
 
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);

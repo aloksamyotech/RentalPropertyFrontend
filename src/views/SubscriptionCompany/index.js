@@ -21,6 +21,8 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import AddSubscriptions from 'views/Subscription/AddSubscription';
+import BuySubscription from './BuySubscription';
 
 const subscriptionStyles = [
   {
@@ -52,7 +54,8 @@ const subscriptionStyles = [
 const SubscriptionCards = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const [openAdd, setOpenAdd] = useState(false);
+  const [rowData, setRowData] = useState(false);
   const [serviceData, setServiceData] = useState([]);
 
   const fetchServiceData = async () => {
@@ -71,15 +74,28 @@ const SubscriptionCards = () => {
   useEffect(() => {
     fetchServiceData();
   }, []);
+  const handleCloseAdd = () => setOpenAdd(false);
 
   const handleBuyNow = (item) => {
-    console.log('Buying Subscription:', item);
-    // Navigation logic
+
+    setRowData(item);
+    setOpenAdd(true);  
   };
 
+  const breadcrumbs = [
+    <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+      <IconHome />
+    </Link>,
+    <Typography key="serviceprovider" to="/dashboard/serviceprovider" color="text.primary">
+      {t('Subscription Plan')}
+    </Typography>
+  ];
+
   return (
+    <>
+          <BuySubscription open={openAdd} handleClose={handleCloseAdd} id={rowData?._id}/>
     <Container>
-      <Card sx={{ p: 2, mb: 2 }}>
+      {/* <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Typography variant="h4">{t('Subscriptions')}</Typography>
           <Breadcrumbs separator="›">
@@ -89,7 +105,23 @@ const SubscriptionCards = () => {
             <Typography color="text.primary">{t('Subscriptions')}</Typography>
           </Breadcrumbs>
         </Stack>
-      </Card>
+      </Card> */}
+        <Card sx={{ p: 2, mb: 2 }}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    {t('Subcription Plan')}
+                    <Breadcrumbs separator="›" aria-label="breadcrumb">
+                      {breadcrumbs}
+                    </Breadcrumbs>
+                  </Typography>
+      
+                  {/* {userRole !== "tenant" && (
+        <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
+          {t('Add Subscriptions')}
+        </Button>
+      )} */}
+                </Stack>
+              </Card>
 
       <Grid container spacing={3}>
         {serviceData.map((item, index) => {
@@ -97,7 +129,7 @@ const SubscriptionCards = () => {
           const styles = subscriptionStyles[styleIndex];
           const discountedPrice = item.amount - (item.amount * item.discount) / 100;
           const savedAmount = item.amount - discountedPrice;
-          const descriptionPoints = item.description?.split('.') || [];
+          const descriptionPoints = item.discription?.split('.') || [];
 
           return (
             <Grid item xs={12} sm={6} md={4} lg={3} key={item._id}>
@@ -171,6 +203,7 @@ const SubscriptionCards = () => {
         })}
       </Grid>
     </Container>
+    </>
   );
 };
 
