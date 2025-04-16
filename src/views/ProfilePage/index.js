@@ -52,7 +52,6 @@ const ProfilePage = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Fetch company data on mount and when dependency changes
   useEffect(() => {
     fetchPropertyData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,7 +94,7 @@ const ProfilePage = () => {
         });
         if (response.success) {
           toast.success(t('SMTP settings updated successfully!'));
-          fetchPropertyData(); // Refresh company data
+          fetchPropertyData(); 
         } else {
           toast.error(t('Failed to update SMTP settings'));
         }
@@ -147,8 +146,6 @@ const ProfilePage = () => {
   const toggleShowConfirmPassword = () => {
     setShowConfirmPassword((prev) => !prev);
   };
-
-  const handleCloseAdd = () => setOpenAdd(false);
 
   const breadcrumbs = [
     <Link key="home" to="/dashboard/default" style={{ color: 'inherit', textDecoration: 'none' }}>
