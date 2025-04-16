@@ -83,11 +83,6 @@ const Subsciption = () => {
     handleClose();
   };
 
-
-
-
-
-
   const handleCloseEditProperty = () => setOpenEdit(false);
   const handleCloseDeleteProperty = () => setOpenDelete(false);
 
