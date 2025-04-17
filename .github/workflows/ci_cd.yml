@@ -30,6 +30,4 @@ jobs:
             git pull origin prod
             git log -1
             npm install -f
-            npm install postcss@latest
-            npm install postcss-resolve-url@latest
             npm run build 
