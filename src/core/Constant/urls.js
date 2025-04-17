@@ -1,13 +1,8 @@
-/* eslint-disable prettier/prettier */
-import Complaints from 'views/Complaints';
 // const base = 'http://localhost:7200/api/v1';
-// const base = 'http://165.22.218.55:7202/api/v1';
-const base = 'https://rentals.samyotech.in'
-// const base = 'http://165.22.218.55:7202/api/v1';
-// const base = 'https://rentals.samyotech.in/api/v1';
+const base = 'https://rentals.samyotech.in/api/v1';
 // const imageBase = 'http://localhost:7200/';
 const imageBase = 'https://rentals.samyotech.in/';
-// const imageBase = 'https://rentals.samyotech.in/';
+
 export const urls = Object.freeze({
   // SuperAdmin
   user: {
@@ -15,7 +10,6 @@ export const urls = Object.freeze({
     login: base + '/user/login',
     update: base + '/user/update',
     adminDashboard: base + '/company/totalData'
-    
   },
   bill: {
     createBill: base + '/bill/createBill',
@@ -26,8 +20,8 @@ export const urls = Object.freeze({
     changeBillStatus: base + '/bill/changeBillStatus',
     delete: base + '/bill/DeleteBill',
     getBillByAgentId: base + '/bill/getBillByAgentId',
-    getBillByBookingId:base + '/bill/getBillByBookingId',
-    dashboardChartApi: base +'/bill/getMonthlyBillData',
+    getBillByBookingId: base + '/bill/getBillByBookingId',
+    dashboardChartApi: base + '/bill/getMonthlyBillData',
     monthlyRentRevenue: base + '/bill/getTotalSales',
     setYearlySale: base + '/bill/totalYearlySales',
     pendingBillCounts: base + '/bill/totalPendingBills',
@@ -42,8 +36,8 @@ export const urls = Object.freeze({
     delete: base + '/company/delete',
     complaintData: base + '/company/getComplaints',
     getCompanyById: base + '/company/getCompanyById',
-    changestatus: base+'/company/changestatus',
-    addSmtpMailPassword: base+'/company/addMailPassword',
+    changestatus: base + '/company/changestatus',
+    addSmtpMailPassword: base + '/company/addMailPassword',
     changeMailStatus: base + '/company/updateMailStatus',
     addSubcriptionPlan: base + '/company/addSubcriptionPlan',
     getSubcriptionDetails: base + '/company/getCompananySubcription',
@@ -72,7 +66,7 @@ export const urls = Object.freeze({
     agentdata: base + '/agent/getAllAgent',
     edit: base + '/agent/edit',
     delete: base + '/agent/delete',
-    getAgentById: base + '/agent/getAgentById',
+    getAgentById: base + '/agent/getAgentById'
   },
   property: {
     create: base + '/property/register',
@@ -122,7 +116,7 @@ export const urls = Object.freeze({
     allComplainForCompany: base + '/complain/allComplainForCompany',
     addCommentToComplain: base + '/complain/addCommentToComplain',
     resolveComplain: base + '/complain/resolveComplain',
-    getAllComplainCompanyAgent: base + '/complain/getAllComplainCompanyAgent',
+    getAllComplainCompanyAgent: base + '/complain/getAllComplainCompanyAgent'
   },
   serviceProvider: {
     create: base + '/serviceProvider/register',
@@ -140,8 +134,7 @@ export const urls = Object.freeze({
   Subscribe: {
     create: base + '/subscription/register',
     getAllSubscription: base + '/subscription/getSubscription',
-    edit : base +'/subscription/edit',
-    delete: base + '/subscription/delete',
-    
+    edit: base + '/subscription/edit',
+    delete: base + '/subscription/delete'
   }
 });
