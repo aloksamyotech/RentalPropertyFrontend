@@ -1,12 +1,7 @@
 /* eslint-disable prettier/prettier */
-import Complaints from 'views/Complaints';
 const base = 'http://localhost:7200/api/v1';
-// const base = 'http://165.22.218.55:7202/api/v1';
-// const base = 'https://rentals.samyotech.in'
-// const base = 'http://165.22.218.55:7202/api/v1';
 // const base = 'https://rentals.samyotech.in/api/v1';
 const imageBase = 'http://localhost:7200/';
-// const imageBase = 'https://rentals.samyotech.in/';
 // const imageBase = 'https://rentals.samyotech.in/';
 export const urls = Object.freeze({
   // SuperAdmin
@@ -48,7 +43,8 @@ export const urls = Object.freeze({
     addSubcriptionPlan: base + '/company/addSubcriptionPlan',
     getSubcriptionDetails: base + '/company/getCompananySubcription',
     activeCompany: base + '/company/totalActiveCompany',
-    changePassword: base + '/company/changePassword'
+    changePassword: base + '/company/changePassword',
+    whatAppStatus: base + '/company/updateWhataapStatus'
   },
   propertyTypes: {
     create: base + '/types/createType',

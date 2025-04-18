@@ -17,7 +17,7 @@ import {
   FormGroup,
   Switch,
   TextField,
-  IconButton,
+  IconButton
 } from '@mui/material';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -35,7 +35,7 @@ import { tokenPayload } from 'helper';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import { getApi, patchApi } from 'core/apis/api';
-
+import { decryptWithAESKey } from 'core/crypto/decrypt';
 const ProfilePage = () => {
   const { t } = useTranslation();
   const location = useLocation();
@@ -72,16 +72,13 @@ const ProfilePage = () => {
       .required(t('SMTP Code is required'))
       .min(4, t('SMTP Code must be at least 4 characters'))
       .max(20, t('SMTP Code cannot exceed 20 characters')),
-    smtpMail: yup
-      .string()
-      .required(t('Email is required'))
-      .email(t('Invalid email address')),
+    smtpMail: yup.string().required(t('Email is required')).email(t('Invalid email address'))
   });
 
   const formik = useFormik({
     initialValues: {
       smtpCode: CompanyData?.smtpCode || '',
-      smtpMail: CompanyData?.smtpMail || '',
+      smtpMail: CompanyData?.smtpMail || ''
     },
     enableReinitialize: true,
     validationSchema,
@@ -90,18 +87,18 @@ const ProfilePage = () => {
         const response = await patchApi(urls.company.addSmtpMailPassword, {
           id: payload.companyId,
           smtpMail: values.smtpMail,
-          smtpCode: values.smtpCode,
+          smtpCode: values.smtpCode
         });
         if (response.success) {
           toast.success(t('SMTP settings updated successfully!'));
-          fetchPropertyData(); 
+          fetchPropertyData();
         } else {
           toast.error(t('Failed to update SMTP settings'));
         }
       } catch (err) {
         toast.error(t('Something went wrong!'));
       }
-    },
+    }
   });
 
   const handleTabChange = (event, newValue) => {
@@ -118,22 +115,21 @@ const ProfilePage = () => {
       return;
     }
 
-    try {
-     
-      const response = await patchApi(urls.company.changePassword, {
-        companyId: payload.companyId,
-        newPassword: newPassword,
-      });
+    // try {
 
-      if (response.success) {
-        toast.success(t('Password changed successfully'));
-    
-      } else {
-        toast.error(t('Failed to change password'));
-      }
-    } catch (error) {
-      toast.error(t('Something went wrong while changing the password'));
+    const response = await patchApi(urls.company.changePassword, {
+      companyId: payload.companyId,
+      newPassword: newPassword
+    });
+
+    if (response.success) {
+      toast.success(t('Password changed successfully'));
+    } else {
+      toast.error(t('Failed to change password'));
     }
+    // } catch (error) {
+    //   toast.error(t('Something went wrong while changing the password'));
+    // }
     setNewPassword('');
     setConfirmPassword('');
   };
@@ -153,7 +149,7 @@ const ProfilePage = () => {
     </Link>,
     <Typography key="company Profile" color="text.primary">
       {t('Company Profile')}
-    </Typography>,
+    </Typography>
   ];
 
   return (
@@ -190,7 +186,7 @@ const ProfilePage = () => {
                     border: '1px solid #333',
                     borderRadius: '8px',
                     backgroundColor: '#fff',
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
                   }}
                 >
                   <Typography variant="h4" gutterBottom>
@@ -225,9 +221,7 @@ const ProfilePage = () => {
                     <Grid item xs={6}>
                       <Typography variant="h5">{t('Onboarding Date')}</Typography>
                       <Typography>
-                        {CompanyData.createdAt
-                          ? new Date(CompanyData.createdAt).toLocaleDateString()
-                          : t('not_available')}
+                        {CompanyData.createdAt ? new Date(CompanyData.createdAt).toLocaleDateString() : t('not_available')}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -241,11 +235,7 @@ const ProfilePage = () => {
             <Box sx={{ flexGrow: 1, overflowX: 'auto' }}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <Box
-                    component="form"
-                    onSubmit={formik.handleSubmit}
-                    sx={{ padding: 2, borderRadius: 2 }}
-                  >
+                  <Box component="form" onSubmit={formik.handleSubmit} sx={{ padding: 2, borderRadius: 2 }}>
                     <Typography variant="h4" color="text.primary">
                       {t('updateMailSettings')}
                     </Typography>
@@ -291,12 +281,7 @@ const ProfilePage = () => {
                       </Grid>
                     </Grid>
                     <Box sx={{ mt: 3, textAlign: 'center' }}>
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        disabled={!formik.isValid || formik.isSubmitting}
-                      >
+                      <Button type="submit" variant="contained" color="primary" disabled={!formik.isValid || formik.isSubmitting}>
                         {t('update')}
                       </Button>
                     </Box>
@@ -318,11 +303,13 @@ const ProfilePage = () => {
                                   try {
                                     const response = await patchApi(urls.company.changeMailStatus, {
                                       id: payload.companyId,
-                                      isMailStatus: event.target.checked,
+                                      isMailStatus: event.target.checked
                                     });
+                            
+
                                     if (response.success) {
                                       toast.success(t('Mail status updated successfully!'));
-                                      fetchPropertyData(); // Refresh data
+                                      fetchPropertyData();
                                     } else {
                                       toast.error(t('Failed to update mail status'));
                                     }
@@ -334,6 +321,42 @@ const ProfilePage = () => {
                               />
                             }
                             label={CompanyData?.isMailStatus ? t('Enabled') : t('Disabled')}
+                          />
+                        </FormGroup>
+                      </Grid>
+                    </Grid>
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item xs={4}>
+                        <Typography variant="body1" color="text.primary">
+                          {t('Enable WhatApp Notifications')}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={8}>
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={CompanyData?.whatappStatus || false}
+                                onChange={async (event) => {
+                                  try {
+                                    const response = await patchApi(urls.company.whatAppStatus, {
+                                      id: payload.companyId,
+                                      whatAppStatus: event.target.checked
+                                    });
+                                    if (response.success) {
+                                      toast.success(t('WhatApp status updated successfully!'));
+                                      fetchPropertyData();
+                                    } else {
+                                      toast.error(t('Failed to update WhatApp status'));
+                                    }
+                                  } catch (error) {
+                                    toast.error(t('Failed to update WhatApp status'));
+                                  }
+                                }}
+                                name="whatAppStatus"
+                              />
+                            }
+                            label={CompanyData?.whatappStatus ? t('Enabled') : t('Disabled')}
                           />
                         </FormGroup>
                       </Grid>
@@ -354,7 +377,7 @@ const ProfilePage = () => {
                     border: '1px solid #333',
                     borderRadius: '8px',
                     backgroundColor: '#fff',
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
                   }}
                 >
                   <Typography variant="h4" gutterBottom>
@@ -375,7 +398,7 @@ const ProfilePage = () => {
                             <IconButton onClick={toggleShowNewPassword} edge="end">
                               {showNewPassword ? <VisibilityOff /> : <Visibility />}
                             </IconButton>
-                          ),
+                          )
                         }}
                       />
                     </Grid>
@@ -392,7 +415,7 @@ const ProfilePage = () => {
                             <IconButton onClick={toggleShowConfirmPassword} edge="end">
                               {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                             </IconButton>
-                          ),
+                          )
                         }}
                       />
                     </Grid>
