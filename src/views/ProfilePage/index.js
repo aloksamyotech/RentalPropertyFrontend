@@ -305,8 +305,7 @@ const ProfilePage = () => {
                                       id: payload.companyId,
                                       isMailStatus: event.target.checked
                                     });
-                                    console.log('response===========================================>>>>>>>>>', response);
-
+                            
 
                                     if (response.success) {
                                       toast.success(t('Mail status updated successfully!'));
