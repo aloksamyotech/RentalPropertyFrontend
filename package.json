@@ -22,6 +22,8 @@
     "@tabler/icons": "^1.72.0",
     "apexcharts": "^4.5.0",
     "axios": "^1.7.9",
+    "crypto": "^1.0.1",
+    "crypto-js": "^4.2.0",
     "currency-codes": "^2.2.0",
     "dayjs": "^1.11.10",
     "formik": "^2.4.5",
@@ -98,5 +100,4 @@
     "prettier": "^2.8.7",
     "sass": "^1.53.0"
   }
-  
 }
