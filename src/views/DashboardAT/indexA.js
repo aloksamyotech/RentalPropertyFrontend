@@ -6,10 +6,6 @@ import { getApi } from 'core/apis/api';
 import { Grid, Typography, Box, Avatar, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { gridSpacing } from 'store/constant';
-// import { getApi } from 'views/services/api';
-// import TotalAgent from './TotalAgent'
-// import TotalCompanies from './TotalCompanies';
-// import TotalProperties from './TotalProperties';
 import TotalTenants from './TotalTenants';
 import SingleBedIcon from '@mui/icons-material/SingleBed';
 import KingBedIcon from '@mui/icons-material/KingBed';
@@ -18,12 +14,8 @@ import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 import TotalVacantProperties from './TotalVacantProperty';
-// import TotalComplains from './TotalComplains';
-import TotalBooking from './TotalSubcription';
-// import TotalGrowthBarChart from './TotalGrowthBarChart';
+import TotalBooking from './TotalBooking';
 import TotalPendingBill from './TotalPendingBills';
-// import PopularCard from './PopularCard';
-// import TotalPaidBill from './TotalPaidBill';
 
 const RoomTypeIcons = {
   single: <SingleBedIcon sx={{ fontSize: '2.5rem' }} />,
@@ -100,15 +92,6 @@ const ADashboard = () => {
     }
   };
 
-  // const fetchcustomerData = async () => {
-  //   try {
-  //     const response = await getApi(`api/customer/viewallcustomer/${hotel?.hotelId}`);
-  //     setcustomerData(response?.data?.customerData);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const fetchTenantData = async () => {
     try {
       const response = await getApi(urls.tenant.getMyTenants, { id: payload._id });
@@ -147,12 +130,7 @@ const ADashboard = () => {
     fetchBookingData();
   }, [openReserveRoom]);
 
-  // Function to handle dialog closing
-  const handleCloseReservationDialog = () => {
-    setOpenReserveRoom(false);
-  };
 
-  // Function for active room reservation click
   const fetchReservationIdForActiveRooms = async (roomNo) => {
     try {
       const response = await getApi(`api/room/activroomreservationid/${roomNo}`);
@@ -162,17 +140,7 @@ const ADashboard = () => {
     }
   };
 
-  // Room click handling
-  const handleRoomClick = (roominfo) => {
-    setTimeout(() => {
-      if (roominfo.bookingStatus === 'active') {
-        fetchReservationIdForActiveRooms(roominfo.roomNo);
-      } else {
-        setOpenReserveRoom(true);
-      }
-      setRoomPropsData(roominfo);
-    }, 300);
-  };
+
 
   return (
     <>
@@ -188,7 +156,7 @@ const ADashboard = () => {
               xs={12}
               sx={{ cursor: 'pointer' }}
               onClick={() => {
-                navigate('/dashboard/property');
+                navigate('/dashboard/vacantproperty');
               }}
             >
               <TotalVacantProperties isLoading={isLoading} vacantPropertyData={vacantpropertyData} />
