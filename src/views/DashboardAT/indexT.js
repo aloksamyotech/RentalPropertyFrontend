@@ -6,10 +6,6 @@ import { getApi } from 'core/apis/api';
 import { Grid, Typography, Box, Avatar, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { gridSpacing } from 'store/constant';
-// import { getApi } from 'views/services/api';
-// import TotalAgent from './TotalAgent'
-// import TotalCompanies from './TotalCompanies';
-// import TotalProperties from './TotalProperties';
 import TotalTenants from './TotalTenants';
 import SingleBedIcon from '@mui/icons-material/SingleBed';
 import KingBedIcon from '@mui/icons-material/KingBed';
@@ -18,14 +14,10 @@ import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { tokenPayload } from 'helper';
 import TotalVacantProperties from './TotalVacantProperty';
-// import TotalComplains from './TotalComplains';
 import TotalBooking from './TotalSubcription';
-// import TotalGrowthBarChart from './TotalGrowthBarChart';
-import TotalServiceProvider from './TotalActiveCompany';
+import TotalServiceProvider from './TotalServiceProvider';
 import TotalPendingBill from './TotalPendingBills';
-// import TotalTable from './TotalTable';
-// import PopularCard from './PopularCard';
-// import TotalPaidBill from './TotalPaidBill';
+import TotalTenantBookings from './TotalTenantBooking';
 
 const RoomTypeIcons = {
   single: <SingleBedIcon sx={{ fontSize: '2.5rem' }} />,
@@ -112,14 +104,7 @@ const TDashboard = () => {
     }
   };
 
-  // const fetchcustomerData = async () => {
-  //   try {
-  //     const response = await getApi(`api/customer/viewallcustomer/${hotel?.hotelId}`);
-  //     setcustomerData(response?.data?.customerData);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+
 
   const fetchTenantData = async () => {
     try {
@@ -160,12 +145,10 @@ const TDashboard = () => {
     fetchBookingData();
   }, [openReserveRoom]);
 
-  // Function to handle dialog closing
   const handleCloseReservationDialog = () => {
     setOpenReserveRoom(false);
   };
 
-  // Function for active room reservation click
   const fetchReservationIdForActiveRooms = async (roomNo) => {
     try {
       const response = await getApi(`api/room/activroomreservationid/${roomNo}`);
@@ -175,7 +158,6 @@ const TDashboard = () => {
     }
   };
 
-  // Room click handling
   const handleRoomClick = (roominfo) => {
     setTimeout(() => {
       if (roominfo.bookingStatus === 'active') {
@@ -201,7 +183,7 @@ const TDashboard = () => {
               xs={12}
               sx={{ cursor: 'pointer' }}
               onClick={() => {
-                navigate('/dashboard/property');
+                navigate('/dashboard/vacantproperty');
               }}
             >
               <TotalVacantProperties isLoading={isLoading} vacantPropertyData={vacantpropertyData} />
@@ -215,10 +197,10 @@ const TDashboard = () => {
               lg={3}
               sx={{ cursor: 'pointer' }}
               onClick={() => {
-                navigate('/dashboard/booking');
+                navigate('/dashboard/tenantBooking');
               }}
             >
-              <TotalBooking isLoading={isLoading} booking={booking} />
+              <TotalTenantBookings isLoading={isLoading} booking={booking} />
             </Grid>
             <Grid
               item
@@ -228,7 +210,7 @@ const TDashboard = () => {
               lg={3}
               sx={{ cursor: 'pointer' }}
               onClick={() => {
-                navigate('/dashboard/booking');
+                navigate('/dashboard/serviceprovider');
               }}
             >
               <TotalServiceProvider isLoading={isLoading} servideProvider={servideProvider} />
@@ -253,9 +235,9 @@ const TDashboard = () => {
               sm={6}
               xs={12}
               sx={{ cursor: 'pointer' }}
-              // onClick={() => {
-              //   navigate('/dashboard/billC');
-              // }}
+              onClick={() => {
+                navigate('/dashboard/billT');
+              }}
             >
               <TotalPendingBill isLoading={isLoading} TotalPendingBill={pendingBill} />
             </Grid>
