@@ -1,8 +1,16 @@
+<<<<<<< Updated upstream
+/* eslint-disable prettier/prettier */
+const base = 'http://localhost:7200/api/v1';
+// const base = 'https://rentals.samyotech.in/api/v1';
+const imageBase = 'http://localhost:7200/';
+// const imageBase = 'https://rentals.samyotech.in/';
+=======
 // const base = 'http://localhost:7200/api/v1';
 const base = 'https://rentals.samyotech.in/api/v1';
 // const imageBase = 'http://localhost:7200/';
 const imageBase = 'https://rentals.samyotech.in/';
 
+>>>>>>> Stashed changes
 export const urls = Object.freeze({
   // SuperAdmin
   user: {
