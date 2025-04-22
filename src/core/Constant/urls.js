@@ -1,7 +1,6 @@
 
 const base = 'https://rentals.samyotech.in/api/v1';
 const imageBase = 'https://rentals.samyotech.in/';
-
 export const urls = Object.freeze({
   // SuperAdmin
   user: {
@@ -23,7 +22,7 @@ export const urls = Object.freeze({
     dashboardChartApi: base + '/bill/getMonthlyBillData',
     monthlyRentRevenue: base + '/bill/getTotalSales',
     setYearlySale: base + '/bill/totalYearlySales',
-    pendingBillCounts: base + '/bill/totalPendingBills',
+    pendingBillCounts: base + '/bill/totalPendingBills', // this is good
     paidBillCounts: base + '/bill/totalPaidBills',
     getAllUnpaidBillForAgent: base + '/bill/getAllUnpaidBillForAgent'
   },
@@ -41,7 +40,8 @@ export const urls = Object.freeze({
     addSubcriptionPlan: base + '/company/addSubcriptionPlan',
     getSubcriptionDetails: base + '/company/getCompananySubcription',
     activeCompany: base + '/company/totalActiveCompany',
-    changePassword: base + '/company/changePassword'
+    changePassword: base + '/company/changePassword',
+    whatAppStatus: base + '/company/updateWhataapStatus'
   },
   propertyTypes: {
     create: base + '/types/createType',

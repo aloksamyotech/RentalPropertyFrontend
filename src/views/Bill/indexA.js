@@ -30,6 +30,7 @@ const BillA = () => {
   const { t } = useTranslation();
   const [billData, setBillData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+
   const [currentRow, setCurrentRow] = useState(null);
    const payload = tokenPayload();
    const navigate = useNavigate();
@@ -54,7 +55,7 @@ const BillA = () => {
 
   useEffect(() => {
     fetchBillData();
-  }, [openAdd, openEdit, openDelete]);
+  }, []);
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);

@@ -1,5 +1,7 @@
 import axios from 'axios';
-import qs from 'qs';
+// import { decryptWithAESKey } from 'common/decrypt';
+import { decryptWithAESKey } from 'core/crypto/decrypt';
+
 
 export const postApi = async (url, data, headers = {}) => {
   try {
@@ -8,7 +10,9 @@ export const postApi = async (url, data, headers = {}) => {
       ...headers
     };
     const response = await axios.post(url, data, { headers: defaultHeaders });
-    return response.data;
+    let responseData = await decryptWithAESKey(response.data)
+    return JSON.parse(responseData);
+    // return response.data;
   } catch (error) {
     console.error('API Error:', error.response || error.message);
     throw new Error(error.response ? error.response.data : error.message);
@@ -25,7 +29,8 @@ export const getApi = async (url, params = {}, headers = {}) => {
       headers: defaultHeaders,
       params: params
     });
-    return response.data;
+    let responseData = await decryptWithAESKey(response.data)
+    return JSON.parse(responseData);
   } catch (error) {
     console.error('API Error:', error.response || error.message);
     throw new Error(error.response ? error.response.data : error.message);
@@ -42,7 +47,8 @@ export const updateApi = async (url, data = {}, params = {}, headers = {}) => {
       headers: defaultHeaders,
       params
     });
-    return response.data;
+    let responseData = await decryptWithAESKey(response.data)
+    return JSON.parse(responseData);
   } catch (error) {
     console.error('API Error:', error.response || error.message);
     throw new Error(error.response ? error.response.data : error.message);
@@ -59,7 +65,8 @@ export const patchApi = async (url, data = {}, params = {}, headers = {}) => {
       headers: defaultHeaders,
       params
     });
-    return response.data;
+    let responseData = await decryptWithAESKey(response.data)
+    return JSON.parse(responseData);
   } catch (error) {
     console.error('API Error:', error.response || error.message);
     throw new Error(error.response ? error.response.data : error.message);
