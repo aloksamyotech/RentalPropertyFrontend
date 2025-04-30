@@ -49,6 +49,8 @@ import CompanyView from 'views/Company/components/view';
 import SubsciptionCards from 'views/SubscriptionCompany';
 import Reports from 'views/Report';
 import TotalTable from 'views/DashboardAT/TotalTable';
+import ChangePasswordForTenant from 'views/Tenants/component/ChangePasswordForTenants.js';
+import ChangePasswordForAgent from 'views/Agents/components/ChangePasswordForAgent';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -122,6 +124,8 @@ const companyAdminRoutes = {
         { path: 'payment', element: <Payment /> },
         { path: 'billC', element: <BillC /> },
         { path: 'announcement/view', element: <AnnouncementViewPage /> },
+        { path: 'tenant/changepassword', element:<ChangePasswordForTenant/>},
+        { path: 'agent/changepassword', element:<ChangePasswordForAgent/>},
         { path: 'serviceprovider', element: <ServiceProvider /> },
         { path: 'companyComplaints', element: <CompanyComplaints /> },
         { path: 'billC/view', element: <MonthlyInvoiceView /> },

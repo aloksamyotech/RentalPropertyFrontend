@@ -299,15 +299,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '2',
-      title: i18n.t('Announcements'),
-      type: 'item',
-      url: '/dashboard/announcement',
-      icon: AnnouncementIcon,
-      breadcrumbs: false
-    },
-    {
-      id: '4',
+      id: '1',
       title: i18n.t('Vacant Properties'),
       type: 'item',
       url: '/dashboard/vacantproperty',
@@ -315,7 +307,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '5',
+      id: '2',
       title: i18n.t('Bookings'),
       type: 'item',
       url: '/dashboard/tenantBooking',
@@ -323,7 +315,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '6',
+      id: '3',
       title: i18n.t('Complaints'),
       type: 'item',
       url: '/dashboard/complaints',
@@ -331,7 +323,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '7',
+      id: '4',
       title: i18n.t('Bill Management'),
       type: 'item',
       url: '/dashboard/billT',
@@ -339,7 +331,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '8',
+      id: '5',
       title: i18n.t('Service Provider'),
       type: 'item',
       url: '/dashboard/serviceprovider',
@@ -347,7 +339,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '9',
+      id: '6',
       title: i18n.t('Announcements'),
       type: 'item',
       url: '/dashboard/announcement',
@@ -355,7 +347,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '10',
+      id: '7',
       title: i18n.t('Company Profile'),
       type: 'item',
       url: '/dashboard/profile',
