@@ -38,7 +38,6 @@ const BillA = () => {
 
    const fetchBillData = async () => {
       const response = await getApi(urls.bill.getBillByAgentId,  { id: payload._id });
- 
       const formattedData = response.data.map((item) => {
         const billingDate = new Date(item.billingMonth);
         const formattedBillingMonth = `${billingDate.toLocaleString('default', { month: 'long' })} ${billingDate.getFullYear()}`; // Format as "Month Year"
