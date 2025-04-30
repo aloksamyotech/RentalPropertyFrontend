@@ -1,20 +1,6 @@
-<<<<<<< Updated upstream
-/* eslint-disable prettier/prettier */
-const base = 'http://localhost:7200/api/v1';
-// const base = 'https://rentals.samyotech.in/api/v1';
-const imageBase = 'http://localhost:7200/';
-// const imageBase = 'https://rentals.samyotech.in/';
-=======
-// const base = 'http://localhost:7200/api/v1';
 const base = 'https://rentals.samyotech.in/api/v1';
-// const imageBase = 'http://localhost:7200/';
 const imageBase = 'https://rentals.samyotech.in/';
 
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
-
->>>>>>> Stashed changes
 export const urls = Object.freeze({
   // SuperAdmin
   user: {
@@ -37,11 +23,7 @@ export const urls = Object.freeze({
     dashboardChartApi: base +'/bill/getMonthlyBillData',
     monthlyRentRevenue: base + '/bill/getTotalSales',
     setYearlySale: base + '/bill/totalYearlySales',
-<<<<<<< Updated upstream
-    pendingBillCounts: base + '/bill/totalPendingBills',
-=======
     pendingBillCounts: base + '/bill/totalPendingBills', 
->>>>>>> Stashed changes
     paidBillCounts: base + '/bill/totalPaidBills',
     getAllUnpaidBillForAgent: base + '/bill/getAllUnpaidBillForAgent'
   },
@@ -85,10 +67,7 @@ export const urls = Object.freeze({
     edit: base + '/agent/edit',
     delete: base + '/agent/delete',
     getAgentById: base + '/agent/getAgentById',
-<<<<<<< Updated upstream
-=======
     changePassword: base + '/agent/changePassword'
->>>>>>> Stashed changes
   },
   property: {
     create: base + '/property/register',
