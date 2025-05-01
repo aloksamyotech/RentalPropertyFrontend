@@ -1,4 +1,5 @@
 
+
 const base = 'https://rentals.samyotech.in/api/v1';
 const imageBase = 'https://rentals.samyotech.in/';
 export const urls = Object.freeze({
@@ -22,7 +23,7 @@ export const urls = Object.freeze({
     dashboardChartApi: base + '/bill/getMonthlyBillData',
     monthlyRentRevenue: base + '/bill/getTotalSales',
     setYearlySale: base + '/bill/totalYearlySales',
-    pendingBillCounts: base + '/bill/totalPendingBills', // this is good
+    pendingBillCounts: base + '/bill/totalPendingBills',
     paidBillCounts: base + '/bill/totalPaidBills',
     getAllUnpaidBillForAgent: base + '/bill/getAllUnpaidBillForAgent'
   },
@@ -65,7 +66,9 @@ export const urls = Object.freeze({
     agentdata: base + '/agent/getAllAgent',
     edit: base + '/agent/edit',
     delete: base + '/agent/delete',
-    getAgentById: base + '/agent/getAgentById'
+    getAgentById: base + '/agent/getAgentById',
+    changePassword: base + '/agent/changePassword'
+
   },
   property: {
     create: base + '/property/register',
@@ -95,7 +98,8 @@ export const urls = Object.freeze({
     getAllDocByTenantId: base + '/tenant/getAllDocs',
     deleteDocs: base + '/tenant/deleteDoc',
     image: imageBase,
-    bulkUpload: base + '/tenant/bulkUploadTenants'
+    bulkUpload: base + '/tenant/bulkUploadTenants',
+    changePassword: base + '/tenant/changePassword'
   },
   booking: {
     create: base + '/booking/create',

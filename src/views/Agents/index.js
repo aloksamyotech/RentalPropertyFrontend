@@ -20,6 +20,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteAgent from './DeleteAgent';
 import { tokenPayload } from 'helper';
 import { Link } from 'react-router-dom';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+
 
 const Agents = () => {
   const { t } = useTranslation();
@@ -43,6 +45,10 @@ const Agents = () => {
       setAgentData([]);
     }
   };
+
+  const handleChangePassword =()=>{
+    navigate(`/dashboard/agent/changepassword?id=${currentRow._id}`);
+  }
 
   useEffect(() => {
     fetchAgentData();
@@ -127,6 +133,10 @@ const Agents = () => {
             <MenuItem onClick={handleOpenDeleteAgent} sx={{ color: 'red' }}>
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} /> {t('delete')}
             </MenuItem>
+               <MenuItem onClick={handleChangePassword}>
+                          <ChangeCircleIcon style={{ marginRight: '8px', color: 'green' }} />
+                          {t('Change Password')}
+                        </MenuItem>
           </Popover>
         </>
       ),

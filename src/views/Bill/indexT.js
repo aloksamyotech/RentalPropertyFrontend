@@ -138,14 +138,7 @@ const BillT = () => {
   const handleCloseAdd = () => setOpenAdd(false);
 
   const columns = [
-    {
-      field: 'serialNo',
-      headerName: 'S.No.',
-      width: 30,
-      renderCell: (params) => {
-        const rowIndex = billData.findIndex((row) => row._id === params.row._id);
-        return rowIndex + 1; 
-      }},
+ 
     {
       field: 'serialNo',
       headerName: 'S.No.',

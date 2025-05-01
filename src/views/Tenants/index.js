@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import { IconHome } from '@tabler/icons';
 import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
@@ -127,6 +128,10 @@ const Tenants = () => {
     navigate(`/dashboard/tenant/view?id=${currentRow._id}`);
   };
 
+  const handleChangePassword =()=>{
+    navigate(`/dashboard/tenant/changepassword?id=${currentRow._id}`);
+  }
+
   const columns = [
     {
       field: 'serialNo',
@@ -213,7 +218,7 @@ const Tenants = () => {
             </MenuItem>
             <MenuItem onClick={handleOpenView}>
               <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
-              {t('view')}
+              {t('View')}
             </MenuItem>
             <MenuItem
               onClick={handleOpenDeleteTenantDialog}
@@ -222,6 +227,10 @@ const Tenants = () => {
             >
               <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
               {t('Delete')}
+            </MenuItem>
+            <MenuItem onClick={handleChangePassword}>
+              <ChangeCircleIcon style={{ marginRight: '8px', color: 'green' }} />
+              {t('Change Password')}
             </MenuItem>
           </Popover>
         </>
