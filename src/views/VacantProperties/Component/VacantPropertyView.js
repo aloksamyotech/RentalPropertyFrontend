@@ -145,10 +145,10 @@ const VacantPropertyView = () => {
                           </a>
                         ),
                       },
-                      { label: t('Owner Name'), value: ownerData?.ownerName || 'N/A' },
-                      { label: t('Owner Address'), value: ownerData?.address || 'N/A' },
-                      { label: t('Owner Email'), value: ownerData?.email || 'N/A' },
-                      { label: t('Owner Phone No.'), value: ownerData?.phoneNo || 'N/A' },
+                      // { label: t('Owner Name'), value: ownerData?.ownerName || 'N/A' },
+                      // { label: t('Owner Address'), value: ownerData?.address || 'N/A' },
+                      // { label: t('Owner Email'), value: ownerData?.email || 'N/A' },
+                      // { label: t('Owner Phone No.'), value: ownerData?.phoneNo || 'N/A' },
                     ].map((row, index) => (
                       <TableRow key={index}>
                         <TableCell sx={{ fontWeight: 'bold', width: '30%', color: 'text.secondary' }}>

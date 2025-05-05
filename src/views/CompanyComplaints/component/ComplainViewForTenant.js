@@ -14,7 +14,7 @@ import { IconHome } from '@tabler/icons';
 import { Link } from 'react-router-dom';
 
 
-const ComplainDetailsPage = () => {
+const ComplainViewForTenant = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const label = { inputProps: { 'aria-label': 'Color switch demo' } };
@@ -34,10 +34,12 @@ const ComplainDetailsPage = () => {
   const fetchComplainData = async () => {
     try {
       const response = await getApi(urls.Complaints.getComplainById, { id: complainId });
+      console.log(response?.data,"response")
       setComplainData(response.data[0]);
-      setAgentData(response.data[0].agentId);
+      setAgentData(response.data[0].tenantId);
       setPropertyData(response.data[0].propertyId);
       setStatus(response.data[0].status); 
+      console.log(agentData,"agentData")
     } catch (error) {
       console.error('Error fetching complain data:', error);
     }
@@ -147,7 +149,7 @@ const ComplainDetailsPage = () => {
         <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
           <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {t('Complain Details')}
+            {t('Complaints')}
             <Breadcrumbs separator="›" aria-label="breadcrumb">
               {breadcrumbs}
             </Breadcrumbs>
@@ -172,13 +174,13 @@ const ComplainDetailsPage = () => {
             }}
           >
             <Typography variant="h4" gutterBottom>
-              {t('agent_information')}
+              {t('Tenant Information')}
             </Typography>
             <Divider sx={{ marginBottom: 2 }} />
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <Typography variant="h5">{t('Agent Name')}</Typography>
-                <Typography>{agentData.agentName || t('not_available')}</Typography>
+                <Typography variant="h5">{t('Tenant Name')}</Typography>
+                <Typography>{agentData.tenantName || t('not_available')}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="h5">{t('email')}</Typography>
@@ -318,4 +320,4 @@ const ComplainDetailsPage = () => {
   );
 };
 
-export default ComplainDetailsPage;
+export default ComplainViewForTenant;

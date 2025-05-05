@@ -27,6 +27,7 @@ import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import HomeIcon from '@mui/icons-material/Home';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import i18n from 'i18n';
 // constant
 const icons = {
@@ -76,9 +77,17 @@ const superAdminDashboard = {
     },
     {
       id: '3',
-      title: i18n.t('Reports'),
+      title: i18n.t('Company Active Plans'),
       type: 'item',
       url: '/dashboard/reports',
+      icon: icons.IconFileInvoice,
+      breadcrumbs: false
+    },
+    {
+      id: '4',
+      title: i18n.t('Transactions'),
+      type: 'item',
+      url: '/dashboard/transactionAll',
       icon: icons.IconFileInvoice,
       breadcrumbs: false
     }
@@ -112,6 +121,14 @@ const companyAdminDashboard = {
       type: 'item',
       url: '/dashboard/owner',
       icon: PersonIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '13',
+      title: i18n.t('Reports'),
+      type: 'item',
+      url: '/dashboard/companyReport',
+      icon: HomeRepairServiceIcon,
       breadcrumbs: false
     },
     {
@@ -188,6 +205,14 @@ const companyAdminDashboard = {
     },
     {
       id: '12',
+      title: i18n.t('Transaction'),
+      type: 'item',
+      url: '/dashboard/transaction',
+      icon: ReceiptIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '13',
       title: i18n.t('Subscription Plan'),
       type: 'item',
       url: '/dashboard/subcriptionCards',
@@ -299,15 +324,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '2',
-      title: i18n.t('Announcements'),
-      type: 'item',
-      url: '/dashboard/announcement',
-      icon: AnnouncementIcon,
-      breadcrumbs: false
-    },
-    {
-      id: '4',
+      id: '1',
       title: i18n.t('Vacant Properties'),
       type: 'item',
       url: '/dashboard/vacantproperty',
@@ -315,7 +332,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '5',
+      id: '2',
       title: i18n.t('Bookings'),
       type: 'item',
       url: '/dashboard/tenantBooking',
@@ -323,7 +340,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '6',
+      id: '3',
       title: i18n.t('Complaints'),
       type: 'item',
       url: '/dashboard/complaints',
@@ -331,7 +348,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '7',
+      id: '4',
       title: i18n.t('Bill Management'),
       type: 'item',
       url: '/dashboard/billT',
@@ -339,7 +356,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '8',
+      id: '5',
       title: i18n.t('Service Provider'),
       type: 'item',
       url: '/dashboard/serviceprovider',
@@ -347,7 +364,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '9',
+      id: '6',
       title: i18n.t('Announcements'),
       type: 'item',
       url: '/dashboard/announcement',
@@ -355,7 +372,7 @@ const tenantDashboard = {
       breadcrumbs: false
     },
     {
-      id: '10',
+      id: '7',
       title: i18n.t('Company Profile'),
       type: 'item',
       url: '/dashboard/profile',

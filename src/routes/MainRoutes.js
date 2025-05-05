@@ -18,6 +18,7 @@ import TenantBooking from 'views/TenantBooking';
 import CompanyComplaints from 'views/CompanyComplaints';
 import ComplainViewDashboard from 'views/CompanyComplaints/component/ComplainView';
 import ComplainDetailsPage from 'views/CompanyComplaints/component/ComplainView';
+import ComplainViewForTenant from 'views/CompanyComplaints/component/ComplainViewForTenant';
 import ComplainDetailsPageForTenant from 'views/Complaints/component/TenantComaplainView';
 import BookingDetailsPage from 'views/Booking/component/BookingView';
 import BookingDetailsTenantPage from 'views/TenantBooking/component/BookingTenantDetails';
@@ -49,6 +50,11 @@ import CompanyView from 'views/Company/components/view';
 import SubsciptionCards from 'views/SubscriptionCompany';
 import Reports from 'views/Report';
 import TotalTable from 'views/DashboardAT/TotalTable';
+import ChangePasswordForTenant from 'views/Tenants/component/ChangePasswordForTenants.js';
+import ChangePasswordForAgent from 'views/Agents/components/ChangePasswordForAgent';
+import CompanyReport from 'views/CompanyReports';
+import Transaction from 'views/Transaction/indecC';
+import TransactionSA from 'views/Transaction/indexSA';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -84,6 +90,7 @@ const superAdminRoutes = {
         { path: 'Subsciption', element: <Subsciption /> },
         // { path: 'totaltable', element: <TotalTable /> },
         { path: 'company/view', element: <CompanyView /> },
+        { path: 'transactionAll', element: <TransactionSA /> },
         { path: 'company', element: <Company /> },
         { path: 'property', element: <Property /> },
         { path: 'reports', element: <Reports /> },
@@ -121,7 +128,11 @@ const companyAdminRoutes = {
         { path: 'announcement', element: <Announcement /> },
         { path: 'payment', element: <Payment /> },
         { path: 'billC', element: <BillC /> },
+        { path: 'transaction', element: <Transaction /> },
+        { path: 'companyReport', element:<CompanyReport/>},
         { path: 'announcement/view', element: <AnnouncementViewPage /> },
+        { path: 'tenant/changepassword', element:<ChangePasswordForTenant/>},
+        { path: 'agent/changepassword', element:<ChangePasswordForAgent/>},
         { path: 'serviceprovider', element: <ServiceProvider /> },
         { path: 'companyComplaints', element: <CompanyComplaints /> },
         { path: 'billC/view', element: <MonthlyInvoiceView /> },
@@ -131,6 +142,7 @@ const companyAdminRoutes = {
         { path: 'profile', element: <ProfilePage /> },
         { path: 'profile', element: <ProfilePage /> },
         { path: 'complain/view', element: <ComplainDetailsPage /> },
+        { path: 'complain/tenant/view', element: <ComplainViewForTenant /> },
         { path: 'booking/view', element: <BookingDetailsPage /> },
         { path: 'Announcement', element: <Announcement /> },
         { path: 'property/view', element: <Propertyview /> },

@@ -44,6 +44,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
   const token = tokenPayload();
   const [value, setValue] = useState('year');
   const [salesData, setSalesData] = useState([]);
+  const [companyData, setCompanyData] = useState('');
   const [yearlySale, setYearlySale] = useState([]);
   const {t} = useTranslation();
 
@@ -61,6 +62,16 @@ const TotalGrowthBarChart = ({ isLoading }) => {
   const primaryDark = theme.palette.primary.dark;
   const secondaryMain = theme.palette.secondary.main;
   const secondaryLight = theme.palette.secondary.light;
+
+    const fetchCompanyData = async () => {
+      const response = await getApi(urls.company.getCompanyById, { id: payload.companyId });
+      console.log(response,"response")
+      setCompanyData(response?.data?.currencyCode || '');
+    };
+  
+    useEffect(() => {
+        fetchCompanyData();
+    }, [payload.companyId]);
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -156,7 +167,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                 <Grid item>
                   <Grid container direction="column" spacing={1}>
                     <Grid item>
-                      <Typography variant="subtitle2">{t('Total Revenue')}</Typography>
+                      <Typography variant="subtitle2">{t('Total Revenue')}{companyData}</Typography>
                     </Grid>
                     <Grid item>
                       <Typography variant="h3">{yearlySale.total_sales_amount}</Typography>

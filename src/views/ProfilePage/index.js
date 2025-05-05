@@ -34,7 +34,7 @@ import { IconHome } from '@tabler/icons';
 import { tokenPayload } from 'helper';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
-import { getApi, patchApi } from 'core/apis/api';
+import { getApi, patchApi, postApi } from 'core/apis/api';
 import { decryptWithAESKey } from 'core/crypto/decrypt';
 const ProfilePage = () => {
   const { t } = useTranslation();
@@ -50,7 +50,11 @@ const ProfilePage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // const [imagePreview, setImagePreview] = useState(null);
+const [selectedFile, setSelectedFile] = useState(null);
+
 
   useEffect(() => {
     fetchPropertyData();
@@ -101,6 +105,130 @@ const ProfilePage = () => {
     }
   });
 
+  // const handleFileChange = async (event) => {
+  //   const file = event.target.files[0];
+    
+  //   if (!file) {
+  //     toast.error(t('Please select a file'));
+  //     return;
+  //   }
+
+  //   const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  //   if (!validImageTypes.includes(file.type)) {
+  //     toast.error(t('Please select a valid image (JPEG, PNG, GIF, or WebP)'));
+  //     return;
+  //   }
+  
+  //   const maxSize = 2 * 1024 * 1024; 
+  //   if (file.size > maxSize) {
+  //     toast.error(t('Image size should be less than 2MB'));
+  //     return;
+  //   }
+  
+  //   try {
+  //     // Create preview
+  //     const imageURL = URL.createObjectURL(file);
+  //     setImagePreview(imageURL);
+      
+  //     // Prepare form data
+  //     const formData = new FormData();
+  //     formData.append('file', file); 
+  //     formData.append('companyId', payload.companyId);
+  
+  //     // Upload to server
+  //     const response = await patchApi(
+  //       urls.logo.logoupload,
+  //       formData,
+  //       {id: payload.companyId},
+  //       {
+  //           'Content-Type': 'multipart/form-data'
+  //       }
+  //     );
+  
+  //     if (response.success) {
+  //       toast.success(t('Logo uploaded successfully!'));
+  //       // fetchPropertyData(); // Refresh data to show new logo
+  //     } else {
+  //       toast.error(response.message || t('Failed to upload logo'));
+  //     }
+  //   } catch (error) {
+  //     console.error('Upload error:', error);
+  //     toast.error(t('Error uploading logo'));
+      
+  //     // Clean up object URL to prevent memory leaks
+  //     if (imagePreview) {
+  //       URL.revokeObjectURL(imagePreview);
+  //     }
+  //   } finally {
+  //     // Reset file input to allow selecting the same file again
+  //     event.target.value = '';
+  //   }
+  // };
+
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+  
+    if (!file) {
+      toast.error(t('Please select a file'));
+      return;
+    }
+  
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validImageTypes.includes(file.type)) {
+      toast.error(t('Please select a valid image (JPEG, PNG, GIF, or WebP)'));
+      return;
+    }
+  
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    if (file.size > maxSize) {
+      toast.error(t('Image size should be less than 2MB'));
+      return;
+    }
+  
+    // Set preview and store file
+    const imageURL = URL.createObjectURL(file);
+    setImagePreview(imageURL);
+    setSelectedFile(file);
+  
+    // Reset input
+    event.target.value = '';
+  };
+
+  const handleLogoSubmit = async () => {
+    if (!selectedFile) {
+      toast.error(t('No logo file selected'));
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('companyId', payload.companyId);
+  
+    try {
+      const response = await patchApi(
+        urls.logo.logoupload,
+        formData,
+        { id: payload.companyId },
+        { 'Content-Type': 'multipart/form-data' }
+      );
+  
+      if (response.success) {
+        toast.success(t('Logo uploaded successfully!'));
+        setImagePreview(null);
+        setSelectedFile(null);
+        fetchPropertyData();
+        window.location.reload();
+      } else {
+        toast.error(response.message || t('Failed to upload logo'));
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error(t('Error uploading logo'));
+    }
+  };
+  
+  
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -173,6 +301,9 @@ const ProfilePage = () => {
               <Tab label={t('Company Details')} value="1" />
               {userRole === 'companyAdmin' && <Tab label={t('updateMailSettings')} value="2" />}
               {userRole === 'companyAdmin' && <Tab label={t('Change Password')} value="3" />}
+              {userRole === 'companyAdmin' &&  <Tab label={t('updateCompanyLogo')} value="4" />}
+            
+
             </TabList>
           </Box>
 
@@ -232,7 +363,8 @@ const ProfilePage = () => {
 
           {/* SMTP Settings Tab */}
           <TabPanel value="2">
-            <Box sx={{ flexGrow: 1, overflowX: 'auto' }}>
+            <Box sx={{ flexGrow: 1, overflowX: 'auto',  border: '1px solid #333',
+                    borderRadius: '8px', }}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Box component="form" onSubmit={formik.handleSubmit} sx={{ padding: 2, borderRadius: 2 }}>
@@ -435,6 +567,95 @@ const ProfilePage = () => {
               </Grid>
             </Grid>
           </TabPanel>
+
+          <TabPanel value="4">
+  <Paper sx={{ 
+    p: 3,
+    border: '1px solid #333',
+    borderRadius: '8px',
+    backgroundColor: '#fff',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+  }}>
+    <Typography variant="h4" gutterBottom>
+      {t('updateCompanyLogo')}
+    </Typography>
+    <Divider sx={{ mb: 2 }} />
+    
+    {CompanyData?.logoUrl && !imagePreview && (
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          {t('Current Logo')}
+        </Typography>
+        <img
+          src={CompanyData.logoUrl}
+          alt="Current Company Logo"
+          style={{
+            maxWidth: '100%',
+            maxHeight: '200px',
+            borderRadius: '8px',
+          }}
+        />
+      </Box>
+    )}
+    
+    <Button
+      component="label"
+      variant="contained"
+      sx={{ mb: 2 }}
+    >
+      {t('Upload New Logo')}
+      <input
+        type="file"
+        hidden
+        accept="image/*"
+        onChange={handleFileChange}
+      />
+    </Button>
+    
+    {imagePreview && (
+      <>
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            {t('New Logo Preview')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            {t('Recommended dimensions: 1000x291 pixels')}
+          </Typography>
+          <img
+            src={imagePreview}
+            alt="Uploaded Preview"
+            style={{
+              maxWidth: '100%',
+              maxHeight: '200px',
+              borderRadius: '8px',
+            }}
+          />
+        </Box>
+        
+        <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handleLogoSubmit}
+          >
+            {t('Done')}
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => {
+              setImagePreview(null);
+              const fileInput = document.querySelector('input[type="file"]');
+              if (fileInput) fileInput.value = '';
+            }}
+          >
+            {t('Cancel')}
+          </Button>
+        </Box>
+      </>
+    )}
+  </Paper>
+</TabPanel>
+
         </TabContext>
       </Card>
     </Container>

@@ -7,7 +7,6 @@ import {
   FormLabel,
   Grid,
   TextField,
-  Autocomplete,
   Typography,
   DialogActions,
   DialogContent,
@@ -23,73 +22,73 @@ import { getApi, postApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
 
-const AddComplaints = ({ open, handleClose }) => {
+const AddComplaintsByTenants = ({ open, handleClose }) => {
   const { t } = useTranslation();
-  const [propertyData, setPropertyData] = useState([]);
   const [loading, setLoading] = useState(false); 
+  const [propertyId, setPropertyId] = useState('');
   const payload = tokenPayload();
 
-  const fetchPropertyData = async () => {
-    setLoading(true);
-    try {
-      const response = await getApi(urls.property.propertyDataAll, { id: payload.companyId });
-      setPropertyData(response?.data );
-     
-    } catch (err) {
-      console.error('Error fetching property data:', err);
-      toast.error(t('Failed to fetch property data!'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open) fetchPropertyData();
-  }, [open]);
-
   const validationSchema = yup.object({
-    propertyId: yup.string().required(t('Property is required')),
     concernTopic: yup
-    .string()
-    .matches(/^[A-Za-z0-9 ]*$/, t('Topic can only contain letters, numbers, and spaces'))
-    .max(30, t('Topic cannot exceed 30 characters'))
-    .required(t('Topic is required')),  
+      .string()
+      .matches(/^[A-Za-z0-9 ]*$/, t('Topic can only contain letters, numbers, and spaces'))
+      .max(30, t('Topic cannot exceed 30 characters'))
+      .required(t('Topic is required')),  
     description: yup
       .string()
       .max(200, t('Description cannot exceed 200 characters'))
       .required(t('Description is required')),
   });
 
+  useEffect(() => {
+    const fetchPropertyData = async () => {
+      try {
+        const response = await getApi(urls.tenant.tenantBookingData, { id: payload._id });
+        if (response?.data?.length > 0) {
+          const firstItem = response.data[0];
+          setPropertyId(firstItem?.propertyId?._id || '');
+        }
+      } catch (err) {
+        console.error('Error fetching property data:', err);
+        toast.error(t('Failed to fetch property data!'));
+      }
+    };
+
+    if (open) {
+      fetchPropertyData();
+    }
+  }, [open]);
+
   const formik = useFormik({
     initialValues: {
-      propertyId: '',
       concernTopic: '',
       description: '',
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
+      if (!propertyId) {
+        toast.error(t('Property information not available.'));
+        return;
+      }
+
       const complaintData = {
         ...values,
+        propertyId,
         companyId: payload.companyId,
+        ...(payload.role === 'agent' && { agentId: payload._id }),
+        ...(payload.role === 'tenant' && { tenantId: payload._id }),
       };
 
-      if (payload.role === 'agent') {
-        complaintData.agentId = payload._id;
-      } else if (payload.role === 'tenant') {
-        complaintData.tenantId = payload._id;
-      }
+      console.log(complaintData,"complaintData")
 
       try {
         setLoading(true);
-        const startTime = Date.now();
         const response = await postApi(urls.Complaints.create, complaintData);
         if (response.success) {
-          const elapsedTime = Date.now() - startTime;
-          const remainingTime = Math.max(0, 1000 - elapsedTime);
           setTimeout(() => {
             setLoading(false);
             handleClose();
-          }, remainingTime);
+          }, 500);
           toast.success(t('Complaint successfully registered!'));
           resetForm();
         }
@@ -101,7 +100,6 @@ const AddComplaints = ({ open, handleClose }) => {
     },
   });
 
-
   return (
     <Dialog
       open={open}
@@ -110,8 +108,8 @@ const AddComplaints = ({ open, handleClose }) => {
       aria-describedby="scroll-dialog-description"
     >
       <DialogTitle id="scroll-dialog-title" sx={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Typography variant="h6">{t('Add New Complaint')}</Typography>
-      <ClearIcon onClick={handleClose} sx={{ cursor: 'pointer' }} />
+        <Typography variant="h6">{t('Add New Complaint')}</Typography>
+        <ClearIcon onClick={handleClose} sx={{ cursor: 'pointer' }} />
       </DialogTitle>
       <DialogContent dividers>
         <form onSubmit={formik.handleSubmit}>
@@ -120,29 +118,6 @@ const AddComplaints = ({ open, handleClose }) => {
               {t('Complaint Information')}
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <FormLabel>{t('Property')}</FormLabel>
-                <Autocomplete
-                  disablePortal
-                  size="small"
-                  options={propertyData.map((property) => ({
-                    label: property.propertyname,
-                    value: property._id,
-                  }))}
-                  getOptionLabel={(option) => option?.label || ''}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      error={formik.touched.propertyId && Boolean(formik.errors.propertyId)}
-                      helperText={formik.touched.propertyId && formik.errors.propertyId}
-                    />
-                  )}
-                  onChange={(event, value) => {
-                    formik.setFieldValue('propertyId', value?.value || '');
-                  }}
-                />
-              </Grid>
               <Grid item xs={12}>
                 <FormLabel>{t('Topic')}</FormLabel>
                 <TextField
@@ -180,9 +155,9 @@ const AddComplaints = ({ open, handleClose }) => {
           onClick={formik.handleSubmit}
           variant="contained"
           color="primary"
-          disabled={loading} 
+          disabled={loading}
         >
-          {loading ? t('Saving...') : t('Save')} 
+          {loading ? t('Saving...') : t('Save')}
         </Button>
         <Button
           onClick={() => {
@@ -199,4 +174,4 @@ const AddComplaints = ({ open, handleClose }) => {
   );
 };
 
-export default AddComplaints;
+export default AddComplaintsByTenants;

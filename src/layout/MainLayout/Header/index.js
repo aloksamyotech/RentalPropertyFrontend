@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import PropTypes from 'prop-types';
 
 // material-ui
@@ -32,19 +33,35 @@ const Header = ({ handleLeftDrawerToggle }) => {
   };
 
   useEffect(() => {
-    // Only fetch company data if the userRole is not 'admin'
     if (userRole !== 'admin') {
       fetchCompanyData();
     }
-  }, [userRole]);  // Add userRole as a dependency to re-run when it changes
+  }, [userRole]);
+
+  const [currentTime, setCurrentTime] = useState('');
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const day = now.toLocaleDateString('en-US', { weekday: 'long' });
+      const date = now.toLocaleDateString();
+      const time = now.toLocaleTimeString();
+      setCurrentTime(`${day}, ${date} ${time}`);
+    };
+
+    updateTime(); // Initialize
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer); 
+  }, []);
 
   return (
     <>
-      {/* logo & toggler button */}
+      {/* Logo & Toggler Button */}
       <Box
         sx={{
-          width: 228,
           display: 'flex',
+          alignItems: 'center',
+          width: 228,
           [theme.breakpoints.down('md')]: {
             width: 'auto',
           },
@@ -75,45 +92,106 @@ const Header = ({ handleLeftDrawerToggle }) => {
         </ButtonBase>
       </Box>
 
-      {/* Company name in header */}
-      {company && (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            paddingLeft: 2,
-            paddingRight: 2,
-            flexShrink: 0,
-          }}
-        >
-          <Tooltip title="Company" arrow>
+      {/* Company Name and Date */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          pl: 2,
+          pr: 2,
+          pt: 1,
+        }}
+      >
+        {/* Company Name */}
+        {company && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              flexGrow: 1,  // This allows the company name box to take available space
+            }}
+          >
+            {/* Welcome text */}
             <Typography
-              variant="h6"
+              variant="body2"
               sx={{
-                fontWeight: 600,
-                fontSize: '1.4rem',
-                color: theme.palette.primary.main,
-                transition: 'color 0.3s ease-in-out, transform 0.3s ease-in-out', 
-                '&:hover': {
-                  color: theme.palette.primary.dark,
-                  cursor: 'pointer',
-                  transform: 'scale(1.05)', 
-                },
+                fontWeight: 400,
+                fontSize: '1.1rem', // Smaller size for the "Welcome"
+                color: theme.palette.text.secondary,
+                textAlign: 'left',
               }}
             >
-              Welcome to {company}
+              Welcome to
             </Typography>
-          </Tooltip>
-        </Box>
-      )}
 
-      {/* header search (if needed) */}
-      {/* <SearchSection /> */}
+            {/* Company Name */}
+            <Tooltip title="Click to view company profile" arrow>
+              <Typography
+                variant="h4"
+                noWrap
+                sx={{
+                  fontWeight: 700,
+                  fontSize: '1.7rem', 
+                  color: theme.palette.primary.main,
+                  maxWidth: '90%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  '&:hover': {
+                    color: theme.palette.primary.dark,
+                    transform: 'scale(1.05)',
+                    cursor: 'pointer',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                {company}
+              </Typography>
+            </Tooltip>
+          </Box>
+        )}
+
+        {/* Date & Time */}
+        <Box
+          sx={{
+            textAlign: 'right',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+          }}
+        >
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontSize: '1.1rem',
+              fontWeight: 500,
+              color: theme.palette.text.secondary,
+            }}
+          >
+            Today is 
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 400,
+                fontSize: '1.1rem', // Smaller size for the "Welcome"
+                color: theme.palette.text.secondary,
+                
+            }}
+          >
+            {currentTime}
+          </Typography>
+        </Box>
+      </Box>
+
       <Box sx={{ flexGrow: 1 }} />
 
-      {/* Language switcher, notification & profile */}
+      {/* Language Switcher, Notification & Profile */}
       <LanguageSwitcher />
-      <NotificationSection />
+      {/* <NotificationSection /> */}
       <ProfileSection />
     </>
   );

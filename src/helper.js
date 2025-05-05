@@ -24,7 +24,7 @@
 // }
 
 export function parseJWT(token) {
-  console.log('Token received:', token);
+  // console.log('Token received:', token);
 
   if (!token) {
     return false; // No token provided
@@ -42,7 +42,7 @@ export function parseJWT(token) {
       throw new Error('Decoded payload is not valid JSON');
     }
 
-    console.log('Decoded JWT:', { header, payload });
+    // console.log('Decoded JWT:', { header, payload });
     return payload;
   } catch (error) {
     console.error('Error parsing JWT:', error);
@@ -55,7 +55,7 @@ export function tokenPayload() {
   try {
     // Get the token from localStorage (as a string, not JSON)
     const token = localStorage.getItem('$2b$10$ehdPSDmr6P');
-    console.log('Token from localStorage:', token);
+    // console.log('Token from localStorage:', token);
 
     if (!token) {
       return false;

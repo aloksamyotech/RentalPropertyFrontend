@@ -9,7 +9,6 @@ import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
 
 // assets
-import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import { useTranslation } from 'react-i18next';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
@@ -17,7 +16,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
   color: '#fff',
   overflow: 'hidden',
   position: 'relative',
-  height: '100%',
+  height: '150px',
   '&>div': {
     position: 'relative',
     zIndex: 5
@@ -55,7 +54,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
   }
 }));
 
-const TotalVacantProperties = ({ isLoading, vacantPropertyData }) => {
+const InfoCard = ({ isLoading, cardName, length, icon:Icon }) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -74,7 +73,7 @@ const TotalVacantProperties = ({ isLoading, vacantPropertyData }) => {
                 color: theme.palette.primary.light
               }}
             >
-              {t('Total Vacant Property')}
+              {cardName} 
             </Typography>
           </Grid>
 
@@ -91,7 +90,7 @@ const TotalVacantProperties = ({ isLoading, vacantPropertyData }) => {
                     height: 48, // Bigger size
                   }}
                 >
-                  <MeetingRoomIcon fontSize="large" />  {/* Bigger Icon */}
+                  <Icon fontSize="large" /> 
                 </Avatar>
               </Grid>
               <Grid item>
@@ -101,7 +100,7 @@ const TotalVacantProperties = ({ isLoading, vacantPropertyData }) => {
                     fontWeight: 700
                   }}
                 >
-                  {vacantPropertyData?.length ?? 0}
+                  {length ?? 0} 
                 </Typography>
               </Grid>
             </Grid>
@@ -112,9 +111,11 @@ const TotalVacantProperties = ({ isLoading, vacantPropertyData }) => {
   );
 };
 
-TotalVacantProperties.propTypes = {
+InfoCard.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  vacantPropertyData: PropTypes.array
+  cardName: PropTypes.string.isRequired,
+  length: PropTypes.number.isRequired,
+  Icon: PropTypes.elementType.isRequired
 };
 
-export default TotalVacantProperties;
+export default InfoCard;

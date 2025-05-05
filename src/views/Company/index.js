@@ -188,7 +188,6 @@ const Company = () => {
         );
       },
     },
-    
     {
       field: 'action',
       headerName: t('Action'),

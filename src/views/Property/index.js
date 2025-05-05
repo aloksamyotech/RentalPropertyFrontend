@@ -219,7 +219,7 @@ const Property = () => {
     <>
       <AddProperty open={openAdd} handleClose={handleCloseAdd} />
       <EditProperty open={openEdit} handleClose={handleCloseEditProperty} data={rowData} />
-      <DeleteProperty open={openDelete} handleClose={handleCloseDeleteProperty} id={rowData?._id} />
+      <DeleteProperty open={openDelete} handleClose={handleCloseDeleteProperty}  id={rowData?._id || ''} />
 
       <Container>
         <Card sx={{ p: 2, mb: 2 }}>
