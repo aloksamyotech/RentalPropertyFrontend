@@ -45,7 +45,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
         if (resource.success && Array.isArray(resource.data)) {
           const combined = terms.map((term, i) => ({
             name: term,
-            Paid: resource.data[i] || 0
+            total: resource.data[i] || 0
           }));
           setAdminData(combined);
         }
@@ -81,7 +81,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
               <XAxis dataKey="name" stroke={theme.palette.text.primary} />
               <YAxis stroke={theme.palette.text.primary} />
               <Tooltip />
-              <Bar dataKey="Paid" fill={theme.palette.primary.main} radius={[4, 4, 0, 0]} />
+              <Bar dataKey="total" fill={theme.palette.primary.main} radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Grid>

@@ -55,6 +55,7 @@ import ChangePasswordForAgent from 'views/Agents/components/ChangePasswordForAge
 import CompanyReport from 'views/CompanyReports';
 import Transaction from 'views/Transaction/indecC';
 import TransactionSA from 'views/Transaction/indexSA';
+import ChangePasswordForCompany from 'views/Company/components/changePasswordForCompany';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -91,6 +92,7 @@ const superAdminRoutes = {
         // { path: 'totaltable', element: <TotalTable /> },
         { path: 'company/view', element: <CompanyView /> },
         { path: 'transactionAll', element: <TransactionSA /> },
+        { path:'company/changepassword', element :<ChangePasswordForCompany/>},
         { path: 'company', element: <Company /> },
         { path: 'property', element: <Property /> },
         { path: 'reports', element: <Reports /> },

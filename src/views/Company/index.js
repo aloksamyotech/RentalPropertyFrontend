@@ -34,6 +34,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditCompany from './EditCompany';
 import DeleteCompany from './DeleteCompany';
 import Switch from '@mui/material/Switch';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
@@ -122,6 +123,10 @@ const Company = () => {
       {t('Company Management')}
     </Typography>,
   ];
+
+  const handleChangePassword =()=>{
+    navigate(`/dashboard/company/changepassword?id=${currentRow._id}`);
+  }
 
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
@@ -226,6 +231,10 @@ const Company = () => {
                                       <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
                                       {t('view')}
                             </MenuItem>
+                             <MenuItem onClick={handleChangePassword}>
+                                                      <ChangeCircleIcon style={{ marginRight: '8px', color: 'green' }} />
+                                                      {t('Change Password')}
+                                                    </MenuItem>
           </Popover>
         </>
       ),
