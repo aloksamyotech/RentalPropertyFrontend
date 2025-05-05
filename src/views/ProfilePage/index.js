@@ -218,6 +218,7 @@ const [selectedFile, setSelectedFile] = useState(null);
         setImagePreview(null);
         setSelectedFile(null);
         fetchPropertyData();
+        window.location.reload();
       } else {
         toast.error(response.message || t('Failed to upload logo'));
       }
