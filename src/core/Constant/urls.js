@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-
 const base = 'https://rentals.samyotech.in/api/v1';
 const imageBase = 'https://rentals.samyotech.in/';
 export const urls = Object.freeze({
