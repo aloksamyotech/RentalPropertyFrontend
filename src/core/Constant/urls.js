@@ -1,4 +1,4 @@
-
+/* eslint-disable prettier/prettier */
 
 const base = 'https://rentals.samyotech.in/api/v1';
 const imageBase = 'https://rentals.samyotech.in/';
@@ -25,7 +25,10 @@ export const urls = Object.freeze({
     setYearlySale: base + '/bill/totalYearlySales',
     pendingBillCounts: base + '/bill/totalPendingBills',
     paidBillCounts: base + '/bill/totalPaidBills',
-    getAllUnpaidBillForAgent: base + '/bill/getAllUnpaidBillForAgent'
+    getAllUnpaidBillForAgent: base + '/bill/getAllUnpaidBillForAgent',
+    getMonthlyBillOfTenants: base + '/bill/getMonthlyBillOfTenants',
+    getMonthlyPaidBillsForAgent: base +'/bill/getMonthlyPaidBillsForAgent',
+    getBillSummaryBetweenDates: base + '/bill/getBillSummaryBetweenDates'
   },
   company: {
     create: base + '/company/register',
@@ -137,7 +140,17 @@ export const urls = Object.freeze({
   Subscribe: {
     create: base + '/subscription/register',
     getAllSubscription: base + '/subscription/getSubscription',
-    edit: base + '/subscription/edit',
-    delete: base + '/subscription/delete'
+    edit : base +'/subscription/edit',
+    delete: base + '/subscription/delete',
+    getSubTransaction: base +'/subscription/getSubTransaction',
+    getAllSubTransaction:base+'/subscription/getAllSubTransaction'
+  },
+  CompanyReport:{
+    getBillSummaryBetweenDates: base + '/bill/getBillSummaryBetweenDates'
+  },
+  logo:{
+    logoupload: base + '/logo/uploadLogo',
+    logoImage: imageBase
   }
+
 });

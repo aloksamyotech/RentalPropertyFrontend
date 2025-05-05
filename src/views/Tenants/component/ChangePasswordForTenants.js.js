@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
 import {
   Stack,
@@ -79,7 +80,7 @@ const ChangePasswordForTenant = () => {
       <Card sx={{ p: 2, mb: 3, borderRadius: 2, boxShadow: 3 }}>
          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
                   <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    {t('Change Password')}
+                    {t('Tenant Management')}
                     <Breadcrumbs separator="›" aria-label="breadcrumb">
                       {breadcrumbs}
                     </Breadcrumbs>

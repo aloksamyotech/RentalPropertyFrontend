@@ -16,6 +16,14 @@ import { tokenPayload } from 'helper';
 import TotalVacantProperties from './TotalVacantProperty';
 import TotalBooking from './TotalBooking';
 import TotalPendingBill from './TotalPendingBills';
+import TotalGrowthBarChart from './BarChartA';
+import PopularCard from './PopularCardA';
+import InfoCard from './InfoCard';
+import {  IconFileUpload } from '@tabler/icons';
+import BookIcon from '@mui/icons-material/Book';
+import { Payment, Person2 } from '@mui/icons-material';
+import PaymentIcon from '@mui/icons-material/Payment';
+
 
 const RoomTypeIcons = {
   single: <SingleBedIcon sx={{ fontSize: '2.5rem' }} />,
@@ -159,7 +167,8 @@ const ADashboard = () => {
                 navigate('/dashboard/vacantproperty');
               }}
             >
-              <TotalVacantProperties isLoading={isLoading} vacantPropertyData={vacantpropertyData} />
+              <InfoCard isLoading={isLoading} cardName="Vacant Property" length={vacantpropertyData.length} icon={IconFileUpload} />
+              {/* <TotalVacantProperties isLoading={isLoading} vacantPropertyData={vacantpropertyData} /> */}
             </Grid>
 
             <Grid
@@ -173,7 +182,8 @@ const ADashboard = () => {
                 navigate('/dashboard/booking');
               }}
             >
-              <TotalBooking isLoading={isLoading} booking={booking} />
+              <InfoCard isLoading={isLoading} cardName="My Booking" length={booking.length} icon={BookIcon} />
+              {/* <TotalBooking isLoading={isLoading} booking={booking} /> */}
             </Grid>
             <Grid
               item
@@ -186,7 +196,9 @@ const ADashboard = () => {
                 navigate('/dashboard/tenents');
               }}
             >
-              <TotalTenants isLoading={isLoading} tenant={tenant} />
+             <InfoCard isLoading={isLoading} cardName="My Tenants" length={tenant.length} icon={Person2} />
+
+              {/* <TotalTenants isLoading={isLoading} tenant={tenant} /> */}
             </Grid>
             <Grid
               item
@@ -199,18 +211,19 @@ const ADashboard = () => {
               //   navigate('/dashboard/billC');
               // }}
             >
-              <TotalPendingBill isLoading={isLoading} TotalPendingBill={pendingBill} />
+              <InfoCard isLoading={isLoading} cardName="Pending Bills" length={pendingBill.length} icon={PaymentIcon} />
+              {/* <TotalPendingBill isLoading={isLoading} TotalPendingBill={pendingBill} /> */}
             </Grid>
           </Grid>
         </Grid>
 
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
-            <Grid item xs={12}>
-              {/* <TotalGrowthBarChart isLoading={isLoading} /> */}
+            <Grid item xs={8}>
+              <TotalGrowthBarChart isLoading={isLoading} />
             </Grid>
             <Grid item xs={12} md={4}>
-              {/* <PopularCard isLoading={isLoading} /> */}
+              <PopularCard isLoading={isLoading} />
             </Grid>
           </Grid>
         </Grid>

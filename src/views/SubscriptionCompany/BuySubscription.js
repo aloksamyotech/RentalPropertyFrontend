@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {
   Dialog,
@@ -15,16 +16,39 @@ import { toast } from 'react-toastify';
 import { patchApi } from 'core/apis/api';
 import { urls } from 'core/Constant/urls';
 import { tokenPayload } from 'helper';
+import { getApi } from 'core/apis/api';
 
-const BuySubscription = ({ open, handleClose, id }) => {
+const BuySubscription = ({ open, handleClose, data }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [companyData,setCompanyData] = useState(null);
   const payload = tokenPayload();
+
+  console.log(data,"data")
+
+
+    useEffect(() => {
+      const fetchCompanyData = async () => {
+        try {
+          const response = await getApi(urls.company.getCompanyById, { id: payload.companyId });
+          setCompanyData(response.data);
+        } catch (err) {
+          // setError('Error fetching company data');
+          console.error('Error fetching company data', err);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      if (payload?.companyId) fetchCompanyData();
+    }, [payload?.companyId]);
+
+    console.log(data,payload,companyData,"data")
 
   const handleAddSubmit = async () => {
     setLoading(true);
     try {
-      const result = await patchApi(urls.company.addSubcriptionPlan, { companyId: payload.companyId, SubscriptionId:id,  buyDate: new Date() }, {});
+      const result = await patchApi(urls.company.addSubcriptionPlan, { companyId: payload.companyId, SubscriptionId:data._id,  buyDate: new Date(), amount: data.amount , discount: data.discount,currency: companyData.currencyCode }, {});
 
       if (result?.success) {
         toast.success(t('Subscription added successfully'));

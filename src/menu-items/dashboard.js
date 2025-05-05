@@ -27,6 +27,7 @@ import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import HomeIcon from '@mui/icons-material/Home';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import i18n from 'i18n';
 // constant
 const icons = {
@@ -76,9 +77,17 @@ const superAdminDashboard = {
     },
     {
       id: '3',
-      title: i18n.t('Reports'),
+      title: i18n.t('Company Active Plans'),
       type: 'item',
       url: '/dashboard/reports',
+      icon: icons.IconFileInvoice,
+      breadcrumbs: false
+    },
+    {
+      id: '4',
+      title: i18n.t('Transactions'),
+      type: 'item',
+      url: '/dashboard/transactionAll',
       icon: icons.IconFileInvoice,
       breadcrumbs: false
     }
@@ -112,6 +121,14 @@ const companyAdminDashboard = {
       type: 'item',
       url: '/dashboard/owner',
       icon: PersonIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '13',
+      title: i18n.t('Reports'),
+      type: 'item',
+      url: '/dashboard/companyReport',
+      icon: HomeRepairServiceIcon,
       breadcrumbs: false
     },
     {
@@ -188,6 +205,14 @@ const companyAdminDashboard = {
     },
     {
       id: '12',
+      title: i18n.t('Transaction'),
+      type: 'item',
+      url: '/dashboard/transaction',
+      icon: ReceiptIcon,
+      breadcrumbs: false
+    },
+    {
+      id: '13',
       title: i18n.t('Subscription Plan'),
       type: 'item',
       url: '/dashboard/subcriptionCards',

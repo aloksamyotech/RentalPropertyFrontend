@@ -25,8 +25,9 @@ const Reports = () => {
   const fetchReportData = async () => {
     try {
       const response = await getApi(urls.company.getSubcriptionDetails);
-      console.log(response,"responece")
+      console.log(response?.data,"response?.data")
       setReportData(response?.data || []);
+
     } catch (error) {
       setReportData([]);
     }
@@ -37,15 +38,15 @@ const Reports = () => {
   }, []);
 
   const columns = [
-    // {
-    //   field: 'serialNo',
-    //   headerName: t('S.No.'),
-    //   width: 80,
-    //   renderCell: (params) => {
-    //     const rowIndex = reportData.findIndex((row) => row._id === params.row._id);
-    //     return rowIndex + 1;
-    //   },
-    // },
+    {
+      field: 'serialNo',
+      headerName: t('S.No.'),
+      width: 80,
+      renderCell: (params) => {
+        const rowIndex = reportData.findIndex((row) => row._id === params.row._id);
+        return rowIndex + 1;
+      },
+    },
     {
       field: 'subcriptionBuyDate',
       headerName: t('Order Date'),
@@ -59,6 +60,29 @@ const Reports = () => {
             })
           : '-'
     },
+
+    {
+      field: 'endDate',
+      headerName: t('End Date'),
+      flex: 1,
+      valueGetter: (params) => {
+        const startDate = new Date(params.row.subcriptionBuyDate);
+        const daysToAdd = parseInt(params.row.subcriptionId?.noOfDays, 10);
+    
+        if (!startDate || isNaN(startDate) || isNaN(daysToAdd)) return '-';
+    
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + daysToAdd);
+    
+        return endDate.toLocaleDateString('en-IN', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+      }
+    },
+    
+    
     
     {
       field: 'companyName',
@@ -77,12 +101,23 @@ const Reports = () => {
       flex: 1,
       valueGetter: (params) => params.row.subcriptionId?.discount || '-',
     },
+    
+    {
+      field: 'subcriptionId.noOfDays',
+      headerName: t('No Of Days'),
+      flex: 1,
+      valueGetter: (params) => params.row.subcriptionId?.noOfDays || '-',
+    },
     {
       field: 'amount',
       headerName: t('Amount'),
       flex: 1,
-      valueGetter: (params) => params.row.subcriptionId?.amount || '-',
-    },
+      valueGetter: (params) => {
+        const amount = params.row.subcriptionId?.amount;
+        const currency = params.row.currencyCode ; 
+        return amount ? `${currency} ${amount}` : '-';
+      },
+    }
   ];
 
   const breadcrumbs = [
@@ -90,7 +125,7 @@ const Reports = () => {
       <IconHome />
     </Link>,
     <Typography key="reports" color="text.primary">
-      {t('Reports')}
+      {t('Company Active Plan')}
     </Typography>,
   ];
 
@@ -99,13 +134,11 @@ const Reports = () => {
       <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {t('Subscription Reports')}
+            {t('Company Active Plan')}
             <Breadcrumbs separator="›" aria-label="breadcrumb">
               {breadcrumbs}
             </Breadcrumbs>
           </Typography>
-
-      
         </Stack>
       </Card>
 

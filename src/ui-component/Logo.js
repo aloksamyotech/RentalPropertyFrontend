@@ -1,27 +1,51 @@
 /* eslint-disable prettier/prettier */
-// material-ui
 import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
+import { getApi } from 'core/apis/api';
+import { urls } from 'core/Constant/urls';
+import { tokenPayload } from 'helper';
 
-/**
- * Uncomment the following to use an image logo instead of an SVG logo:
- *
- * import logoDark from 'assets/images/logo-dark.svg';
- * import logo from 'assets/images/logo.svg';
- */
-import logo from 'assets/images/rms-removebg-preview.png';
+import defaultLogo from 'assets/images/rms-removebg-preview.png'; 
 
 const Logo = () => {
+  const [companyLogo, setCompanyLogo] = useState('');
   const theme = useTheme();
+  const payload = tokenPayload();
+  const imagepath = urls.logo.logoImage;
+
+  const fetchCompanyData = async () => {
+    try {
+      const response = await getApi(urls.company.getCompanyById, { id: payload.companyId });
+      const logoPath = response?.data?.companyLogo;
+      setCompanyLogo(logoPath || '');
+    } catch (err) {
+      console.error('Failed to fetch company logo:', err);
+      setCompanyLogo(''); 
+    }
+  };
+
+  useEffect(() => {
+    fetchCompanyData();
+  }, []);
+
+  const logoSrc = companyLogo
+    ? `${imagepath}${companyLogo}`
+    : defaultLogo;
 
   return (
-    // Uncomment the image tag below to use an image logo
-<img 
-  src={logo} 
-  alt="CRM" 
-  width="180" 
-  height="60" 
-  style={{ objectFit: "contain", display: "block" }} 
-/>
+    <img
+      src={logoSrc}
+      alt="CRM"
+      // width="175"
+      // height="65"
+      style={{
+        width: '175px',
+        height: '65px',
+        display: 'block',
+        // backgroundColor: '#f0f0f0', 
+        overflow: 'hidden',
+      }}
+    />
   );
 };
 

@@ -16,6 +16,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
   color: '#fff',
   overflow: 'hidden',
   position: 'relative',
+  height: '100%',
   '&:after': {
     content: '""',
     position: 'absolute',
@@ -51,7 +52,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 // ===========================|| DASHBOARD Contact CARD ||=========================== //
 
 const TotalTenants = ({ isLoading, tenant }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const theme = useTheme();
 
   return (
@@ -60,40 +61,48 @@ const TotalTenants = ({ isLoading, tenant }) => {
         <SkeletonEarningCard />
       ) : (
         <CardWrapper border={false} content={false}>
-          <Box sx={{ p: 2.25 }}>
-            <Grid container direction="column">
+          <Box sx={{ p: 2.25, height: '100%' }}>
+            <Grid container direction="column" justifyContent="space-between" sx={{ height: '100%' }}>
+              {/* Top left: Title */}
               <Grid item>
-                <Grid container alignItems="center" justifyContent="center">
-                  <Grid item>
-                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                      {tenant?.length}
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Avatar
-                      sx={{
-                        cursor: 'pointer',
-                        ...theme.typography.smallAvatar,
-                        backgroundColor: theme.palette.secondary[200],
-                        color: theme.palette.secondary.dark
-                      }}
-                    >
-                      <SkeletonTotalOrderCard fontSize="inherit" />
-                    </Avatar>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item sx={{ mb: 1.25 }}>
                 <Typography
                   sx={{
                     fontSize: '1rem',
                     fontWeight: 500,
-                    color: theme.palette.secondary.light,
-                    textAlign: 'center'
+                    color: theme.palette.secondary.light
                   }}
                 >
                   {t('Total Tenants')}
                 </Typography>
+              </Grid>
+
+              {/* Bottom left: Icon and Number (Icon on Left, Bigger Icon) */}
+              <Grid item>
+                <Grid container alignItems="center" spacing={2}>
+                  <Grid item>
+                    <Avatar
+                      sx={{
+                        ...theme.typography.smallAvatar,
+                        backgroundColor: theme.palette.secondary[200],
+                        color: theme.palette.secondary.dark,
+                        width: 48,  // Bigger size
+                        height: 48, // Bigger size
+                      }}
+                    >
+                      <SkeletonTotalOrderCard fontSize="large" />  {/* Bigger Icon */}
+                    </Avatar>
+                  </Grid>
+                  <Grid item>
+                    <Typography
+                      sx={{
+                        fontSize: '2.125rem',
+                        fontWeight: 700
+                      }}
+                    >
+                      {tenant?.length ?? 0}
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Box>
@@ -105,7 +114,7 @@ const TotalTenants = ({ isLoading, tenant }) => {
 
 TotalTenants.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  foodItemData: PropTypes.array
+  tenant: PropTypes.array
 };
 
 export default TotalTenants;

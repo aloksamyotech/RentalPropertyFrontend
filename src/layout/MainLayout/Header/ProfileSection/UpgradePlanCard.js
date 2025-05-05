@@ -1,68 +1,115 @@
-// material-ui
+import { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
-import { Button, Card, CardContent, Grid, Stack, Typography } from '@mui/material';
-
-// project imports
+import { Button, Card, CardContent, Grid, Typography, CircularProgress } from '@mui/material';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { tokenPayload } from 'helper';
+import { getApi } from 'core/apis/api';
+import { urls } from 'core/Constant/urls';
+import { useTranslation } from 'react-i18next';
 
-// styles
 const CardStyle = styled(Card)(({ theme }) => ({
   background: theme.palette.warning.light,
-  marginTop: '16px',
-  marginBottom: '16px',
+  margin: '16px 0',
+  padding: '8px',
   overflow: 'hidden',
   position: 'relative',
+  borderRadius: '12px',
   '&:after': {
     content: '""',
     position: 'absolute',
-    width: '200px',
-    height: '200px',
-    border: '19px solid ',
+    width: '180px',
+    height: '180px',
+    border: '15px solid',
     borderColor: theme.palette.warning.main,
     borderRadius: '50%',
-    top: '65px',
-    right: '-150px'
+    top: '40px',
+    right: '-120px',
+    opacity: 0.3
   },
   '&:before': {
     content: '""',
     position: 'absolute',
-    width: '200px',
-    height: '200px',
-    border: '3px solid ',
+    width: '150px',
+    height: '150px',
+    border: '2px solid',
     borderColor: theme.palette.warning.main,
     borderRadius: '50%',
-    top: '145px',
-    right: '-70px'
+    top: '100px',
+    right: '-50px',
+    opacity: 0.2
   }
 }));
 
-// ==============================|| PROFILE MENU - UPGRADE PLAN CARD ||============================== //
+const UpgradePlanCard = () => {
+  const payload = tokenPayload();
+  const [companyData, setCompanyData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const {t} = useTranslation();
 
-const UpgradePlanCard = () => (
-  <CardStyle>
-    <CardContent>
-      <Grid container direction="column" spacing={2}>
-        <Grid item>
-          <Typography variant="h4">Upgrade your plan</Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant="subtitle2" color="grey.900" sx={{ opacity: 0.6 }}>
-            70% discount for 1 years <br />
-            subscriptions.
+  useEffect(() => {
+    const fetchCompanyData = async () => {
+      try {
+        const response = await getApi(urls.company.getCompanyById, { id: payload.companyId });
+        setCompanyData(response.data);
+      } catch (err) {
+        setError('Error fetching company data');
+        console.error('Error fetching company data', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (payload?.companyId) fetchCompanyData();
+  }, [payload?.companyId]);
+
+  if (loading) {
+    return (
+      <CardStyle>
+        <CardContent>
+          <CircularProgress />
+        </CardContent>
+      </CardStyle>
+    );
+  }
+
+  if (error) {
+    return (
+      <CardStyle>
+        <CardContent>
+          <Typography variant="h6" color="error">
+            {error}
           </Typography>
-        </Grid>
-        <Grid item>
-          <Stack direction="row">
-            <AnimateButton>
-              <Button variant="contained" color="warning" sx={{ boxShadow: 'none' }}>
-                Go Premium
-              </Button>
-            </AnimateButton>
-          </Stack>
-        </Grid>
-      </Grid>
-    </CardContent>
-  </CardStyle>
-);
+        </CardContent>
+      </CardStyle>
+    );
+  }
+
+  return (
+    <CardStyle>
+      <CardContent>
+        <Typography variant="h5" gutterBottom>
+          {companyData?.companyName || 'Your Company'}
+        </Typography>
+        <Typography variant="body2" sx={{ opacity: 0.75, mb: 1 }}>
+          {t('We help simplify and manage all your property rentals with ease and transparency.')}
+        </Typography>
+        <Typography variant="body2" sx={{ mb: 2 }}>
+          {t('connect us on :-')}
+        </Typography>
+        <AnimateButton>
+          <Button
+            variant="contained"
+            color="warning"
+            sx={{ boxShadow: 'none', fontSize: '0.75rem', padding: '6px 12px' }}
+            href={`mailto:${companyData?.email || 'support@company.com'}`}
+          >
+            📧 {companyData?.email || 'support@company.com'}
+          </Button>
+        </AnimateButton>
+      </CardContent>
+    </CardStyle>
+  );
+};
 
 export default UpgradePlanCard;

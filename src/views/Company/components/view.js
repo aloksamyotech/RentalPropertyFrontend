@@ -160,6 +160,7 @@ const CompanyView = () => {
           ),
         },
   ];
+  
   return (
     <Container>
       {/* Breadcrumb and Heading */}

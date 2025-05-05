@@ -74,12 +74,12 @@ const ComplainDetailsPageForAgent = () => {
   };
 
   const handleStatusChange = async (event) => {
-    setStatus(event.target.checked); // Update status when switch is toggled
+    setStatus(event.target.checked); 
 
     try {
       const response = await patchApi(
         urls.Complaints.resolveComplain,
-        { status: event.target.checked }, // Send the updated status
+        { status: event.target.checked },
         { id: complainId }
       );
 

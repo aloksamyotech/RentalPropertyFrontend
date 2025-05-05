@@ -22,14 +22,15 @@ import { tokenPayload } from 'helper';
 const PopularCard = ({ isLoading }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const [vacantProperty, setVacantpropertyData] = useState([]);
+  const [companyData, setCompanyData] = useState([]);
   const payload = tokenPayload();
 
-  const fetchVacantPropertyData = async () => {
+  const fetchCompanyData = async () => {
     try {
-      const response = await getApi(urls.property.getVacantProperty, { id: payload.companyId });
+      const response = await getApi(urls.company.companydata);
+      console.log(response,"response")
       if (response?.success) {
-        setVacantpropertyData(response?.data);
+        setCompanyData(response?.data);
       }
     } catch (error) {
       console.log("Error fetching vacant properties:", error);
@@ -37,7 +38,7 @@ const PopularCard = ({ isLoading }) => {
   };
 
   useEffect(() => {
-    fetchVacantPropertyData();
+    fetchCompanyData();
   }, []);
 
   return (
@@ -49,32 +50,32 @@ const PopularCard = ({ isLoading }) => {
           <CardContent>
             <Grid container spacing={gridSpacing}>
               <Grid item xs={12}>
-                <Typography variant="h4">{t('Vacant Properties')}</Typography>
+                <Typography variant="h4">{t('Total Companies')}</Typography>
               </Grid>
 
               <Grid item xs={12}>
-                {vacantProperty.length === 0 ? (
+                {companyData.length === 0 ? (
                   <Typography variant="body2" color="textSecondary">
-                    {t('No Vacant Property')}
+                    {t('No Company Registered')}
                   </Typography>
                 ) : (
-                  vacantProperty.map((vacant) => (
-                    <div key={vacant._id}>
+                  companyData.map((company) => (
+                    <div key={company._id}>
                       <Grid container alignItems="center" justifyContent="space-between">
                         <Grid item>
                           <Typography variant="subtitle1" color="inherit">
-                             {vacant.propertyname}
+                           {company.companyName}
                           </Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            {t('property_rent')} {vacant.rent}
-                          </Typography>
+                          {/* <Typography variant="body2" color="textSecondary">
+                            {t('property_rent')} {company.rent}
+                          </Typography> */}
                         </Grid>
 
                         <Grid item>
                           <Grid container alignItems="center">
                             <Grid item>
                               <Typography variant="subtitle1" color="inherit">
-                                {vacant.description}
+                                {company.email}
                               </Typography>
                             </Grid>
                             <Grid item>
@@ -84,16 +85,16 @@ const PopularCard = ({ isLoading }) => {
                                   width: 16,
                                   height: 16,
                                   borderRadius: '5px',
-                                  backgroundColor: vacant.status
+                                  backgroundColor: company.status
                                     ? theme.palette.success.light
                                     : theme.palette.error.light,
-                                  color: vacant.status
+                                  color: company.status
                                     ? theme.palette.success.dark
                                     : theme.palette.error.dark,
                                   ml: 2,
                                 }}
                               >
-                                {vacant.status ? (
+                                {company.status ? (
                                   <KeyboardArrowUpOutlinedIcon fontSize="small" color="inherit" />
                                 ) : (
                                   <KeyboardArrowDownOutlinedIcon fontSize="small" color="inherit" />
