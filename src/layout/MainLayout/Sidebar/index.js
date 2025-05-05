@@ -13,10 +13,14 @@ import MenuList from './MenuList';
 import LogoSection from '../LogoSection';
 import MenuCard from './MenuCard';
 import { drawerWidth } from 'store/constant';
+import UpgradePlanCard from '../Header/ProfileSection/UpgradePlanCard';
+import { tokenPayload } from 'helper';
 
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
 const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
+  const payload = tokenPayload();
+  const User = payload.role;
   const theme = useTheme();
   const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -37,6 +41,8 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
           }}
         >
           <MenuList />
+          {(User === 'agent' || User === 'tenant') && <UpgradePlanCard />}
+          {/* <UpgradePlanCard /> */}
         </PerfectScrollbar>
       </BrowserView>
       <MobileView>

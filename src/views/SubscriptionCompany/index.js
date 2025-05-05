@@ -61,6 +61,7 @@ const SubscriptionCards = () => {
   const fetchServiceData = async () => {
     try {
       const response = await getApi(urls.Subscribe.getAllSubscription);
+      console.log(response?.data,"response.data");
       if (response?.data) {
         setServiceData(response.data);
       } else {
@@ -93,7 +94,7 @@ const SubscriptionCards = () => {
 
   return (
     <>
-          <BuySubscription open={openAdd} handleClose={handleCloseAdd} id={rowData?._id}/>
+          <BuySubscription open={openAdd} handleClose={handleCloseAdd} data={rowData}/>
     <Container>
       {/* <Card sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">

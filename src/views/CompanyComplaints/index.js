@@ -63,7 +63,6 @@ const CompanyComplaints = () => {
     }
   };
 
-  // Fetch complaints for Agent
   const fetchComplaintDataForAgent = async () => {
     try {
       const response = await getApi(urls.Complaints.getAllComplainCompanyAgent, { id: payload._id });
@@ -106,9 +105,9 @@ const CompanyComplaints = () => {
 
   useEffect(() => {
     if (value === '1') {
-      fetchComplaintDataForTenant(); // Fetch tenant complaints when tab 1 is selected
+      fetchComplaintDataForTenant(); 
     } else {
-      fetchComplaintDataForAgent(); // Fetch agent complaints when tab 2 is selected
+      fetchComplaintDataForAgent(); 
     }
   }, [value]);
 
@@ -130,7 +129,7 @@ const CompanyComplaints = () => {
                 variant="text"
                 color="primary"
                 onClick={() =>
-                  navigate(`/dashboard/complain/view?id=${params.row._id}`) 
+                  navigate(`/dashboard/complain/tenant/view?id=${params.row._id}`) 
                 }
               >
                 {params.row.tenantName}  

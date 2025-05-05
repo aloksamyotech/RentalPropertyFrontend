@@ -21,6 +21,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditComplain from './EditComplain';
 import DeleteComplain from './DeleteCompalain';
+import AddComplaintsByTenants from './AddComplaintByTenants';
 
 const Complaints = () => {
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ const Complaints = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [rowData, setRowData] = useState(false);
+  const [rowData, setRowData] = useState(null);
   const [complaintData, setComplaintData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
@@ -86,12 +87,6 @@ const Complaints = () => {
     handleClose();
   };
 
-  // const handleOpenDeleteCompany = () => {
-  //   setRowData(currentRow);
-  //   setOpenDelete(true);
-  //   handleClose();
-  // };
-
   const handleDeleteComplaint = () => {
     setRowData(currentRow);
     setOpenDelete(true);
@@ -107,12 +102,28 @@ const Complaints = () => {
         const rowIndex = complaintData.findIndex((row) => row._id === params.row._id);
         return rowIndex + 1; 
       }},
-    {
-      field: 'concernTopic',
-      headerName: t('Topic'),
-      flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
-    },
+      {
+        field: 'concernTopic',
+        headerName: t('Topic'),
+        flex: 1,
+        cellClassName: 'name-column--cell name-column--cell--capitalize',
+        renderCell: (params) => (
+          <Button
+            variant="text"
+            color="primary"
+            onClick={() => {
+              const userRole = payload?.role;
+              if (userRole === 'agent') {
+                navigate(`/dashboard/complain/agent/view?id=${params.row._id}&reporterName=${params.row.reporterName}`);
+              } else {
+                navigate(`/dashboard/complain/tenant/view?id=${params.row._id}&reporterName=${params.row.reporterName}`);
+              }
+            }}
+          >
+            {params.row.concernTopic}
+          </Button>
+        )
+      },      
     {
       field: 'comment',
       headerName: t('Comment'),
@@ -168,18 +179,6 @@ const Complaints = () => {
     }
   ];
 
-  // const breadcrumbs = [
-  //   <Link underline="hover" key="1" color="primary" href="/" onClick={(e) => e.preventDefault()}>
-  //     <IconHome />
-  //   </Link>,
-  //   <Link underline="hover" key="2" color="primary" href="/add-complaints" onClick={(e) => e.preventDefault()}>
-  //     {t('Add Complaints')}
-  //   </Link>,
-  //   <Typography key="3" sx={{ color: 'text.primary' }}>
-  //     {t('Items')}
-  //   </Typography>,
-  // ];
-
   const breadcrumbs = [
     <Link underline="hover" key="home" to="/" style={{ color: 'inherit' }}>
       <IconHome />
@@ -192,11 +191,19 @@ const Complaints = () => {
     // </Typography>,
   ];
 
+
+  
+
   return (
     <>
-      <AddComplaints open={openAdd} handleClose={handleCloseAdd} />
+{payload.role === 'tenant' ? (
+  <AddComplaintsByTenants open={openAdd} handleClose={handleCloseAdd} />
+) : (
+  <AddComplaints open={openAdd} handleClose={handleCloseAdd} />
+)}
+
       <EditComplain open={openEdit} handleClose={handleCloseEditComplain} data={rowData} />
-      <DeleteComplain open={openDelete} handleClose={handleCloseDeleteComplain} id={rowData?._id} />
+      <DeleteComplain open={openDelete} handleClose={handleCloseDeleteComplain}  id={rowData?._id || ''} />
 
       <Container>
         <Card sx={{ p: 2, mb: 2 }}>

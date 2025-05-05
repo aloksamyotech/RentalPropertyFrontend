@@ -40,8 +40,7 @@ const BillA = () => {
       const response = await getApi(urls.bill.getBillByAgentId,  { id: payload._id });
       const formattedData = response.data.map((item) => {
         const billingDate = new Date(item.billingMonth);
-        const formattedBillingMonth = `${billingDate.toLocaleString('default', { month: 'long' })} ${billingDate.getFullYear()}`; // Format as "Month Year"
-  
+        const formattedBillingMonth = `${billingDate.toLocaleString('default', { month: 'long' })} ${billingDate.getFullYear()}`;  
         return {
           ...item,
           tenantName: item.tenantId?.tenantName,
@@ -70,10 +69,6 @@ const BillA = () => {
     navigate(`/dashboard/billC/view?id=${currentRow._id}`);
   };
 
-
-
-
-
   const breadcrumbs = [
     <Link key="home" to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
       <IconHome />
@@ -81,24 +76,8 @@ const BillA = () => {
     <Typography key="company" color="text.primary">
       {t('bill Management')}
     </Typography>,
-    // <Link key="bill" style={{ color: 'inherit', textDecoration: 'none' }}>
-    //   {t('Bill Management')}
-    // </Link>
+
   ];
-  
-
-    // const breadcrumbs = [
-    //       <Link underline="hover" key="home" to="/dashboard/default" style={{ color: 'inherit' }}>
-    //         <IconHome />
-    //       </Link>,
-    //       <Link underline="hover" key="property-management" to="/dashboard/booking" style={{ color: 'inherit' }}>
-    //         {t('Booking Management')}
-    //       </Link>,
-    //       <Typography key="view" color="text.primary">
-    //         {t('View')}
-    //       </Typography>,
-    //     ];
-
 
   const columns = [
     {
@@ -180,22 +159,11 @@ const BillA = () => {
               horizontal: 'left',
             }}
           >
-            {/* <MenuItem onClick={handleOpenEditCompany} disableRipple>
-              <EditIcon style={{ marginRight: '8px' }} />
-              {t('Edit')}
-            </MenuItem> */}
+       
              <MenuItem onClick={handleOpenView}>
                           <VisibilityIcon style={{ marginRight: '8px', color: 'green' }} />
                           {t('view')}
-                        </MenuItem>
-            {/* <MenuItem
-              onClick={handleOpenDeleteCompany}
-              sx={{ color: 'red' }}
-              disableRipple
-            >
-              <DeleteIcon style={{ marginRight: '8px', color: 'red' }} />
-              {t('Delete')}
-            </MenuItem> */}
+            </MenuItem>
           </Popover>
         </>
       ),
@@ -212,13 +180,7 @@ const BillA = () => {
           <Breadcrumbs separator="›" aria-label="breadcrumb">
             {breadcrumbs}
           </Breadcrumbs>
-          {/* <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={handleOpenAdd}
-          >
-            {t('Add Company')}
-          </Button> */}
+     
         </Stack>
       </Card>
       <TableStyle>

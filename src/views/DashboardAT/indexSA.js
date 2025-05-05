@@ -20,14 +20,19 @@ import { tokenPayload } from 'helper';
 import TotalVacantProperties from './TotalVacantProperty';
 // import TotalComplains from './TotalComplains';
 import TotalBooking from './TotalSubcription';
-import TotalGrowthBarChart from './TotalGrowthBarChart';
+// import TotalGrowthBarChart from './TotalGrowthBarChart';
+import TotalGrowthBarChart from './BarchartSA';
 import TotalServiceProvider from './TotalActiveCompany';
 import TotalPendingBill from './TotalPendingBills';
 import TotalCompany from './TotalCompany';
 import TotalSubcription from './TotalSubcription';
 import TotalActiveCompany from './TotalActiveCompany';
+import InfoCard from './InfoCard';
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import CardMembershipIcon from '@mui/icons-material/CardMembership';
+import PopularCard from './PopularCardSA';
 // import TotalTable from './TotalTable';
-import PopularCard from './PopularCard';
+// import PopularCard from './PopularCard';
 // import TotalPaidBill from './TotalPaidBill';
 
 const RoomTypeIcons = {
@@ -207,10 +212,12 @@ const SADashboard = () => {
               xs={12}
               sx={{ cursor: 'pointer' }}
               onClick={() => {
-                navigate('/dashboard/property');
+                navigate('/dashboard/company');
               }}
             >
-              <TotalCompany isLoading={isLoading} company={company} />
+              {/* <TotalCompany isLoading={isLoading} company={company} /> */}
+              <InfoCard isLoading={isLoading} cardName="Total Company" length={company.length} icon={ApartmentIcon} />
+              
             </Grid>
 
             <Grid
@@ -221,10 +228,12 @@ const SADashboard = () => {
               lg={3}
               sx={{ cursor: 'pointer' }}
               onClick={() => {
-                navigate('/dashboard/SubscriptionData');
+                navigate('/dashboard/Subsciption');
               }}
             >
-              <TotalSubcription isLoading={isLoading} SubscriptionData={SubscriptionData} />
+              {/* <TotalSubcription isLoading={isLoading} SubscriptionData={SubscriptionData} /> */}
+              <InfoCard isLoading={isLoading} cardName="Total Subcriptions" length={SubscriptionData.length} icon={CardMembershipIcon} />
+
             </Grid>
             <Grid
               item
@@ -233,11 +242,12 @@ const SADashboard = () => {
               md={6}
               lg={3}
               sx={{ cursor: 'pointer' }}
-              onClick={() => {
-                navigate('/dashboard/booking');
-              }}
+              // onClick={() => {
+              //   navigate('/dashboard/booking');
+              // }}
             >
-              <TotalActiveCompany isLoading={isLoading} activeCompany={activeCompany} />
+              <InfoCard isLoading={isLoading} cardName="Active Company" length={activeCompany.length} icon={ApartmentIcon} />
+              {/* <TotalActiveCompany isLoading={isLoading} activeCompany={activeCompany} /> */}
             </Grid>
             {/* <Grid
               item

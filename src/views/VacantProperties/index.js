@@ -74,9 +74,20 @@ const VacantProperties = () => {
     },
     {
       field: 'propertyname',
-      headerName: 'Property Name',
+      headerName: t('Property Name'),
       flex: 1,
-      cellClassName: 'name-column--cell name-column--cell--capitalize'
+      cellClassName: 'name-column--cell name-column--cell--capitalize',
+          renderCell: (params) => (
+              <Button
+                variant="text"
+                color="primary"
+                onClick={() =>
+                  navigate(`/dashboard/vacantproperty/view?id=${params.row._id}`) 
+                }
+              >
+                {params.row.propertyname}  
+              </Button>
+            ),
     },
     {
       field: 'description',

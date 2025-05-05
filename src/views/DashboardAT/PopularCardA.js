@@ -63,7 +63,7 @@ const PopularCard = ({ isLoading }) => {
                       <Grid container alignItems="center" justifyContent="space-between">
                         <Grid item>
                           <Typography variant="subtitle1" color="inherit">
-                             {vacant.propertyname}
+                           {vacant.propertyname}
                           </Typography>
                           <Typography variant="body2" color="textSecondary">
                             {t('property_rent')} {vacant.rent}

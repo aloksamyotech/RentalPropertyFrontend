@@ -18,6 +18,14 @@ import TotalBooking from './TotalSubcription';
 import TotalServiceProvider from './TotalServiceProvider';
 import TotalPendingBill from './TotalPendingBills';
 import TotalTenantBookings from './TotalTenantBooking';
+import InfoCard from './InfoCard';
+import HomeIcon from '@mui/icons-material/Home';
+import PaymentIcon from '@mui/icons-material/Payment';
+import BookIcon from '@mui/icons-material/Book';
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
+import TotalGrowthBarChart from './BarChartT';
+import PopularCard from './PopularCardT';
+import {  IconFileUpload } from '@tabler/icons';
 
 const RoomTypeIcons = {
   single: <SingleBedIcon sx={{ fontSize: '2.5rem' }} />,
@@ -104,8 +112,6 @@ const TDashboard = () => {
     }
   };
 
-
-
   const fetchTenantData = async () => {
     try {
       const response = await getApi(urls.tenant.getMyTenants, { id: payload._id });
@@ -126,6 +132,7 @@ const TDashboard = () => {
   const fetchPendingBillData = async () => {
     try {
       const response = await getApi(urls.bill.getBillForTPending, { id: payload._id });
+      console.log(response?.data, 'response?.data');
       setPendingBill(response?.data);
     } catch (error) {
       console.log(error);
@@ -186,7 +193,8 @@ const TDashboard = () => {
                 navigate('/dashboard/vacantproperty');
               }}
             >
-              <TotalVacantProperties isLoading={isLoading} vacantPropertyData={vacantpropertyData} />
+              <InfoCard isLoading={isLoading} cardName="Vacant Property" length={vacantpropertyData.length} icon={IconFileUpload} />
+              {/* <TotalVacantProperties isLoading={isLoading} vacantPropertyData={vacantpropertyData} /> */}
             </Grid>
 
             <Grid
@@ -200,7 +208,8 @@ const TDashboard = () => {
                 navigate('/dashboard/tenantBooking');
               }}
             >
-              <TotalTenantBookings isLoading={isLoading} booking={booking} />
+              <InfoCard isLoading={isLoading} cardName="My Bookings" length={booking.length} icon={BookIcon} />
+              {/* <TotalTenantBookings isLoading={isLoading} booking={booking} /> */}
             </Grid>
             <Grid
               item
@@ -213,7 +222,13 @@ const TDashboard = () => {
                 navigate('/dashboard/serviceprovider');
               }}
             >
-              <TotalServiceProvider isLoading={isLoading} servideProvider={servideProvider} />
+              <InfoCard
+                isLoading={isLoading}
+                cardName="Total Service Provider"
+                length={servideProvider.length}
+                icon={HomeRepairServiceIcon}
+              />
+              {/* <TotalServiceProvider isLoading={isLoading} servideProvider={servideProvider} /> */}
             </Grid>
             {/* <Grid
               item
@@ -226,7 +241,7 @@ const TDashboard = () => {
                 navigate('/dashboard/tenents');
               }}
             >
-              <TotalTenants isLoading={isLoading} tenant={tenant} />
+              <InfoCard isLoading={isLoading} cardName="Total Tenant" length={tenant.length} icon= {HomeIcon} />
             </Grid> */}
             <Grid
               item
@@ -239,22 +254,23 @@ const TDashboard = () => {
                 navigate('/dashboard/billT');
               }}
             >
-              <TotalPendingBill isLoading={isLoading} TotalPendingBill={pendingBill} />
+              <InfoCard isLoading={isLoading} cardName="Pending Bills" length={pendingBill.length} icon={PaymentIcon} />
+              {/* <TotalPendingBill isLoading={isLoading} TotalPendingBill={pendingBill} /> */}
             </Grid>
           </Grid>
         </Grid>
 
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
-            <Grid item xs={12}>
-              {/* <TotalGrowthBarChart isLoading={isLoading} /> */}
+            <Grid item xs={8}>
+              <TotalGrowthBarChart isLoading={isLoading} />
             </Grid>
             <Grid item xs={12} md={4}>
-              {/* <PopularCard isLoading={isLoading} /> */}
+              <PopularCard isLoading={isLoading} />
             </Grid>
           </Grid>
         </Grid>
-{/* <TotalTable/> */}
+        {/* <TotalTable/> */}
         {/* <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
             <Grid item xs={12} md={12}>

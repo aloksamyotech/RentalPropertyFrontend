@@ -7,13 +7,16 @@ import menuItem from 'menu-items';
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 const MenuList = () => {
-  const navItems = menuItem.items.map((item) => {
+  const navItems = menuItem.items.map((item, index) => {
+    // Ensure every rendered component has a unique key
+    const key = item.id || `nav-item-${index}`;
+
     switch (item.type) {
       case 'group':
-        return <NavGroup key={item.id} item={item} />;
+        return <NavGroup key={key} item={item} />;
       default:
         return (
-          <Typography key={item.id} variant="h6" color="error" align="center">
+          <Typography key={key} variant="h6" color="error" align="center">
             Menu Items Error
           </Typography>
         );
